@@ -1,0 +1,115 @@
+event startup
+begin
+  SetLangMode(LangLithuanian,"LIT",0);
+  
+  Maintenance("Replace purchase item texts",UpdatePITextVClass,UpdatePITextMn,modDBMain);
+  
+  return;
+end;
+
+event DefineWindows
+begin
+  SetLangMode(LangLithuanian,"LIT",0);  
+
+  WindowBegin("Replace purchase item texts",UpdatePITextVClass,CGMnt,RcType);
+    SetWRect(100,120,400,278);
+    StaticText(20,40, "Maintenance replaces texts in all purchase",0);
+    StaticText(20,56, "item records, accord to supplier language",0);
+    StaticText(20,70, "",0);
+  EndWindow;
+  
+  return;
+end;
+
+procedure RemoveAllRows(var record PIVc PIr) begin
+  integer i,rwc;
+  
+  rwc = MatRowCnt(PIr);
+  for(i=rwc-1;i>=0;i=i-1)begin
+    MatRowDelete(PIr,i);
+  end;
+  
+return;
+end;
+
+function boolean PasteItemText(var record PIVc PIr,record INVc INr,string LangCode) begin
+  boolean firstf,res;  
+  row INVc INrw;
+  row PIVc PIrw;
+  integer i,rwc;
+  
+  rwc = MatRowCnt(INr);
+  for(i=0;i<rwc;i=i+1)begin
+    MatRowGet(INr,i,INrw);
+    if INrw.LangCode==LangCode then begin
+      res = true;
+      if !firstf then begin
+        RemoveAllRows(PIr);
+        firstf = true;
+        PIr.Comment = INrw.Text;
+      end else begin
+        ClearRow(PIr,PIrw,1);
+        PIrw.Text = INrw.Text;
+        MatRowPut(PIr,MatRowCnt(PIr),PIrw);
+      end;
+    end;
+  end;
+  
+  PasteItemText = res;
+return;
+end;
+
+global
+function boolean AddTextFromSuppLang(var record PIVc PIr) begin
+  boolean res;
+  record CUVc VEr;
+  record INVc INr;
+  
+  if blank(PIr.VECode) then begin
+    GoTo LAddTextFromSuppLang;
+  end;
+  if blank(PIr.ItemCode) then begin
+    GoTo LAddTextFromSuppLang;
+  end;
+  
+  VEr.Code = PIr.VECode;
+  if !ReadFirstMain(VEr,1,true) then begin
+    GoTo LAddTextFromSuppLang;
+  end;
+  if blank(VEr.LangCode) then begin
+    GoTo LAddTextFromSuppLang;
+  end;
+  
+  INr.Code = PIr.ItemCode;
+  if !ReadFirstMain(INr,1,true) then begin
+    GoTo LAddTextFromSuppLang;
+  end;
+  
+  if MatRowCnt(INr)==0 then begin
+    GoTo LAddTextFromSuppLang;
+  end;
+  
+  res = PasteItemText(PIr,INr,VEr.LangCode);
+  
+LAddTextFromSuppLang:;
+  AddTextFromSuppLang = res;
+return;
+end;
+
+global updating
+procedure UpdatePITextMn(Record RcVc RepSpec)
+Begin
+  record PIVc PIr,oldPIr;  
+  
+  PIr.ItemCode = "";
+  While LoopMain(PIr,1,true) begin
+    RecordCopy(oldPIr,PIr);
+    if AddTextFromSuppLang(PIr) then begin
+      if RecordUpdate(oldPIr,PIr,true)!=0 then begin
+        LogText(0,"UpdatePITextMn ERROR could not update PIVc record (item " & PIr.ItemCode & " ,supplier " & PIr.VECode); 
+      end;
+    end;
+  end;
+  
+return;
+end;

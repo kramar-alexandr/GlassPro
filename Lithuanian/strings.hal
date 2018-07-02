@@ -1,0 +1,12 @@
+
+
+event startup
+begin
+  SetLangMode(LangLithuanian,"LIT",2);
+
+  SString(1000001,"Avanso Apyskaita");
+  SString(1000002,"Atskaitingas asmuo");
+  SString(1000003,"Tvirtinu: Įmonės vadovas");
+
+  return;
+end;

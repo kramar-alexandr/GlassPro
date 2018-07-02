@@ -1,0 +1,37 @@
+event startup
+begin
+SetLangMode(LangLithuanian,"LIT",0);
+  Maintenance("Perkelti svorio vnt",TestMaintVClass,TestMaintMn,modSY);
+  return;
+end;
+
+event DefineWindows
+begin
+  Real h,h1,h2,h3,h4,hs,v,vm,vs,f,t;
+ SetLangMode(LangLithuanian,"LIT",0);
+  WindowBegin("Perkelti svorio vnt",TestMaintVClass,CGMnt,RcType);
+  SetWRect(64,80,549,248);
+  v= 6; vs = 20; h=120;
+ EndWindow;
+ return;
+end;
+
+
+global
+updating procedure TestMaintMn(record RcVc RepSpec)
+BEGIN
+  record INVc INr;  
+  boolean TrHs;
+  
+  TrHs = true;
+  while (LoopMain(INr,1,true)) begin
+
+ 			INr.Weight = stringtoval(INr.Unittext2,M4Val);
+ 			INr.Unittext2 = "";
+ 			RecordStore(INr,true);
+
+  end; // While
+  
+  
+ RETURN;
+END;

@@ -1,0 +1,31 @@
+external function string 255 SetVATZoneLabel();
+
+global
+function real VATZoneButtonsLabelsENG(real h,real v,real bl,real vs)
+begin
+  string 255 label,label2,label3,label4,label5;
+    
+  label = SetVATZoneLabel;
+  
+  if (blank(label)) then begin 
+    label2 = "#Inside EU#"; 
+    label3 = "#Inside EU# (Post #VAT#)"; 
+    label4 = "#Outside EU#"; 
+    label5 = "#Outside EU# (Post #VAT#)"; 
+  end else begin
+    label2 = "Inside " & label; 
+    label3 = "Inside " & label & " (Post #VAT#)"; 
+    label4 = "Outside " & label; 
+    label5 = "Outside " & label & " (Post #VAT#)"; 
+  end;
+
+  ButtonFrame(h,v,bl,5,"#VAT# Zone");
+  RadioButton(h,v,0,0,"#Domestic#",ExportFlag);
+  RadioButton(h,v+=vs,1,0,label2,ExportFlag);
+  RadioButton(h,v+=vs,3,0,label3,ExportFlag);
+  RadioButton(h,v+=vs,2,0,label4,ExportFlag);
+  RadioButton(h,v+=vs,4,0,label5,ExportFlag);
+  
+  VATZoneButtonsLabelsENG = v;
+  return;
+end;

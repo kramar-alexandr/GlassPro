@@ -1,0 +1,82 @@
+external inner function Boolean HasSalesman();
+external inner function Boolean HasSalesmanBonus();
+external inner function Boolean HasSalesGroup();
+external inner function Boolean HasItemClassification();
+external inner function Boolean HasItemGroups();
+external inner function Boolean HasObjects();
+external inner function Boolean HasMultiLocations();
+external inner function Boolean HasBase2();
+external inner function Boolean HasModSVO();
+external inner function Boolean IsEnterprise();
+external inner function Boolean StandardHansa();
+
+SetLangMode(LangEnglish,"ENG",2);
+
+window IVGPRClass:1
+  wtag("language","ENG"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,v,vm,vs;
+  WindowBegin("Specify GP, Invoices",IVGPRClass,CGRcW,RcType);
+  SetWRect(20,80,480,320);
+  vs = 20;
+  Tile(0,20,false,"",Period2Str);
+  PeriodField(150,v=6,"Period");
+  TileButtons(v,2);
+  Tile(1,280,false,"1",f3);
+  v = 6;
+  EditFieldTL(h=150,v, 150,"Invoice No.",   M4Str,Normal,30,f1,false,0);
+  EditFieldTL(h,v+=vs ,150,"Customer",M4UStr,Normal,50,f2,false,CUSClass);
+  EditFieldTL(h,v+=vs ,150,"Category",M4UStr,Normal,50,f7,false,CCatSClass); //EBS
+  if (HasSalesman or HasSalesmanBonus) then begin
+    EditFieldTL(h,v+=vs ,100,"#Salesman#",M4UStr,Normal,10,AccStr,false,UserSClass);
+  end;
+  if (HasSalesGroup) then begin
+    EditFieldTL(h,v+=vs ,50,"Sales Group",M4UStr,Normal,10,f5,false,SalesGroupSClass);
+  end;
+  EditFieldTL(h,v+=vs ,150,"Item",M4UStr,Normal,20,FirstAcc,false,INSClass);
+  if (HasItemClassification) then begin
+    EditFieldTL(h,v+=vs ,150,"Item Classification",M4UStr,Normal,200,f6,false,DISClass);
+  end;
+  if (HasItemGroups) then begin
+    EditFieldTL(h,v+=vs ,80,"Item Group",M4UStr,Normal,5,LastAcc,false,ITSClass);
+  end;
+  if (HasObjects) then begin
+    EditFieldTL(h,v+=vs ,150,"Object",M4UStr,Normal,60,ObjStr,false,ObjSClass);
+    EditFieldTL(h,v+=vs ,150,"Object from Row (Detailed)",M4UStr,Normal,60,f3,false,ObjSClass);
+  end;
+  EditFieldTL(h,v+=vs ,50,"Payment Term",M4UStr,Normal,5,TransStr,false,PDSClass);
+  ButtonFrame(h=60,vm=(v+=45),123,2,"Function");
+  RadioButton(h,v,0,0,"Overview",ArtMode);
+  RadioButton(h,v+=16,1,0,"Detailed",ArtMode);
+  ButtonFrame(h=250,v=vm,123,2,"Status");    //changed
+  CheckBox(h,v,0,"Not OKed",flags[1]);
+  CheckBox(h,v+=16,0,"O_ked",flags[2]);
+  Tile(2,310,false,"2",f4);
+  h=150; v = 6;
+  if (HasMultiLocations) then begin
+    EditFieldTL(h,v,100,"Location",M4UStr,Normal,60,f4,false,LocationSClass); //added
+  end;
+  EditFieldTL(h,v+=20,80,"Branch",M4Code,Normal,20,Stext,false,ContactCUSClass);
+  ButtonFrame(h=60,vm=(v+=45),123,3,"Function");
+  RadioButton(h,v,0,0,"Cost Price",flags[11]);
+  if (HasBase2) then begin
+    RadioButton(h,v+=16,2,0,"Cost Price B2",flags[11]);
+  end;
+  RadioButton(h,v+=16,1,0,"Queued Cost",flags[11]);
+  EndFrame;
+  ButtonFrame(h=210,v=vm,130,6,"Include");
+  CheckBox(h,v,0,"No_rmal",flags[3]);
+  CheckBox(h,v+=16,0,"Cash",flags[4]);
+  CheckBox(h,v+=16,0,"Cr_edit Notes",flags[5]);
+  if (StandardHansa==false) and (IsStandardProduct==false) then begin
+    CheckBox(h,v+=16,0,"Interest",flags[6]);
+    CheckBox(h,v+=16,0,"Prepayment",flags[7]);
+    CheckBox(h,v+=16,0,"Down Payment",flags[8]);
+  end;
+  if (HasModSVO) then begin
+    CheckBox(h,v+=32,0,"SVO Invoices only",flags[10]);
+  end;
+  CheckBox(h,v+=16,0,"Include POS Invoices",flags[12]);
+  EndFrame;
+  EndWindow;
+end;

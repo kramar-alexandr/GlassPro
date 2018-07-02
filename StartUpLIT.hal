@@ -1,0 +1,19 @@
+
+
+event startup
+begin
+
+  SetLangMode(LangLithuanian,"LIT",2);
+
+  Register("Muitinės kodai","Muitinės kodai",CommodityVc,modPL);
+  Report("Intrastat pirkimai",IntrVIRClass,IntrVIRn,0,modPL);
+  
+  Export("Intrastatas Pirk. kn. (GlassPro)",EBS_LitIntrastatVIEClass,EBS_LitIntVIEn,modPL);
+  
+  SString(1000000,"Muit. kodas");
+  SString(1000001,"Num.šal.");
+  SString(1000002,"Svo.");
+  SString(1000003,"Neto");
+  
+  return;
+end;

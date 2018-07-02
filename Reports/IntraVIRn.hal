@@ -1,0 +1,433 @@
+event DefineWindows
+begin
+  real i,h,h1,h2,h3,h4,h5,h6,hs,v,vs,vm,hl,l,t,f;
+  string 255 label;
+
+  SetLangMode(LangLithuanian,"LIT",0);
+
+  WindowBegin("Intrastat (Lietuva)",IntrVIRClass,CGRcW,RcType);
+  SetWRect(64,80,500,300);
+  vs = 20; h = 150; v = 6;
+  PeriodField(h,v,"Periodas");
+//  EditFieldTL(h,v+=vs,70,"Nr.", M4UStr,Normal,41,f1,false,0);
+ // EditFieldTL(h,v+=vs,70,"Tiek˜jas", M4UStr,Normal,41,f2,false,VESClass);
+  EditFieldTL(h,v+=vs,20,"Versija", M4UStr,Normal,2,f3,false,0);
+  EditFieldTL(h,v+=vs,70,"Intrastat nr.", M4UStr,Normal,16,f4,false,0);
+  EditFieldTL(h,v+=vs,70,"Intrastat data",M4Date,Normal,0,d1,false,PasteCurDate);
+  EditFieldTL(h,v+=vs,-20,"Kont. asmuo", M4UStr,Normal,60,f5,false,AllContactSClass);
+  EditFieldTL(h,v+=vs,120,"Tiek˜jas", M4UStr,Normal,20,f6,false,VESClass);
+  EndWindow;
+
+  return;
+end;
+
+external inner function val MulRateToBase1(var string,val,val,val,val,val,val,roundmode);
+external inner procedure M4PadString(string,Integer,string,Boolean,var string);
+external inner function Boolean GetFirstItem(var string,var record INVc);
+external inner function Boolean GetFirstPurchaseItem2(string,string,string,var record PIVc);
+//////
+external inner function roundmode SetRoundModeD(Integer);
+///////
+SetLangMode(LangLithuanian,"LIT",0);
+
+function integer strlen(string str)
+begin
+  integer sk,l,i;
+  sk = len(str);
+  l = len(str);
+  for (i=0;i<=l;i=i+1) begin
+  //messagebox(0,Mid(str,i,1)&" "&);
+    if ((Mid(str,i,1)=="ä") or (Mid(str,i,1)=="ì") or (Mid(str,i,1)=="˜") or (Mid(str,i,1)=="°") or (Mid(str,i,1)=="ˆ") or (Mid(str,i,1)=="ð") or (Mid(str,i,1)=="‹") or (Mid(str,i,1)=="«") or (Mid(str,i,1)=="÷") or
+	(Mid(str,i,1)==UpperCase("ä")) or (Mid(str,i,1)==UpperCase("ì")) or (Mid(str,i,1)==UpperCase("˜")) or (Mid(str,i,1)==UpperCase("°")) or (Mid(str,i,1)==UpperCase("ˆ")) or (Mid(str,i,1)==UpperCase("ð")) or (Mid(str,i,1)==UpperCase("‹")) or (Mid(str,i,1)==UpperCase("«")) or (Mid(str,i,1)==UpperCase("÷")))then begin
+      sk=sk+1;
+    end;
+  end;
+  strlen = sk;
+  return;
+end;
+
+procedure RemoveCharacterFromString(var string res,string tstr)
+BEGIN
+  Integer l,i;
+  string 255 cstr;
+  Boolean found;
+  
+  found = false;
+  l = len(res);
+  for (i=0;i<=l;i=i+1) begin
+
+    if ((Mid(res,i,1)!=tstr))then begin
+      found = false; 
+      if ((Mid(res,i,1)=="&"))then begin
+        cstr = cstr & "&amp;";
+        found = true; 
+      end; 
+      if ((Mid(res,i,1)=="<"))then begin
+        cstr = cstr & "&lt;";
+        found = true; 
+      end; 
+      if ((Mid(res,i,1)==">"))then begin
+        cstr = cstr & "&gt;";
+        found = true; 
+      end; 
+      if ((Mid(res,i,1)=="'"))then begin
+        cstr = cstr & "&apos;";
+        found = true; 
+      end;  
+      if ((Mid(res,i,1)==""""))then begin
+        cstr = cstr & "&quot;";
+        found = true; 
+      end;      
+      if (found == false) then begin
+        cstr = cstr & Mid(res,i,1);
+      end; 
+    end;  
+  end;
+  res = cstr;
+  RETURN;
+END;
+
+
+global
+procedure IntrVIRn(record RcVc RepSpec)
+BEGIN
+  record INVc INr;
+  record CUVc VEr;
+  record CUVc VE2r,Ve3r;
+  record CUVc ContactCUr;
+  record VIVc VIr;
+  record POVc POr;
+  record PIVc PIr;
+  record PUVc PUr;
+  record CommodityVc Cr;
+  row PUVc PUrw;
+  row POVc POrw;
+  record CYBlock CYRec;
+  Boolean TrHs,testf,TrHs2,testf2;
+  Date ed,curdate,d;
+  LongInt frvi,tovi;
+  string 255 tstr,tstr2;
+  Integer i,rwcnt,leng,acnt,ai,p,notenr;
+  val t,t2,t3,inv_val,stat_val,freight_coeff,in_coeff;
+  array string 8 a1;
+  array string 100 a2;
+  array string 1 a3;
+  array string 2 a4;
+  array string 3 a5;
+  array string 2 a6;
+  array string 2 a7;
+  array string 2 a8;
+  array val a9;
+  array string 3 a10;
+  array val a11;
+  array val a12;
+  array val a13;
+  array longint POrNrs;
+  string 10 b1,b3,b4,b5,b6,b7,b8;
+  longint POrcnt;
+  record RLinkVc RLr;
+
+//  StartReportJob("Intrastat pirkimai");
+  StartReportNoHeaderJob("Intrastat pirkimai");
+////
+ 	   StartFormat(13);
+          OutString(50,0,"PREKIU_SK",true);
+          OutString(150,0,"FAKT_VERTE_VISO",true);
+          Gray_Divider(0,1);
+
+	  EndFormat;
+ 	   StartFormat(13);
+	  OutString(0,0,"KPN_KODAS",false);
+	  OutString(150,0,"KPN_APRASAS",true);
+	  OutString(300,0,"APSKRITIS",true);
+	  OutString(320,0,"SANDORIS",true);
+	  OutString(340,0,"PRISTATYMAS",true);
+	  OutString(370,0,"TRANSPORTAS",true);
+	  OutString(400,0,"SALIS_GAVEJ",true);
+	  OutString(430,0,"KILMES_SALIS",true);
+	  OutString(1,0,"MASE",true);
+
+	  EndFormat;
+ 	   StartFormat(13);
+	  OutString(100,0,"PAPILD_MAT",true);
+	  OutString(130,0,"PAPILD_KIEKIS",true);
+	  OutString(200,0,"FAKT_VERTE",true);
+	  OutString(400,0,"STAT_VERTE",true);
+
+	  EndFormat;
+
+	  Gray_Divider(0,1);
+
+////
+  curdate = CurrentDate;
+  BlockLoad(CYRec);
+  ed = AddDay(RepSpec.sEndDate,1);
+/*
+  if ((GetDay(RepSpec.sStartDate)==1) and (GetDay(ed)==1)) then begin
+    if (GetMonth(RepSpec.sStartDate)==GetMonth(RepSpec.sEndDate)) then begin
+    end else begin
+      goto L99;
+    end;
+  end else begin
+    goto L99;
+  end;
+  if (blank(RepSpec.f4) or blank(RepSpec.f5)) then begin
+    goto L99;
+  end;
+*/
+  frvi = FirstInRange(RepSpec.f1,10);
+  tovi = LastInRange(RepSpec.f1,10);
+  TrHs = true;
+  acnt = 0;
+  POrcnt = 0;
+  inv_val = 0;
+
+
+  PUr.TransDate = RepSpec.sStartDate;
+  ResetLoop(PUr);
+  while (LoopKey("TransDate",PUr,1,TrHs)) begin
+
+    if (PUr.TransDate>RepSpec.sEndDate) then begin TrHs = false; end;
+    if (TrHs) then begin
+      testf = true;
+/*
+      if (nonblank(RepSpec.f1)) then begin
+        if (VIr.SerNr<frvi) then begin testf = false; end;
+        if (VIr.SerNr>tovi) then begin testf = false; end;
+      end;
+*/
+////
+	VEr.Code = PUr.VECode;
+	if (ReadFirstMain(VEr,1,true)) then begin end;
+//StopAlert("VIr.SerNr = " & VIr.SerNr & "**VEr.Code = " & VEr.Code & "**PUr.SerNr = " & PUr.SerNr & "**testf = " & testf);
+
+	if ((VEr.ExportFlag!=1) and (VEr.ExportFlag!=3)) then begin testf = false; end;//1 = inside EU
+
+//StopAlert("**testf=1 = " & testf);
+
+//      if (VEr.ExportFlag!=2) then begin testf = false; end;//2 = inside EU with VAT
+//StopAlert("**testf=2 = " & testf);
+
+//StopAlert("VEr.Code = " & VEr.Code & "**VEr.ExportFlag = " & VEr.ExportFlag & "**testf = " & testf);
+
+	    notenr = 1;
+		  if (ReadRecordLink(PUr,notenr,VIr,RLr)) then begin
+		  notenr = notenr+1;
+		  end;
+
+	    if (DateInRange(VIr.TransDate,RepSpec.sStartDate,RepSpec.sEndDate)==false) then begin
+              testf = false;
+            end;
+//StopAlert("**testf=date = " & testf);
+
+//StopAlert("VIr.SerNr = " & VIr.SerNr & "**VIr.TransDate = " & VIr.TransDate & "**testf = " & testf);
+///
+	
+        if (testf) then begin
+
+            testf2 = true;
+
+	    if (PUr.OKFlag == 0) then begin
+              testf2 = false;
+            end;
+//StopAlert("VIr.SerNr = " & VIr.SerNr & "**PUr.SerNr = " & PUr.SerNr & "**testf2 = " & testf2);
+
+//            if (DateInRange(PUr.TransDate,RepSpec.sStartDate,RepSpec.sEndDate)==false) then begin
+//              testf2 = false;
+//            end;
+            if (testf2) then begin
+              rwcnt = MatRowCnt(PUr);
+              if (nonblank(VIr.StatVal)) then begin
+                stat_val = VIr.StatVal;
+              end;
+              if (blank(VIr.StatVal) or (VIr.StatVal == 0)) then begin
+                stat_val = 0;
+              end;
+              if (nonblank(PUr.ShipCost)) then begin
+                freight_coeff = stat_val/PUr.ShipCost;
+              end;
+              if (PUr.ShipCost == 0) then begin
+                freight_coeff = -(stat_val/PUr.SumCostPrice);
+              end;
+
+              for (i=0;i<rwcnt;i=i+1) begin
+                MatRowGet(PUr,i,PUrw);
+	       if ( PUrw.VATCode != "0") then begin	         
+                if (GetFirstItem(PUrw.ArtCode,INr)) then begin
+
+                  if (GetFirstPurchaseItem2(PUrw.ArtCode,PUr.Location,VIr.VECode,PIr)) then begin end;
+		  if ((INr.ItemType == 1) or (INr.ItemType == 2)) then begin
+		   if nonblank(PUrw.MeasWeight) then begin
+		   t = PUrw.MeasWeight*PUrw.Quant;		     
+		   end else begin
+		   t = INr.NetWeight*PUrw.Quant;
+		   end; // if
+		   
+                    t2 = MulRateToBase1(PUr.CurncyCode,PUrw.UPrice*PUrw.Quant,Pur.FrRate,Pur.ToRateB1,Pur.ToRateB2,Pur.BaseRate1,Pur.BaseRate2,SetRoundModeD(2));
+
+                      t3 = Round(t2 + PUrw.ShipCost*PUrw.Quant,SetRoundModeD(2));
+
+                /*    if (PUrw.ShipCost == 0)  then begin
+                      t3 = Round(t2 + freight_coeff*PUrw.CostPrice*PUrw.Quant,0);
+                    end else begin
+                      t3 = Round(t2 + freight_coeff*PUrw.ShipCost* PUrw.Quant,0);
+                    end;*/
+                    if (VIr.InvType==3) then begin
+                    end else begin
+                    end;
+                    
+                    b1 = INr.EUCodex;
+                    RemoveCharacterFromString(b1,"");
+                    //b3 = INr.DefaultSource;
+                    //RemoveCharacterFromString(b3,"");
+                    //b4 = INr.DefaultSource;
+                  //  b4 = VIr.RefStr;
+		    if (nonblank(VIr.RefStr)) then begin
+                      b4 = VIr.RefStr;
+                    end else begin
+                      b4 = "11";
+                    end;
+                    RemoveCharacterFromString(b4,"");
+		    if nonblank(VIr.ShipDeal) then begin
+		    b5 = VIr.ShipDeal;
+		    end else begin
+		    b5 = VEr.VEShipDeal;		    
+		    end; // if
+                    RemoveCharacterFromString(b5,"");
+		    if nonblank(VIr.ShipMode) then begin
+		    b6 = VIr.ShipMode;
+		    end else begin
+		    b6 = VEr.VEShipMode;		    
+		    end; // if
+                    RemoveCharacterFromString(b6,"");
+                    b7 = VEr.CountryCode;
+                    RemoveCharacterFromString(b7,"");
+                    if (nonblank(PUrw.CountryOfOrg)) then begin
+                      b8 = PUrw.CountryOfOrg;
+                    end else begin
+                      b8 = PIr.OrgCountry;
+                    end;
+                    RemoveCharacterFromString(b8,"");
+                    
+                    for (ai=0;ai<acnt;ai=ai+1) begin
+                      if ((b1==a1[ai]) and (b3==a3[ai]) and (b4==a4[ai]) and (b5==a5[ai]) and (b6==a6[ai]) and (b7==a7[ai]) and (b8==a8[ai])) then begin
+                        a9[ai] = a9[ai] + t;
+                        tstr = INr.Unittext2;
+                        RemoveCharacterFromString(tstr,"");
+                        if (nonblank(tstr)) then begin
+				if (blank(INr.UnitCoefficient)) then begin
+				in_coeff = 1.00;
+				end else begin
+				in_coeff = INr.UnitCoefficient;
+				end;
+			  a11[ai] = a11[ai] + in_coeff*PUrw.Quant;
+//StopAlert("in_coeff = " & in_coeff & "**PUr.SerNr = " & PUr.SerNr & "**PUrw.Quant = " & PUrw.Quant & "**a11[ai] = " & a11[ai]);
+
+			end else begin
+                          a11[ai] = 0;
+                        end;
+                        a12[ai] = a12[ai] + t2;
+                        inv_val = inv_val + t2;
+                        a13[ai] = a13[ai] + t3;
+                        goto LSKIP;
+                      end;
+                    end;
+
+                    a1[acnt] = b1;
+                    Cr.Number = INr.EUCodex;
+                    tstr = "";
+                    if (ReadFirstMain(Cr,1,true)) then begin
+                    tstr = Cr.Comment;
+                    end;
+		    RemoveCharacterFromString(tstr,"");
+		    a2[acnt] = tstr;
+                    a3[acnt] = b3;
+                    a4[acnt] = b4;
+                    a5[acnt] = b5;
+                    a6[acnt] = b6;
+                    a7[acnt] = b7;
+                    a8[acnt] = b8;
+                    a9[acnt] = t;
+                    tstr = INr.Unittext2;
+                    RemoveCharacterFromString(tstr,"");
+                    a10[acnt] = tstr;
+/*
+		    if (nonblank(tstr)) then begin
+                      a11[acnt] = PUrw.Coefficient*PUrw.Quant;
+                    end else begin
+                      a11[acnt] = 0;
+                    end;
+*/
+				if (blank(INr.UnitCoefficient)) then begin
+				in_coeff = 1.00;
+				end else begin
+				in_coeff = INr.UnitCoefficient;
+				end;
+			  a11[acnt] = in_coeff*PUrw.Quant;
+
+		    a12[acnt] = t2;
+                    inv_val = inv_val + t2;
+                    a13[acnt] = t3;
+                    acnt = acnt + 1;
+                    LSKIP:;
+
+                  end; // if item type == 1 or 2
+                end; // if getfirstitem
+	       end; // if VATCode!=0
+	      end; // for
+            end; // if testf2
+//          end; // while PUr on PONr
+//        end; // if ReadFirstMain
+//LSKIPPOr:;
+      end; // if testf
+    end; // if TrHs
+  end; // while LoopKey VIr
+//  end; // ????
+
+
+  if (acnt>0) then begin
+  StartFormat(13);
+	  OutVal(50,0,acnt,M4Val,true);
+	  OutVal(150,0,inv_val,M4Val,true);
+  endformat;
+          Gray_Divider(0,1);
+
+    for (ai=0;ai<acnt;ai=ai+1) begin
+
+
+  StartFormat(13);
+          OutString(0,0,a1[ai],false);
+	  tstr = Left(a2[ai],60);
+	  OutString(50,0,tstr,false);
+          OutString(300,0,a3[ai],false);
+          OutString(320,0,a4[ai],false);
+          OutString(340,0,a5[ai],false);
+          OutString(370,0,a6[ai],false);
+          OutString(400,0,a7[ai],false);
+          OutString(430,0,a8[ai],true);
+
+	  OutVal(1,0,a9[ai],M4Val,true);
+ endformat;
+
+  StartFormat(13);
+
+	  OutString(100,0,a10[ai],true);
+
+	  OutVal(130,0,a11[ai],M4Val,true);
+	  OutVal(200,0,a12[ai],M4Val,true);
+	  OutVal(400,0,a13[ai],M4Val,true);
+//	  OutVal(1,0,a13[ai],M4Val,true);
+
+ endformat;
+          Gray_Divider(0,1);
+
+
+    end;
+
+
+  end;
+  L99:;
+  EndJob;
+
+  RETURN;
+END;

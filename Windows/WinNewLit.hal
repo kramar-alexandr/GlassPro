@@ -1,0 +1,20 @@
+
+SetLangMode(LangLithuanian,"LIT",2);//##ii
+
+window EBS_LitIntrastatVIEClass:1
+  wtag("language","LIT"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,v,vs;
+  WindowBegin("Intrastat (Lietuva)",EBS_LitIntrastatVIEClass,CGEcW,RcType);
+  SetWRect(64,80,500,300);
+  vs = 20; h = 250; v = 6;
+  PeriodField(h,v,"Periodas");
+   EditFieldTL(h,v+=vs,70,"Voko Nr.", M4UStr,Normal,41,f1,false,0); //EBS
+ // EditFieldTL(h,v+=vs,70,"Tiekėjas", M4UStr,Normal,41,f2,false,VESClass);
+  EditFieldTL(h,v+=vs,20,"Versija(Pirminė:O; Nulinė:N; Tikslinančioji:M)", M4UStr,Normal,2,f3,false,0);
+  EditFieldTL(h,v+=vs,70,"Intrastat nr.", M4UStr,Normal,16,f4,false,0);
+  EditFieldTL(h,v+=vs,70,"Intrastat data",M4Date,Normal,0,d1,false,PasteCurDate);
+  EditFieldTL(h,v+=vs,-20,"Kont. asmuo", M4UStr,Normal,60,f5,false,UserSClass); //EBS edit CUSClass -> UserSClass
+  EditFieldTL(h,v+=vs,120,"Tarpininkas", M4UStr,Normal,20,f6,false,CUSClass);
+  EndWindow;
+end;

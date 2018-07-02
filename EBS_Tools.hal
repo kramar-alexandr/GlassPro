@@ -1,0 +1,61 @@
+
+// procedure ReadImportTagHazLevVcRecord(record HazLevVc HazLevr)
+// begin
+//   string 255 tstr;
+//   RecordNew(HazLevr);
+//   HazLevr.Code = ImportField;
+//   HazLevr.Comment = ImportField;
+//   HazLevr.WeightCoefficient = StringToVal(ImportField,M45Val);
+//
+//   return;
+// end;
+//
+// global
+// updating procedure ReadImportTagHazLevVc(string thetag)
+// begin
+//   record HazLevVc HazLevr;
+//
+//   while (NextImportLine(false)) begin
+//     ReadImportTagHazLevVcRecord(HazLevr);
+//     RecordImportStore(HazLevr,false);
+//   end;
+//
+//   return;
+// end;
+//
+// global
+// function string 120 ReadRecordIdStrHazLevVc(Integer compnr,string thetag)
+// begin
+//   record HazLevVc HazLevr;
+//
+//   HazLevr.Code = ImportField;
+//   ReadRecordIdStrHazLevVc = BuildRecordIdStr(HazLevr,compnr);
+//   return;
+// end;
+
+global
+procedure PrintHazardLevel(string hazcode,string langcode) begin
+  string 255 tstr;
+  record HazLevVc HazLevr;
+  row HazLevVc HazLevrw;
+  integer i,rwc;
+
+  tstr = "";
+
+  HazLevr.Code = hazcode;
+  if ReadFirstMain(HazLevr,1,true) then begin
+    tstr = HazLevr.Comment;
+    rwc = MatRowCnt(HazLevr);
+    for(i=0;i<rwc;i=i+1)begin
+      MatRowGet(HazLevr,i,HazLevrw);
+      if HazLevrw.LangCode==langcode then begin
+        tstr = HazLevrw.Text;
+        i = rwc;
+      end;
+    end;
+  end;
+
+  OutFormField("FF_HAZLEVELNAME",tstr);
+
+return;
+end;

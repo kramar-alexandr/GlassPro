@@ -1,0 +1,25 @@
+external function boolean AddTextFromSuppLang(var record PIVc);
+
+global
+updating function LongInt PIVcRecordSave(Var Record PIVc PIr, Record PIVc PI2r, LongInt stat, LongInt check)
+begin
+  LongInt res;
+
+  res = inner.PIVcRecordSave(PIr,PI2r,stat,check);
+  AddTextFromSuppLang(PIr);
+  
+  PIVcRecordSave = res;
+  return;
+end;
+
+global
+updating function LongInt PIVcRecordUpdate(Var Record PIVc PIr, Record PIVc PI2r, LongInt stat, LongInt check)
+begin
+  LongInt res;
+  
+  res = inner.PIVcRecordUpdate(PIr,PI2r,stat,check);
+  AddTextFromSuppLang(PIr);
+  
+  PIVcRecordUpdate = res;
+  return;
+end;

@@ -1,0 +1,73 @@
+
+SOURCEFILE("halcust\\Level0",0);
+SOURCEFILE("halcust\\Level0\\Documents",0);
+SOURCEFILE("halcust\\Level0\\Exports",0);
+SOURCEFILE("halcust\\Level0\\Imports",0);
+SOURCEFILE("halcust\\Level0\\Maint",0);
+SOURCEFILE("halcust\\Level0\\RActions",0);
+SOURCEFILE("halcust\\Level0\\Reports",0);
+SOURCEFILE("halcust\\Level0\\Tools",0);
+SOURCEFILE("halcust\\Level0\\WActions",0);
+
+SOURCEFILE("halcust\\Level0\\alocalizations",0);
+SOURCEFILE("halcust\\Level0\\alocalizations\\Documents",0);
+SOURCEFILE("halcust\\Level0\\alocalizations\\Exports",0);
+SOURCEFILE("halcust\\Level0\\alocalizations\\Imports",0);
+SOURCEFILE("halcust\\Level0\\alocalizations\\Maint",0);
+SOURCEFILE("halcust\\Level0\\alocalizations\\RActions",0);
+SOURCEFILE("halcust\\Level0\\alocalizations\\Reports",0);
+SOURCEFILE("halcust\\Level0\\alocalizations\\Tools",0);
+SOURCEFILE("halcust\\Level0\\alocalizations\\WActions",0);
+
+SOURCEFILE("halcust\\Documents",3);
+SOURCEFILE("halcust\\Exports",3);
+SOURCEFILE("halcust\\Imports",3);
+SOURCEFILE("halcust\\Maint",3);
+SOURCEFILE("halcust\\RActions",3);
+SOURCEFILE("halcust\\Reports",3);
+SOURCEFILE("halcust\\Tools",3);
+SOURCEFILE("halcust\\WActions",3);
+SOURCEFILE("halcust\\Windows",3);
+
+// RecordAddBegin(CUVc,"cu5");
+//   RecordField(SuppContrNo,M4Str,20,0);
+//   RecordField(OurCustDate,M4Date,0,0);
+//   RecordField(LicContrNo,M4Str,20,0);
+
+// ChangeField(Name,M4Str,255,0);
+// ChangeMatrixField(ArtCode,M4Code,30,INVc);
+
+// ArrayField(CustArrStr,M4Str,255,0);
+// ArrayField(CustArrInt,M4Int,0,0);
+// KeyBegin(NewKey);
+// KeySegment(CustomStr);
+// KeySegment(Code);
+// SubSetKeyBegin2(CustArrStr);
+// AppendMatrixFieldToKeyName(CustArrStr,0);
+// KeySegment(Code);
+
+
+// DisableIndex("IndexName");
+// EndRecordAdd;
+
+begin
+  
+  RecordAddBegin(HazLevVc,"EBS_HazLevVc2");
+  RecordField(Math,M4Matrix,0,0); //EBS
+  ArrayBegin(Math,-,1); //EBS
+  ArrayField(LangCode,M4Code,5,0); //EBS
+  ArrayField(Text,M4Str,255,0); //EBS
+  EndArray;
+  EndRecordAdd;
+  
+  RecordAddBegin(PUVc,"ebs_purchase3");
+  ArrayField(MeasWeight,M423Val,0,0); //EBS
+  EndRecordAdd;
+  
+  RecordAddBegin(VIVc,"ebs_VIVc6");
+  RecordField(ShipDeal,M4Code,5,0); //EBS
+  RecordField(ShipMode,M4Code,5,0); //EBS
+  EndRecordAdd;
+  
+  return;
+end;
