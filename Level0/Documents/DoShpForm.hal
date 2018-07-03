@@ -312,13 +312,13 @@ BEGIN
   record ItemResourceVc ItResr;// Edit ************************** BPI Ukraine - KramarAlexandr - Monday, 2 July 2018 15:43:35
   row ItemResourceVc ItResrw;// Edit ************************** BPI Ukraine - KramarAlexandr - Monday, 2 July 2018 15:46:32
   record PrintIResBlock PIRb;// Edit ************************** BPI Ukraine - KramarAlexandr - Monday, 2 July 2018 15:46:31
-  string 255 toprintPIR;
-  integer mtrw,j;
-  record NatResourceTypeVc NRTr;
-  string 100 resname01,resname02,resname03,resname04,resname05;
-  val resweight01,resweight02,resweight03,resweight04,resweight05;
-  val resweightsum01,resweightsum02,resweightsum03,resweightsum04,resweightsum05;
-  val restotsum01,restotsum02,restotsum03,restotsum04,restotsum05;
+  string 255 toprintPIR;// Edit ************************** BPI Ukraine - KramarAlexandr - Tuesday, 3 July 2018 11:46:10
+  integer mtrw,j;// Edit ************************** BPI Ukraine - KramarAlexandr - Tuesday, 3 July 2018 11:46:10
+  record NatResourceTypeVc NRTr;// Edit ************************** BPI Ukraine - KramarAlexandr - Tuesday, 3 July 2018 11:46:11
+  string 100 resname01,resname02,resname03,resname04,resname05,resstr;// Edit ************************** BPI Ukraine - KramarAlexandr - Tuesday, 3 July 2018 11:46:12
+  val resweight01,resweight02,resweight03,resweight04,resweight05;// Edit ************************** BPI Ukraine - KramarAlexandr - Tuesday, 3 July 2018 11:46:12
+  val resweightsum01,resweightsum02,resweightsum03,resweightsum04,resweightsum05;// Edit ************************** BPI Ukraine - KramarAlexandr - Tuesday, 3 July 2018 11:46:13
+  val restotsum01,restotsum02,restotsum03,restotsum04,restotsum05;// Edit ************************** BPI Ukraine - KramarAlexandr - Tuesday, 3 July 2018 11:46:14
 
   SetupVATBase(VATr,vatcnt);
   BlockLoad(MSb);  
@@ -329,7 +329,6 @@ BEGIN
 	//Monday, 2 July 2018 15:49:32
 	
   if(nonblank(PIRb.Res01))then begin
-  	toprintPIR = PIRb.Res01;
   	NRTr.Code = PIRb.Res01;
   	if(readfirstmain(NRTr,1,true))then begin
   		resname01 = NRTr.Comment;
@@ -340,21 +339,11 @@ BEGIN
   	if(readfirstmain(NRTr,1,true))then begin
   		resname02 = NRTr.Comment;
   	end;
-  	if(blank(toprintPIR))then begin
-			toprintPIR = PIRb.Res02;
-  	end else begin
-  		toprintPIR = toprintPIR & "," & toprintPIR;
-  	end;
   end;
   if(nonblank(PIRb.Res03))then begin
   	NRTr.Code = PIRb.Res03;
   	if(readfirstmain(NRTr,1,true))then begin
   		resname03 = NRTr.Comment;
-  	end;
-  	if(blank(toprintPIR))then begin
-			toprintPIR = PIRb.Res03;
-  	end else begin
-  		toprintPIR = toprintPIR & "," & PIRb.Res03;
   	end;
   end;
   if(nonblank(PIRb.Res04))then begin
@@ -362,22 +351,11 @@ BEGIN
   	if(readfirstmain(NRTr,1,true))then begin
   		resname04 = NRTr.Comment;
   	end;
-
-  	if(blank(toprintPIR))then begin
-			toprintPIR = PIRb.Res04;
-  	end else begin
-  		toprintPIR = toprintPIR & "," & PIRb.Res04;
-  	end;
   end;
   if(nonblank(PIRb.Res05))then begin
   	NRTr.Code = PIRb.Res05;
   	if(readfirstmain(NRTr,1,true))then begin
   		resname05 = NRTr.Comment;
-  	end;
-  	if(blank(toprintPIR))then begin
-			toprintPIR = PIRb.Res05;
-  	end else begin
-  		toprintPIR = toprintPIR & "," & PIRb.Res05;
   	end;
   end;
   
@@ -405,6 +383,7 @@ BEGIN
     	resweightsum03 = blankval;
     	resweightsum04 = blankval;
     	resweightsum05 = blankval;
+    	resstr = "";
     	if(nonblank(SHrw.ArtCode))then begin
 				ItResr.ArtCode = SHrw.ArtCode;
 				if(readfirstmain(ItResr,1,true))then begin
@@ -413,18 +392,23 @@ BEGIN
     				matrowget(ItResr,j,ItResrw)
 	  				if(ItResrw.ResourceType==PIRb.Res01)then begin
 	  					resweight01 = ItResrw.Weight;
+	  					resstr = resstr & resname01 & " " & ItResrw.Weight * SHrw.Ship & ", ";
 	  				end;
 	  				if(ItResrw.ResourceType==PIRb.Res02)then begin
 	  					resweight02 = ItResrw.Weight;
+	  					resstr = resstr & resname02 & " " & ItResrw.Weight * SHrw.Ship & ", ";
 	  				end;
 	  				if(ItResrw.ResourceType==PIRb.Res03)then begin
 	  					resweight03 = ItResrw.Weight;
+	  					resstr = resstr & resname03 & " " & ItResrw.Weight * SHrw.Ship & ", ";
 	  				end;
 	  				if(ItResrw.ResourceType==PIRb.Res04)then begin
 	  					resweight04 = ItResrw.Weight;
+	  					resstr = resstr & resname04 & " " & ItResrw.Weight * SHrw.Ship & ", ";
 	  				end;
 	  				if(ItResrw.ResourceType==PIRb.Res05)then begin
 	  					resweight05 = ItResrw.Weight;
+	  					resstr = resstr & resname05 & " " & ItResrw.Weight * SHrw.Ship & ", ";
 	  				end;
 					end; 
     		end;    	
@@ -434,6 +418,8 @@ BEGIN
     	OUTFORMFIELD("BPIF_RESWEIGHT03",ValToString(resweight03,M4UVal,SysFormatRec.thousSep,SysFormatRec.decimalPt,LangNrr.CutDecimals));
     	OUTFORMFIELD("BPIF_RESWEIGHT04",ValToString(resweight04,M4UVal,SysFormatRec.thousSep,SysFormatRec.decimalPt,LangNrr.CutDecimals));
     	OUTFORMFIELD("BPIF_RESWEIGHT05",ValToString(resweight05,M4UVal,SysFormatRec.thousSep,SysFormatRec.decimalPt,LangNrr.CutDecimals));
+    	
+    	OUTFORMFIELD("BPIF_RESWEIGHTTEXT",left(resstr,len(resstr)));
     	
     	resweightsum01 = resweight01 * SHrw.Ship;
     	resweightsum02 = resweight02 * SHrw.Ship;

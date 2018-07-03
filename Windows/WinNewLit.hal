@@ -48,13 +48,14 @@ begin
 																																							StaticText(h+260,v+14,"BPIF_RESWEIGHT05",false);
 																																							StaticText(h+420,v+14,"BPIF_RESWEIGHTSUM05",false);
 	v=v+32;																																						
-	StaticText(h+100,v+=16,"Tatal weight of resource for delivery:",false);	
-	StaticText(h+100,v+=16,"BPIF_RESWEIGHTTOTAL01",false);	
+	StaticText(h+100,v+=16,"Tatal weight of resource for delivery:",false);	StaticText(h+420,v,"Text with info",false);	
+	StaticText(h+100,v+=16,"BPIF_RESWEIGHTTOTAL01",false);									StaticText(h+420,v,"BPIF_RESWEIGHTTEXT",false);	
 	StaticText(h+100,v+=16,"BPIF_RESWEIGHTTOTAL02",false);	
 	StaticText(h+100,v+=16,"BPIF_RESWEIGHTTOTAL03",false);	
 	StaticText(h+100,v+=16,"BPIF_RESWEIGHTTOTAL04",false);	
 	StaticText(h+100,v+=16,"BPIF_RESWEIGHTTOTAL05",false);	
-																																		
+																												
+						
 	
   EndWindow;
 end;
