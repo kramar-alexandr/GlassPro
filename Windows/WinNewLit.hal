@@ -18,3 +18,43 @@ begin
   EditFieldTL(h,v+=vs,120,"Tarpininkas", M4UStr,Normal,20,f6,false,CUSClass);
   EndWindow;
 end;
+
+
+
+window PrintIResTClass:1// Edit ************************** BPI Ukraine - KramarAlexandr - Monday, 2 July 2018 16:06:54
+  wtag("language","LIT"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,h2,h3,v,vs;
+  WindowBegin("GlassPro - Printed Resources",PrintIResTClass,CGSbl,-);
+  SetBlid(PrintIResBlock);
+  SetWRect(64,80,900,340);
+  v=6;vs = 20; h = 130; h2 = 220; h3 = 380;
+  StaticText(h+100,v+16,"Print Headers for Deliv. note:",false);
+  StaticText(h+260,v+16,"1 pcs weight by row",false);
+  StaticText(h+420,v+16,"Sum weight by row",false);
+  EditField(h,v+=vs,82,"Resource 1",Normal,Res01,false,NatResourceTypeSClass);StaticText(h+100,v+14,"BPIF_RESTYPE01",false);
+  																																						StaticText(h+260,v+14,"BPIF_RESWEIGHT01",false);
+  																																						StaticText(h+420,v+14,"BPIF_RESWEIGHTSUM01",false);
+  EditField(h,v+=vs,82,"Resource 2",Normal,Res02,false,NatResourceTypeSClass);StaticText(h+100,v+14,"BPIF_RESTYPE02",false);
+																																							StaticText(h+260,v+14,"BPIF_RESWEIGHT02",false);
+																																							StaticText(h+420,v+14,"BPIF_RESWEIGHTSUM02",false);
+  EditField(h,v+=vs,82,"Resource 3",Normal,Res03,false,NatResourceTypeSClass);StaticText(h+100,v+14,"BPIF_RESTYPE03",false);
+																																							StaticText(h+260,v+14,"BPIF_RESWEIGHT03",false);
+																																							StaticText(h+420,v+14,"BPIF_RESWEIGHTSUM03",false);
+  EditField(h,v+=vs,82,"Resource 4",Normal,Res04,false,NatResourceTypeSClass);StaticText(h+100,v+14,"BPIF_RESTYPE04",false);
+																																							StaticText(h+260,v+14,"BPIF_RESWEIGHT04",false);
+																																							StaticText(h+420,v+14,"BPIF_RESWEIGHTSUM04",false);
+  EditField(h,v+=vs,82,"Resource 5",Normal,Res05,false,NatResourceTypeSClass);StaticText(h+100,v+14,"BPIF_RESTYPE05",false);
+																																							StaticText(h+260,v+14,"BPIF_RESWEIGHT05",false);
+																																							StaticText(h+420,v+14,"BPIF_RESWEIGHTSUM05",false);
+	v=v+32;																																						
+	StaticText(h+100,v+=16,"Tatal weight of resource for delivery:",false);	
+	StaticText(h+100,v+=16,"BPIF_RESWEIGHTTOTAL01",false);	
+	StaticText(h+100,v+=16,"BPIF_RESWEIGHTTOTAL02",false);	
+	StaticText(h+100,v+=16,"BPIF_RESWEIGHTTOTAL03",false);	
+	StaticText(h+100,v+=16,"BPIF_RESWEIGHTTOTAL04",false);	
+	StaticText(h+100,v+=16,"BPIF_RESWEIGHTTOTAL05",false);	
+																																		
+	
+  EndWindow;
+end;

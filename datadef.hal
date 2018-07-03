@@ -69,5 +69,14 @@ begin
   RecordField(ShipMode,M4Code,5,0); //EBS
   EndRecordAdd;
   
+  
+  BlockBegin(PrintIResBlock,-,"");
+  	RecordField(Res01,M4Code,50,0);
+  	RecordField(Res02,M4Code,50,0);
+  	RecordField(Res03,M4Code,50,0);
+  	RecordField(Res04,M4Code,50,0);
+  	RecordField(Res05,M4Code,50,0);
+  EndBlock;
+  
   return;
 end;

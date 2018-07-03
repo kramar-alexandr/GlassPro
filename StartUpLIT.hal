@@ -8,6 +8,8 @@ begin
   Register("Muitinės kodai","Muitinės kodai",CommodityVc,modPL);
   Report("Intrastat pirkimai",IntrVIRClass,IntrVIRn,0,modPL);
   
+  Setting("GlassPro - Printed Resources",PrintIResTClass,modIN);// Edit ************************** BPI Ukraine - KramarAlexandr - Monday, 2 July 2018 16:10:35
+  
   Export("Intrastatas Pirk. kn. (GlassPro)",EBS_LitIntrastatVIEClass,EBS_LitIntVIEn,modPL);
   
   SString(1000000,"Muit. kodas");

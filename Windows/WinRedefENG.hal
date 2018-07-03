@@ -80,3 +80,20 @@ begin
   EndFrame;
   EndWindow;
 end;
+
+
+window PrintIResTClass:1// Edit ************************** BPI Ukraine - KramarAlexandr - Monday, 2 July 2018 16:06:54
+  wtag("language","ENG"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,h2,h3,v,vs;
+  WindowBegin("GlassPro - Printed Resources",PrintIResTClass,CGSbl,-);
+  SetBlid(PrintIResBlock);
+  SetWRect(64,80,400,140);
+  v=6;vs = 20; h = 130; h2 = 220; h3 = 380;
+  EditField(h,v+=vs,82,"Resource 1",Normal,Res01,false,NatResourceTypeSClass);
+  EditField(h,v+=vs,82,"Resource 2",Normal,Res02,false,NatResourceTypeSClass);
+  EditField(h,v+=vs,82,"Resource 3",Normal,Res03,false,NatResourceTypeSClass);
+  EditField(h,v+=vs,82,"Resource 4",Normal,Res04,false,NatResourceTypeSClass);
+  EditField(h,v+=vs,82,"Resource 5",Normal,Res05,false,NatResourceTypeSClass);
+  EndWindow;
+end;
