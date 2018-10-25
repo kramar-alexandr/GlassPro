@@ -78,5 +78,34 @@ begin
   	RecordField(Res05,M4Code,50,0);
   EndBlock;
   
+  //BPI redef record to 8.5 state
+  RecordBegin(NatResourceTypeVc,-,"");// Edit ************************** BPI Ukraine - KramarAlexandr - Wednesday, 24 October 2018 19:03:29
+  RecordField(Code,M4Code,15,0);
+  RecordField(Comment,M4Str,100,0);
+  RecordField(Identifier,M4Str,100,0);
+  RecordField(ResourceType,M4Int,0,0);
+  RecordField(ResourcePackType,M4Int,0,0);
+  MainKeyBegin(Code,0);
+  KeySegment(Code);
+  EndRecord;
+  //BPI redef record to 8.5 state - need ImportTagFunction before migrate to 8.5
+  RecordBegin(ItemResourceVc,-,"");
+  RecordField(ArtCode,M4Code,20,INVc);
+  RecordField(Name,M4Str,100,0);
+  RecordField(Math,M4Matrix,0,0);
+  RecordField(Code,M4Code,20,0);// Edit ************************** BPI Ukraine - KramarAlexandr - Thursday, 25 October 2018 09:11:02
+  RecordField(Comment,M4Str,100,0);// Edit ************************** BPI Ukraine - KramarAlexandr - Thursday, 25 October 2018 09:11:03
+  RecordField(ITCode,M4Code,5,ITVc);
+  RecordField(ITName,M4Str,100,0);
+  RecordField(StartDate,M4Date,0,0);
+  ArrayBegin(Math,-,1);
+  ArrayField(ResourceType,M4Code,15,NatResourceTypeVc);
+  ArrayField(Weight,M4UVal,0,0);
+  ArrayField(PackagingCategory,M4Set,682,0);// Edit ************************** BPI Ukraine - KramarAlexandr - Thursday, 25 October 2018 09:10:21
+  EndArray;
+  MainKeyBegin(ArtCode,0);
+  KeySegment(ArtCode);
+  EndRecord;
+  
   return;
 end;

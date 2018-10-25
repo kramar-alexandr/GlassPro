@@ -1,0 +1,59 @@
+external function string 255 StrReplace(string,string,string); 
+
+procedure ReadImportTagItemResourceVcRecord(record ItemResourceVc ItemResourcer)
+begin
+  string 255 tstr;
+  row ItemResourceVc ItemResourcerw;
+  integer rwcnt;
+  
+  RecordNew(ItemResourcer);
+  ItemResourcer.ArtCode = ImportField;
+  ItemResourcer.Name = ImportField;
+  ItemResourcer.Code = ImportField;
+  ItemResourcer.Comment = ImportField;
+  ItemResourcer.ITCode = ImportField;
+  ItemResourcer.ITName = ImportField;
+  ItemResourcer.StartDate = stringtodate(ImportField);
+  if (blank(ItemResourcer.Code)) then begin
+    ItemResourcer.Code = ItemResourcer.ArtCode;
+  end;
+  
+  rwcnt = 0;
+  
+  while (NextImportLine(false)) begin
+    ClearRow(ItemResourcer,ItemResourcerw,1);
+    ItemResourcerw.ResourceType = ImportField;
+    ItemResourcerw.Weight = StringToVal(ImportField,M4UVal);
+    ItemResourcerw.PackagingCategory = StringToInt(ImportField);
+    MatRowPut(ItemResourcer,rwcnt,ItemResourcerw);
+    rwcnt = rwcnt + 1;
+  end;
+  
+  return;
+end;
+
+global
+updating procedure ReadImportTagItemResourceVc(string thetag)
+begin
+  record ItemResourceVc ItemResourcer;
+  
+  while (NextImportLine(false)) begin
+    ReadImportTagItemResourceVcRecord(ItemResourcer);
+    RecordImportStore(ItemResourcer,false);
+  end;
+  
+  return;
+end;
+
+global
+function string 120 ReadRecordIdStrItemResourceVc(Integer compnr,string thetag)
+begin
+  record ItemResourceVc ItemResourcer;
+  
+  ItemResourcer.ArtCode = ImportField;
+  if (blank(ItemResourcer.Code)) then begin
+    ItemResourcer.Code = ItemResourcer.ArtCode;
+  end;
+  ReadRecordIdStrItemResourceVc = BuildRecordIdStr(ItemResourcer,compnr);
+  return;
+end;

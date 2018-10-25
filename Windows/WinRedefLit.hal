@@ -3558,3 +3558,48 @@ begin
   EditFieldTL(h,v+=vs,120,"Tarpininkas", M4UStr,Normal,20,f6,false,CUSClass);
   EndWindow;
 end;
+
+window NatResourceTypeDClass:1
+  wtag("language","LIT"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer") 
+begin
+  real h,v,vm,vs;
+  WindowBegin("Natūralaus išteklio tipas",NatResourceTypeDClass,CGview,-); 
+  SetWRect(64,80,509,150);
+  UseView(NatResourceTypeVc);
+  v = 10; vs = 20; h = 100;
+  EditField(h,v, 70,     "Kodas",Normal,Code,false,0); 
+  EditField(h,v+=vs ,-50,"Aprašymas",Normal,Comment,false,0); 
+  EditField(h+100,v+=vs ,-50,"Pakuotės kategorija",Normal,Identifier,false,0); 
+
+  ButtonFrame(h=30,vm=(v+=40),123,2,"Tipas"); 
+  RadioButton(h,v,0,0,"Užstatinė",ResourceType); 
+  RadioButton(h,v+=16,1,0,"Neužstatinė",ResourceType); 
+
+  ButtonFrame(h=230,v=vm,123,2,"Pakuotė"); 
+  RadioButton(h,v,0,0,"Vienkartinė",ResourcePackType); 
+  RadioButton(h,v+=16,1,0,"Daugkartinė",ResourcePackType); 
+  EndWindow;
+end;
+
+window ItemResourceDClass:1
+  wtag("language","LIT"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer") 
+begin
+  real h,h2,v,vm,vs;
+  WindowBegin("Prekės resursai",ItemResourceDClass,CGview,-); 
+  SetWRect(64,80,509,500);
+  UseView(ItemResourceVc);
+  v = 6; vs = 20; h = 80; h2 = 200;
+  EditField(h,v, 50,"Kodas",Normal,Code,false,0); 
+  EditField(h2,v,-40,"Komentaras",Normal,Comment,false,0); 
+  EditField(h,v+=vs, 50,"Prekė",Normal,ArtCode,false,INSClass);
+  EditField(h2,v,-40,"Pavadinimas",Normal,Name,false,0);
+  EditField(h,v+=vs, 50,"Grupė",Normal,ITCode,false,ITSClass); 
+  EditField(h2,v,-40,"Pavadinimas",Normal,ITName,false,0);
+  EditField(h,v+=vs, 80,"Data",Normal,StartDate,false,PasteCurDate); 
+  MatrixBegin(10,v+=(2*vs),-40,-20,-,24);
+  MatCol(1,24,"Resurso tipas",0,ResourceType,false,NatResourceTypeSClass);
+  MatCol(1,-180,"Svoris (kg)",0,Weight,false,0); 
+  MatCol(1,-110,"Pakuotės kategorija",0,PackagingCategory,false,SetSClass); 
+  EndMatrix;
+  EndWindow;
+end;

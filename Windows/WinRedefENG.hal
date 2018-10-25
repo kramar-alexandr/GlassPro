@@ -120,3 +120,49 @@ begin
 	
   EndWindow;
 end;
+
+window NatResourceTypeDClass:1
+  wtag("language","ENG"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,v,vm,vs;
+  WindowBegin("Natural Resource Type",NatResourceTypeDClass,CGview,-);
+  SetWRect(64,80,509,150);
+  UseView(NatResourceTypeVc);
+  v = 10; vs = 20; h = 100;
+  EditField(h,v, 70,     "Code",Normal,Code,false,0);
+  EditField(h,v+=vs ,-50,"Description",Normal,Comment,false,0);
+  EditField(h+100,v+=vs ,-50,"Packaging and Waste Category",Normal,Identifier,false,0);
+
+  ButtonFrame(h=30,vm=(v+=40),123,2,"Type");
+  RadioButton(h,v,0,0,"Recyclable",ResourceType);
+  RadioButton(h,v+=16,1,0,"Non-recyclable",ResourceType);
+
+  ButtonFrame(h=230,v=vm,123,2,"Packaging");
+  RadioButton(h,v,0,0,"One time",ResourcePackType);
+  RadioButton(h,v+=16,1,0,"Reusable",ResourcePackType);
+  EndWindow;
+end;
+
+window ItemResourceDClass:1
+  wtag("language","ENG"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,h2,v,vm,vs;
+  WindowBegin("Item Resource",ItemResourceDClass,CGview,-);
+  SetWRect(64,80,509,500);
+  UseView(ItemResourceVc);
+  v = 6; vs = 20; h = 80; h2 = 200;
+  EditField(h,v, 50,"Code",Normal,Code,false,0);
+  EditField(h2,v,-40,"Comment",Normal,Comment,false,0);
+  EditField(h,v+=vs, 50,"Item",Normal,ArtCode,false,INSClass);
+  EditField(h2,v,-40,"Name",Normal,Name,false,0);
+  EditField(h,v+=vs, 50,"Group",Normal,ITCode,false,ITSClass);
+  EditField(h2,v,-40,"Name",Normal,ITName,false,0);
+  EditField(h,v+=vs, 80,"Date",Normal,StartDate,false,PasteCurDate);
+  MatrixBegin(10,v+=(2*vs),-40,-20,-,24);
+  MatCol(1,24,"Resource Type",0,ResourceType,false,NatResourceTypeSClass);
+  MatCol(1,-180,"Weight (#kg#)",0,Weight,false,0);
+  MatCol(1,-110,"Packaging Category",0,PackagingCategory,false,SetSClass);
+  EndMatrix;
+  EndWindow;
+end;
+

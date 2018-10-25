@@ -10,12 +10,22 @@ begin
   
   Setting("GlassPro - Printed Resources",PrintIResTClass,modIN);// Edit ************************** BPI Ukraine - KramarAlexandr - Monday, 2 July 2018 16:10:35
   
+  Setting("Prekių pakuotės (GPAIS)",ItemResourceLClass,modSL); 
+  Setting("Pakuočių tipai (GPAIS)",NatResourceTypeLClass,modSL);
+  
   Export("Intrastatas Pirk. kn. (GlassPro)",EBS_LitIntrastatVIEClass,EBS_LitIntVIEn,modPL);
   
   SString(1000000,"Muit. kodas");
   SString(1000001,"Num.šal.");
   SString(1000002,"Svo.");
   SString(1000003,"Neto");
+  
+  SetBegin(682);
+  SetText(0,"Not Specified");
+  SetText(1,"Primary");
+  SetText(2,"Secondary");
+  SetText(3,"For transporting");
+  EndSet;
   
   return;
 end;
