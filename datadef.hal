@@ -102,7 +102,7 @@ begin
 				RecordField(StartDate,M4Date,0,0);
 				ArrayBegin(Math,-,1);
 				ArrayField(ResourceType,M4Code,15,NatResourceTypeVc);
-				ArrayField(Weight,M4UVal,0,0);
+				ArrayField(Weight,M4Rate,0,0);// Edit ************************** BPI Ukraine - KramarAlexandr - Wednesday, 14 November 2018 13:51:43
 				ArrayField(PackagingCategory,M4Set,682,0);// Edit ************************** BPI Ukraine - KramarAlexandr - Thursday, 25 October 2018 09:10:21
 				EndArray;
 				MainKeyBegin(ArtCode,0);

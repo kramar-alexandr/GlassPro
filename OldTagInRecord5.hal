@@ -23,7 +23,7 @@ begin
   while (NextImportLine(false)) begin
     ClearRow(ItemResourcer,ItemResourcerw,1);
     ItemResourcerw.ResourceType = ImportField;
-    ItemResourcerw.Weight = StringToVal(ImportField,M4UVal);
+    ItemResourcerw.Weight = StringToVal(ImportField,M4Rate);
     ItemResourcerw.PackagingCategory = StringToInt(ImportField);
     MatRowPut(ItemResourcer,rwcnt,ItemResourcerw);
     rwcnt = rwcnt + 1;
