@@ -29,7 +29,23 @@ procedure PrintItemTotals_Overview2(record RcVc RepSpec,record INVc INr,
                                    val fwdqty,val fwdcp,val fwdtotcp,val itemqin,val itemqout,val itemcpin,val itemcpout)
 begin
   Boolean testf;
-
+  record CommodityVc Commr;// Edit ************************** BPI Ukraine - KramarAlexandr - Monday, 11 February 2019 17:24:07
+	string 250 commcomm;// Edit ************************** BPI Ukraine - KramarAlexandr - Monday, 11 February 2019 17:25:48
+	
+	// Edit Start ---------------------------------------------- Edit Start
+	//Monday, 11 February 2019 17:25:51
+	
+	commcomm = "";
+	if(nonblank(INr.EUCodex))then begin
+		Commr.Number = INr.EUCodex;
+		if(readfirstmain(Commr,1,true))then begin
+			commcomm = Commr.Comment;
+		end;
+	end;
+	
+	// Edit End ---------------------------------------------- Edit End
+	
+	
   testf = false;
   switch (RepSpec.ArtMode) begin
     case 0:
@@ -61,6 +77,7 @@ LPrintItemTotals_OverviewExcel:;
         OutString(70,0,INr.Name,false);
         OutString(70,0,"",false);
         OutString(190,0,INr.EUCodex,false); //EKN code
+        OutString(195,0,commcomm,false); //INr Commodity Comment// Edit ************************** BPI Ukraine - KramarAlexandr - Monday, 11 February 2019 17:15:50
         OutString(200,0,INr.DefaultSource,false); //Default source
         OutString(210,0,INr.Weight,true); //Weight
         OutString(220,0,INr.NetWeight,true); //Net weight
@@ -87,8 +104,9 @@ LPrintItemTotals_OverviewExcel:;
         StartFormat(15);
         OutString(0,0,INr.Code,false);
         OutString(70,0,INr.Name,false);
-        OutString(190,0,INr.EUCodex,false); //EKN code
-        OutString(230,0,INr.DefaultSource,false); //Default source
+        OutString(150,0,INr.EUCodex,false); //EKN code
+        OutString(200,0,commcomm,false); //INr Commodity Comment// Edit ************************** BPI Ukraine - KramarAlexandr - Monday, 11 February 2019 17:15:50
+        OutString(250,0,INr.DefaultSource,false); //Default source
         OutString(280,0,INr.Weight,true); //Weight
         OutString(320,0,INr.NetWeight,true); //Net weight
         switch (RepSpec.ArtMode) begin
@@ -199,7 +217,21 @@ procedure PrintItemTotals_Overview_PerLocation(record RcVc RepSpec,record INVc I
                                    val fwdqty,val fwdcp,val fwdtotcp,val itemqin,val itemqout,val itemcpin,val itemcpout)
 begin
   Boolean testf;
-
+	record CommodityVc Commr;// Edit ************************** BPI Ukraine - KramarAlexandr - Monday, 11 February 2019 17:24:07
+	string 250 commcomm;// Edit ************************** BPI Ukraine - KramarAlexandr - Monday, 11 February 2019 17:25:48
+	
+	// Edit Start ---------------------------------------------- Edit Start
+	//Monday, 11 February 2019 17:25:51
+	
+	commcomm = "";
+	if(nonblank(INr.EUCodex))then begin
+		Commr.Number = INr.EUCodex;
+		if(readfirstmain(Commr,1,true))then begin
+			commcomm = Commr.Comment;
+		end;
+	end;
+	
+	// Edit End ---------------------------------------------- Edit End
   testf = false;
   switch (RepSpec.ArtMode) begin
     case 0:
@@ -231,7 +263,8 @@ LPrintItemTotals_Overview_PerLocationExcel:;
                OutString(90,0,INr.Name,false);
                OutString(90,0,"",false);
 //EBS-->
-               OutString(190,0,INr.EUCodex,false); //EKN code
+               OutString(150,0,INr.EUCodex,false); //EKN code
+               OutString(195,0,commcomm,false); //INr Commodity Comment// Edit ************************** BPI Ukraine - KramarAlexandr - Monday, 11 February 2019 17:15:50
                OutString(200,0,INr.DefaultSource,false); //Default source
                OutString(210,0,INr.Weight,true); //Weight
                OutString(220,0,INr.NetWeight,true); //Net weight
@@ -246,6 +279,7 @@ LPrintItemTotals_Overview_PerLocationExcel:;
                OutString(90,0,"",false);
 //EBS-->
                OutString(190,0,INr.EUCodex,false); //EKN code
+               OutString(192,0,commcomm,false); //INr Commodity Comment// Edit ************************** BPI Ukraine - KramarAlexandr - Monday, 11 February 2019 17:15:50
                OutString(195,0,INr.DefaultSource,false); //Default source
                OutString(196,0,INr.Weight,true); //Weight
                OutString(197,0,INr.NetWeight,true); //Net weight
@@ -284,8 +318,9 @@ LPrintItemTotals_Overview_PerLocationExcel:;
               OutString(90,0,Left(INr.Name,10),false);
 //EBS-->
               if RepSpec.flags[9]==2 then begin
-                OutString(190,0,INr.EUCodex,false); //EKN code
-                OutString(230,0,INr.DefaultSource,false); //Default source
+                OutString(150,0,INr.EUCodex,false); //EKN code
+                OutString(200,0,commcomm,false); //INr Commodity Comment// Edit ************************** BPI Ukraine - KramarAlexandr - Monday, 11 February 2019 17:15:50
+                OutString(250,0,INr.DefaultSource,false); //Default source
                 OutString(280,0,INr.Weight,true); //Weight
                 OutString(320,0,INr.NetWeight,true); //Net weight
                 OutVal(360,0,fwdqty,M4UVal,true);
@@ -305,6 +340,7 @@ LPrintItemTotals_Overview_PerLocationExcel:;
 //EBS-->
               if RepSpec.flags[9]==2 then begin
                 OutString(140,0,INr.EUCodex,false); //EKN code
+                OutString(145,0,commcomm,false); //INr Commodity Comment// Edit ************************** BPI Ukraine - KramarAlexandr - Monday, 11 February 2019 17:15:50
                 OutString(150,0,INr.DefaultSource,false); //Default source
                 OutString(165,0,INr.Weight,true); //Weight
                 OutString(180,0,INr.NetWeight,true); //Net weight

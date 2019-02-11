@@ -19,6 +19,7 @@ begin
   SString(1000001,"Num.šal.");
   SString(1000002,"Svo.");
   SString(1000003,"Neto");
+  SString(1000004,"Muitinės aprašymas");
   
   SetBegin(682);
   SetText(0,"Not Specified");

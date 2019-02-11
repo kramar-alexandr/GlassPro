@@ -156,8 +156,9 @@ LLPrintItemHistHeaderExcel:;
           StartFormat(15);
           OutString(0,0,USetStr(5052),false);
           OutString(70,0,USetStr(2763),false);
-          OutString(190,0,USetStr(1000000),false); //EKN code
-          OutString(230,0,USetStr(1000001),false); //Default source
+          OutString(160,0,USetStr(1000000),false); //EKN code
+          OutString(200,0,USetStr(1000004),false); //INr Commodity Comment// Edit ************************** BPI Ukraine - KramarAlexandr - Monday, 11 February 2019 17:15:50
+          OutString(250,0,USetStr(1000001),false); //Default source
           OutString(280,0,USetStr(1000002),true); //Weight
           OutString(320,0,USetStr(1000003),true); //Net weight
           OutString(360,0,USetStr(3244),true);
@@ -217,8 +218,9 @@ begin
               StartFormat(15);
               OutString(0,0,USetStr(5052),false);
               OutString(70,0,USetStr(2763),false);
-              OutString(190,0,USetStr(1000000),false); //EKN code
-              OutString(230,0,USetStr(1000001),false); //Default source
+              OutString(160,0,USetStr(1000000),false); //EKN code
+							OutString(200,0,USetStr(1000004),false); //INr Commodity Comment// Edit ************************** BPI Ukraine - KramarAlexandr - Monday, 11 February 2019 17:15:50
+              OutString(250,0,USetStr(1000001),false); //Default source
               OutString(280,0,USetStr(1000002),true); //Weight
               OutString(320,0,USetStr(1000003),true); //Net weight
               OutString(360,0,USetStr(3244),true);
@@ -243,8 +245,9 @@ begin
               StartFormat(15);
               OutString(0,0,USetStr(5052),false);
               OutString(70,0,USetStr(2763),false);
-              OutString(190,0,USetStr(1000000),false); //EKN code
-              OutString(230,0,USetStr(1000001),false); //Default source
+              OutString(160,0,USetStr(1000000),false); //EKN code
+              OutString(200,0,USetStr(1000004),false); //INr Commodity Comment// Edit ************************** BPI Ukraine - KramarAlexandr - Monday, 11 February 2019 17:15:50
+              OutString(250,0,USetStr(1000001),false); //Default source
               OutString(280,0,USetStr(1000002),true); //Weight
               OutString(320,0,USetStr(1000003),true); //Net weight
               OutString(360,0,USetStr(3244),true);
