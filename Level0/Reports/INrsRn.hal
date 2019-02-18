@@ -73,7 +73,7 @@ begin
     case mtExcel:
 LPrintItemTotals_OverviewExcel:;
         StartFormat(15);
-        OutString(0,0,INr.Code,false);
+        OutString(0,"DblINVc",INr.Code,false);
         OutString(70,0,INr.Name,false);
         OutString(70,0,"",false);
         OutString(190,0,INr.EUCodex,false); //EKN code
@@ -102,7 +102,7 @@ LPrintItemTotals_OverviewExcel:;
         EndFormat;
     otherwise
         StartFormat(15);
-        OutString(0,0,INr.Code,false);
+        OutString(0,"DblINVc",INr.Code,false);
         OutString(70,0,INr.Name,false);
         OutString(150,0,INr.EUCodex,false); //EKN code
         OutString(200,0,commcomm,false); //INr Commodity Comment// Edit ************************** BPI Ukraine - KramarAlexandr - Monday, 11 February 2019 17:15:50
@@ -165,7 +165,7 @@ begin
     case mtExcel:
 LPrintItemTotals_OverviewExcel:;
         StartFormat(15);
-        OutString(0,0,INr.Code,false);
+        OutString(0,"DblINVc",INr.Code,false);
         OutString(70,0,INr.Name,false);
         OutString(70,0,"",false);
         switch (RepSpec.ArtMode) begin
@@ -188,7 +188,7 @@ LPrintItemTotals_OverviewExcel:;
         EndFormat;
     otherwise
         StartFormat(15);
-        OutString(0,0,INr.Code,false);
+        OutString(0,"DblINVc",INr.Code,false);
         OutString(70,0,INr.Name,false);
         switch (RepSpec.ArtMode) begin
           case 0:
@@ -259,7 +259,7 @@ LPrintItemTotals_Overview_PerLocationExcel:;
            StartFormat(15);
            switch (RepSpec.ArtMode) begin
              case 0:
-               OutString(15,0,INr.Code,false);
+               OutString(15,"DblINVc",INr.Code,false);
                OutString(90,0,INr.Name,false);
                OutString(90,0,"",false);
 //EBS-->
@@ -299,7 +299,7 @@ LPrintItemTotals_Overview_PerLocationExcel:;
           StartFormat(15);
           switch (RepSpec.ArtMode) begin
             case 0:
-              OutString(200,0,INr.Code,false);
+              OutString(200,"DblINVc",INr.Code,false);
               OutVal(480,0,fwdqty+itemqin+itemqout,M4UVal,true);
             case 1:
               OutString(200,0,INr.Code,false);
@@ -335,7 +335,7 @@ LPrintItemTotals_Overview_PerLocationExcel:;
                 OutVal(480,0,fwdqty+itemqin+itemqout,M4UVal,true);
               end; //EBS
             case 1:
-              OutString(15,0,INr.Code,false);
+              OutString(15,"DblINVc",INr.Code,false);
               OutString(90,0,Left(INr.Name,20),false);
 //EBS-->
               if RepSpec.flags[9]==2 then begin
@@ -361,7 +361,7 @@ LPrintItemTotals_Overview_PerLocationExcel:;
           StartFormat(15);
           switch (RepSpec.ArtMode) begin
             case 0:
-              OutString(200,0,INr.Code,false);
+              OutString(200,"DblINVc",INr.Code,false);
               OutVal(480,0,fwdqty+itemqin+itemqout,M4UVal,true);
             case 1:
               OutString(200,0,INr.Code,false);
@@ -381,7 +381,7 @@ procedure ItemHistLineToFile_Detailed(record RcVc RepSpec,record INVc INr,Boolea
                              val itemq2in,val bal)
 begin
   StartFormat(15);
-  OutString(0,0,INr.Code,false);
+  OutString(0,"DblINVc",INr.Code,false);
   OutString(100,0,INr.Name,false);
   OutString(300,0,INr.Unittext,false);
   OutString(300,0,"",false);
@@ -527,7 +527,7 @@ LPrintItemHist_PerLocationExcel:;
       StartFormat(15);
       switch (RepSpec.ArtMode) begin
         case 0:
-          OutString(0,0,INr.Code,false);
+          OutString(0,"DblINVc",INr.Code,false);
           OutString(100,0,INr.Name,false);
           OutString(300,0,INr.Unittext,false);
           OutDate(0,0,IHr.TransDate,false);
@@ -538,7 +538,7 @@ LPrintItemHist_PerLocationExcel:;
           end;
           OutVal(480,0,IHr.Qty,M4UVal,true);
         case 1:
-          OutString(0,0,INr.Code,false);
+          OutString(0,"DblINVc",INr.Code,false);
           OutString(100,0,INr.Name,false);
           OutString(300,0,INr.Unittext,false);
           OutDate(0,0,IHr.TransDate,false);
@@ -556,7 +556,7 @@ LPrintItemHist_PerLocationExcel:;
             OutVal(480,0,IHr.TotCostPrice,M4Val,true);
           end;
         case 3://INRS
-          OutString(0,0,INr.Code,false);
+          OutString(0,"DblINVc",INr.Code,false);
           OutString(100,0,INr.Name,false);
           OutString(300,0,INr.Unittext,false);
           OutDate(0,0,IHr.TransDate,false);

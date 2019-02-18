@@ -370,7 +370,7 @@ begin
       otherwise
         if (RepSpec.flags[9]!=0) and (RepSpec.flags[9]!=2) then begin //EBS edit
           StartFormat(15);
-          OutString(15,0,item,false);
+          OutString(15,"DblINVc",item,false);
           OutString(100,0,name,false);
           OutString(300,0,unittext,false);
           EndFormat;
@@ -412,7 +412,7 @@ begin
 LItemHistItemHeader:;
       if (RepSpec.ArtMode!=0) then begin
         StartFormat(15);
-        OutString(0,0,item,false);
+        OutString(0,"DblINVc",item,false);
         OutString(100,0,name,false);
         OutString(300,0,unittext,false);
         OutString(300,0,"",false);
@@ -450,7 +450,7 @@ LItemHistItemHeader:;
       otherwise
         if (RepSpec.flags[9]!=0) and (RepSpec.flags[9]!=2) then begin //EBS edit
           StartFormat(15);
-          OutString(0,0,item,false);
+          OutString(0,"DblINVc",item,false);
           OutString(60,0,name,false);
           OutString(300,0,unittext,false);
           EndFormat;
@@ -648,7 +648,7 @@ LPrintItemHistExcel:;
       switch (RepSpec.ArtMode) begin
         case 0:
           StartFormat(15);
-          OutString(0,0,INr.Code,false);
+          OutString(0,"DblINVc",INr.Code,false);
           OutString(100,0,INr.Name,false);
           OutString(300,0,INr.Unittext,false);
           OutDate(0,0,IHr.TransDate,false);
@@ -691,7 +691,7 @@ LPrintItemHistExcel:;
           EndFormat;
         case 1:
           StartFormat(15);
-          OutString(0,0,INr.Code,false);
+          OutString(0,"DblINVc",INr.Code,false);
           OutString(100,0,INr.Name,false);
           OutString(300,0,INr.Unittext,false);
           OutDate(0,0,IHr.TransDate,false);
@@ -729,7 +729,7 @@ LPrintItemHistExcel:;
           EndFormat;
         case 3://INRS
           StartFormat(15);
-          OutString(0,0,INr.Code,false);
+          OutString(0,"DblINVc",INr.Code,false);
           OutString(100,0,INr.Name,false);
           OutString(300,0,INr.Unittext,false);
           OutDate(0,0,IHr.TransDate,false);
