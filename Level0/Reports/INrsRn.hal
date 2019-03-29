@@ -315,7 +315,7 @@ LPrintItemTotals_Overview_PerLocationExcel:;
           switch (RepSpec.ArtMode) begin
             case 0:
               OutString(15,0,INr.Code,false);
-              OutString(90,0,Left(INr.Name,10),false);
+              OutString(90,0,Left(INr.Name,100),false);
 //EBS-->
               if RepSpec.flags[9]==2 then begin
                 OutString(150,0,INr.EUCodex,false); //EKN code
@@ -336,7 +336,7 @@ LPrintItemTotals_Overview_PerLocationExcel:;
               end; //EBS
             case 1:
               OutString(15,"DblINVc",INr.Code,false);
-              OutString(90,0,Left(INr.Name,20),false);
+              OutString(90,0,Left(INr.Name,100),false);
 //EBS-->
               if RepSpec.flags[9]==2 then begin
                 OutString(140,0,INr.EUCodex,false); //EKN code
