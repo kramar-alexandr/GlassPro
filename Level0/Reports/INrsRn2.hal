@@ -155,16 +155,16 @@ LLPrintItemHistHeaderExcel:;
         if RepSpec.flags[9]==2 then begin
           StartFormat(15);
           OutString(0,0,USetStr(5052),false);
-          OutString(70,0,USetStr(2763),false);
-          OutString(160,0,USetStr(1000000),false); //EKN code
-          OutString(200,0,USetStr(1000004),false); //INr Commodity Comment// Edit ************************** BPI Ukraine - KramarAlexandr - Monday, 11 February 2019 17:15:50
-          OutString(250,0,USetStr(1000001),false); //Default source
-          OutString(280,0,USetStr(1000002),true); //Weight
-          OutString(320,0,USetStr(1000003),true); //Net weight
-          OutString(360,0,USetStr(3244),true);
-          OutString(400,0,USetStr(5027),true);
-          OutString(440,0,USetStr(5028),true);
-          OutString(480,0,USetStr(5015),true);
+          OutString(50,0,USetStr(2763),false);// Edit ************************** BPI Ukraine - KramarAlexandr - Friday, 29 March 2019 10:37:25
+          OutString(150,0,USetStr(1000000),false); //EKN code
+          OutString(190,0,USetStr(1000004),false); //INr Commodity Comment// Edit ************************** BPI Ukraine - KramarAlexandr - Monday, 11 February 2019 17:15:50
+          OutString(275,0,USetStr(1000001),false); //Default source
+          OutString(320,0,USetStr(1000002),true); //Weight
+          OutString(350,0,USetStr(1000003),true); //Net weight
+          OutString(410,0,USetStr(3244),true);
+          OutString(430,0,USetStr(5027),true);
+          OutString(450,0,USetStr(5028),true);
+          OutString(1,0,USetStr(5015),true);
           EndFormat;
         end else begin
         //EBS<--
