@@ -1,3 +1,11 @@
+external function Boolean HasCategories();
+external function Boolean HasContactClassification();
+external function Boolean ContactInGroupClass2(string,string,string,string,string,string,string);
+external procedure ClassTypef(string,string,var boolean);
+external procedure HTCustCat(string,var string);
+external procedure HTCustClass(string,var string);
+external procedure HTCustClassType(string,var string);
+external function Boolean SetInSet2(string,string);
 external procedure PIVGP1Rn(record RcVc,LongInt,LongInt,string,string,string,string,var val,var val);
 external function Boolean ReadFirstItem(string,var record INVc,Boolean,Boolean);
 external function val FindTAX1(string,val,Integer,Integer);
@@ -24,7 +32,7 @@ begin
   Boolean TrHs;
   Integer i,rwcnt;
   val orgqty;
-
+  
   if (FIFORowVal!=blankval) then begin
     res = FIFORowVal;
     if (IVp.InvType==kInvoiceTypeCredit or IVp.InvType==kInvoiceTypeCreditSpecialSales) then begin
@@ -50,13 +58,13 @@ begin
         orgqty = IVrw.Quant;
       end;
       if (orgqty<=0) then begin orgqty = 1.00; end;
-
+      
       SHr.OrderNr = IVp.OrderNr;
       TrHs = true;
       while (LoopKey("OrderKey",SHr,1,TrHs)) begin
         if (SHr.OrderNr!=IVp.OrderNr) then begin
           TrHs = false;
-        end;
+        end;        
         if (TrHs) then begin
           rwcnt = MatRowCnt(SHr);
           for (i=0;i<rwcnt;i=i+1) begin
@@ -70,7 +78,7 @@ begin
       end;
     end;
     res = (res*qty)/orgqty;
-  end;
+  end;    
   IVGetFIFO = res;
   return;
 end;
@@ -78,7 +86,7 @@ end;
 global
 procedure InvoiceType(Integer tp,var string res)
 begin
-  res = "";
+  res = ""; 
   switch (tp) begin
     case 1: res = USetStr(1803);
     case 2: res = USetStr(1804);
@@ -106,7 +114,7 @@ begin
   record INVc INr;
   val t,rowGP,quant;
   record TaxMatrixVc TMr;
-
+  
   firstf = true;
   tivsum = blankval;
   tivgps = blankval;
@@ -127,20 +135,20 @@ begin
         OutString(200,0,IVp.Addr0,false);
         if (IVp.OKFlag==0) then begin
           OutString(480,0,USetStr(2366),true);
-        end;
+        end;  
         EndFormat;
         firstf = false;
       end;
       UnpackRowFieldMatrix(IVrw,"TaxMatrix",TMr);
       switch (RepSpec.flags[11]) begin
-        case 2:
+        case 2: 
           t = MULRATETOBASE2(IVp.CurncyCode,IVrw.Sum,fr,tb1,tb2,br1,br2,DefaultCurRoundOff);
           FindSalesExVat(TMr,IVrw.VATCode,t,IVp.InclVAT,IVp.NoTAXonVAT,rowinbase);
           rowGP = rowinbase - IVrw.BasePriceB2;
-        case 1:
+        case 1: 
           t = MULRATETOBASE1(IVp.CurncyCode,IVrw.Sum,fr,tb1,tb2,br1,br2,DefaultCurRoundOff);
           FindSalesExVat(TMr,IVrw.VATCode,t,IVp.InclVAT,IVp.NoTAXonVAT,rowinbase);
-          rowGP = rowinbase - IVGetFIFO(IVp,i,IVrw.FIFORowVal,IVrw.FIFO,IVrw.Quant);
+          rowGP = rowinbase - IVGetFIFO(IVp,i,IVrw.FIFORowVal,IVrw.FIFO,IVrw.Quant);        
         otherwise
           t = MULRATETOBASE1(IVp.CurncyCode,IVrw.Sum,fr,tb1,tb2,br1,br2,DefaultCurRoundOff);
           FindSalesExVat(TMr,IVrw.VATCode,t,IVp.InclVAT,IVp.NoTAXonVAT,rowinbase);
@@ -157,14 +165,14 @@ begin
             end;
           end;
       end;
-      diff = rowinbase - rowGP;
+      diff = rowinbase - rowGP;      
       StartFormat(15);
-      OutVal(350,0,rowinbase,M4Val,true);
+      OutVal(350,0,rowinbase,M4Val,true);  
       OutVal(420,0,diff,M4Val,true);
       OutVal(480,0,rowGP,M4Val,true);
       EndFormat;
 //      totdiff = totdiff + diff;
-//      ivsum = ivsum + rowinbase;// downpayment here ?
+//      ivsum = ivsum + rowinbase;// downpayment here ? 
 //      gps = gps + rowGP;
     end;
     if (IVrw.stp==3) then begin
@@ -179,7 +187,7 @@ begin
         OutString(200,0,IVp.Addr0,false);
         if (IVp.OKFlag==0) then begin
           OutString(480,0,USetStr(2366),true);
-        end;
+        end;  
         EndFormat;
         firstf = false;
       end;
@@ -197,7 +205,7 @@ begin
             if (nonblank(RepSpec.FirstAcc)) then begin
               if (RepSpec.FirstAcc<>INr.Code) and ((RepSpec.FirstAcc<>IVrw.ArtCode)) then begin
                 skipitem = true;
-              end;
+              end;  
             end;
             if (nonblank(RepSpec.LastAcc)) or (nonblank(RepSpec.f6)) then begin
               INr.Code = IVrw.ArtCode;
@@ -217,10 +225,10 @@ begin
               end;
             end;
             if (nonblank(RepSpec.f3)) then begin
-              if (SetInSet(RepSpec.f3,IVrw.Objects)==false) then begin
+              if (SetInSet2(RepSpec.f3,IVrw.Objects)==false) then begin
                 skipitem = true;
               end;
-            end;
+            end;    
             if (skipitem==false) then begin
               if (firstf) then begin
                 Gray_Divider(0,1);
@@ -233,20 +241,20 @@ begin
                 OutString(200,0,IVp.Addr0,false);
                 if (IVp.OKFlag==0) then begin
                   OutString(480,0,USetStr(2366),true);
-                end;
+                end;  
                 EndFormat;
                 firstf = false;
               end;
               UnpackRowFieldMatrix(IVrw,"TaxMatrix",TMr);
               switch (RepSpec.flags[11]) begin
-                case 2:
+                case 2: 
                   t = MULRATETOBASE2(IVp.CurncyCode,IVrw.Sum,fr,tb1,tb2,br1,br2,DefaultCurRoundOff);
                   FindSalesExVat(TMr,IVrw.VATCode,t,IVp.InclVAT,IVp.NoTAXonVAT,rowinbase);
                   gp = rowinbase - IVrw.BasePriceB2;
-                case 1:
+                case 1: 
                   t = MulRateToBase1(IVp.CurncyCode,IVrw.Sum,fr,tb1,tb2,br1,br2,DefaultCurRoundOff);
                   FindSalesExVat(TMr,IVrw.VATCode,t,IVp.InclVAT,IVp.NoTAXonVAT,rowinbase);
-                  gp = rowinbase - IVGetFIFO(IVp,i,IVrw.FIFORowVal,IVrw.FIFO,IVrw.Quant);
+                  gp = rowinbase - IVGetFIFO(IVp,i,IVrw.FIFORowVal,IVrw.FIFO,IVrw.Quant);                
                 otherwise
                   t = MulRateToBase1(IVp.CurncyCode,IVrw.Sum,fr,tb1,tb2,br1,br2,DefaultCurRoundOff);
                   FindSalesExVat(TMr,IVrw.VATCode,t,IVp.InclVAT,IVp.NoTAXonVAT,rowinbase);
@@ -272,7 +280,7 @@ begin
                     diff = diff;
                     rowGP = gp;
                     quant = IVrw.Quant;
-                  otherwise
+                  otherwise 
                     ivsum = ivsum + rowinbase;
                     gps = gps + gp;
                     diff = -diff;
@@ -294,7 +302,7 @@ begin
                 OutVal(124,0,quant,M4UVal,true);
                 OutString(130,0,IVrw.Spec,false);
                 OutVal(350,0,rowinbase,M4Val,true);
-
+  
                 OutVal(420,0,diff,M4Val,true);
                 OutVal(480,0,rowGP,M4Val,true);//IVrw
                 EndFormat;
@@ -376,16 +384,16 @@ begin
   record TaxMatrixVc TMr;
   string 20 frdra,todra;
   val possum,posgp;
-  record CUVc CUr; //EBS
+  record CUVc CUr;
 
   afr = FirstInRange(RepSpec.f1,20);
   ato = LastInRange(RepSpec.f1,20);
-
+  
   frcu = FirstInRange(RepSpec.f2,20);
   tocu = LastInRange(RepSpec.f2,20);
 
   StartReportJob(USetStr(2641));
-
+  
   rw = 1;
   HT2Per(RepSpec.sStartDate,RepSpec.sEndDate,tstr);
   Header(rw,tstr,1)
@@ -399,7 +407,7 @@ begin
   if (nonblank(tstr)) then begin
     Header(rw,tstr,1)
     rw = rw + 1;
-  end;
+  end;  
   HTArtSel(RepSpec.FirstAcc,RepSpec.LastAcc,tstr);
   Header(rw,tstr,1)
   rw = rw + 1;
@@ -409,15 +417,40 @@ begin
   HTOKF(RepSpec.flags[1],RepSpec.flags[2],tstr);
   Header(rw,tstr,1)
   rw = rw + 1;
-  EndHeader;
+  if (HasCategories) then begin
+    if (nonblank(RepSpec.f9)) then begin
+      HTCustCat(RepSpec.f9,tstr);
+      Header(rw,tstr,1);
+      rw = rw + 1;
+    end;
+  end;
 
+  if (HasContactClassification) then begin
+    if (nonblank(RepSpec.f8)) then begin
+      HTCustClass(RepSpec.f8,tstr);
+      if (nonblank(tstr)) then begin
+        Header(rw,tstr,1);
+        rw = rw + 1;
+      end;
+    end;
+    if (nonblank(RepSpec.f10)) then begin
+      HTCustClassType(RepSpec.f10,tstr);
+      if (nonblank(tstr)) then begin
+        Header(rw,tstr,1);
+        rw = rw + 1;
+      end; 
+    end;
+  end;
+  
+  EndHeader;
+  
   SetRepCol(2,60);
   SetRepCol(3,140);
   SetRepCol(4,340);
   SetRepCol(5,410);
   SetRepCol(6,480);
 
-  if (RepSpec.flags[12]==1) then begin
+  if (RepSpec.flags[12]==1) then begin 
     StartFormat(15);
     OutString(0,0,USetStr(2648),false);
     EndFormat;
@@ -447,12 +480,12 @@ begin
       EndFormat;
 */
   end;
-
+  
   IVr.InvDate = RepSpec.sStartDate;
   IVr.SerNr = 0;
   if (RepSpec.ArtMode==0) then begin
     Gray_Divider(0,1);
-  end;
+  end;  
   TrHs = true;
   while (LoopKey("InvDate",IVr,2,TrHs)) begin
     if (DateInRange(IVr.InvDate,RepSpec.sStartDate,RepSpec.sEndDate)==false) then begin TrHs = false; end;
@@ -462,7 +495,7 @@ begin
       wholeinv = true;
       if (nonblank(RepSpec.TransStr)) then begin
         if (RepSpec.TransStr<>IVr.PayDeal) then begin testf = false; end;
-      end;
+      end;  
       if (nonblank(RepSpec.f2)) then begin
         if (RepSpec.f2<>IVr.CustCode) then begin testf = false; end;
       end;
@@ -475,13 +508,13 @@ begin
       //EBS <--
       if (nonblank(RepSpec.AccStr)) then begin
         if (SetInSet(RepSpec.AccStr,IVr.SalesMan)==false) then begin testf = false; end;
-      end;
+      end;  
       if (nonblank(RepSpec.f5)) then begin
         if (IVr.SalesGroup!=RepSpec.f5) then begin
           testf = false;
         end;
       end;
-
+      
     if ((RepSpec.flags[1]==0) and (IVr.OKFlag==0)) then begin
       testf = false;
     end;
@@ -513,27 +546,30 @@ begin
 
     if ((RepSpec.flags[10]<>0) and (IVr.SVONr==-1)) then begin
       testf = false;
-    end;
+    end;      
       if (afr<>-1) then begin
         if (IVr.SerNr<afr) then begin
            testf = false;
         end;
-      end;
+      end;     
       if (ato<>-1) then begin
         if (IVr.SerNr>ato) then begin
            testf = false;
         end;
-      end;
+      end; 
       if (nonblank(RepSpec.ObjStr)) then begin
-        if (SetInSet(RepSpec.ObjStr,IVr.Objects)==false) then begin
+        if (SetInSet2(RepSpec.ObjStr,IVr.Objects)==false) then begin
           testf = false;
         end;
-      end;
+      end;  
       if (nonblank(RepSpec.Stext)) then begin
         if (RepSpec.Stext!=IVr.BranchID) then begin testf = false; end;
       end;
       if (IVr.Invalid<>0) then begin testf = false; end;
       if (IVr.InvType==kInvoiceTypePrepayment) then begin testf = false; end;
+      if (testf and ((nonblank(RepSpec.f8)) or (nonblank(RepSpec.f9)) or (nonblank(RepSpec.f10)))) then begin
+        testf = ContactInGroupClass2(IVr.CustCode,RepSpec.f9,RepSpec.f8,RepSpec.f10,"CUST","","");
+      end;
       if (testf) then begin
         testfrowf["Location"] = false;
         testfrowf["Item"] = false;
@@ -545,7 +581,7 @@ begin
           for (i=0; i<rwcnt; i=i+1) begin
             MatRowGet(IVr,i,IVrw);
             if (nonblank(RepSpec.f3)) then begin
-              if (SetInSet(RepSpec.f3,IVrw.Objects)) then begin
+              if (SetInSet2(RepSpec.f3,IVrw.Objects)) then begin
                 testfrowf["RowObject"] = true;
               end;
             end;
@@ -555,7 +591,7 @@ begin
               if (location==RepSpec.f4) then begin
                 testfrowf["Location"] = true;
               end;
-            end;
+            end;              
             if (nonblank(RepSpec.FirstAcc)) or (nonblank(RepSpec.LastAcc)) or (nonblank(RepSpec.f6)) then begin
               if (nonblank(IVrw.ArtCode)) then begin
                 ReadFirstItem(IVrw.ArtCode,INr,false,true);
@@ -602,7 +638,7 @@ begin
          br2 = IVr.BaseRate2;
          if (IVr.CredInv>0) then begin
            orgIVr.SerNr = IVr.CredInv;
-           if (ReadFIrstMain(orgIVr,1,true)) then begin
+           if (ReadFIrstMain(orgIVr,1,true)) then begin 
              fr = orgIVr.FrRate;
              tb1 = orgIVr.ToRateB1;
              tb2 = orgIVr.ToRateB2;
@@ -619,7 +655,7 @@ begin
           if (IVrw.stp==kInvoiceRowTypeNormal) or (IVrw.stp==kInvoiceRowTypeStructuredItemComponent) or (IVrw.stp==kInvoiceRowTypeCorrection) or (IVrw.stp==kInvoiceRowTypeMultiBuyDiscount) or ((IVrw.stp==kInvoiceRowTypeDownPayment) and (IVr.InvType==kInvoiceTypeDownpayment)) then begin
               UnpackRowFieldMatrix(IVrw,"TaxMatrix",TMr);
               switch (RepSpec.flags[11]) begin
-                case 2:
+                case 2: 
                   t = MULRATETOBASE2(IVr.CurncyCode,IVrw.Sum,fr,tb1,tb2,br1,br2,DefaultCurRoundOff);
                   FindSalesExVat(TMr,IVrw.VATCode,t,IVr.InclVAT,IVr.NoTAXonVAT,rowinbase);
                   gp = rowinbase - IVrw.BasePriceB2;
@@ -649,7 +685,7 @@ begin
               end;
               if (nonblank(RepSpec.FirstAcc)) then begin
                 if (RepSpec.FirstAcc<>INr.Code) and ((RepSpec.FirstAcc<>IVrw.ArtCode)) then begin
-                  skipitem = true;
+                  skipitem = true; 
                   wholeinv = false;
                 end;
               end;
@@ -673,12 +709,12 @@ begin
                     end;
                   end;
                 end;
-              end;
+              end;    
               if (nonblank(RepSpec.f3)) then begin
-                if (SetInSet(RepSpec.f3,IVrw.Objects)==false) then begin
+                if (SetInSet2(RepSpec.f3,IVrw.Objects)==false) then begin
 //                  skipitem = true;
                 end;
-              end;
+              end;                            
               if (nonblank(RepSpec.f4)) then begin
                 location = IVrw.Location;
                 if (blank(location)) then begin
@@ -688,7 +724,7 @@ begin
                   skipitem = true;
                   wholeinv = false;
                 end;
-              end;
+              end;              
               if (skipitem==false) then begin
                 switch (IVrw.stp) begin
                   case 11: gps = gps - gp;
@@ -715,13 +751,13 @@ begin
                       iv = iv + t;//extra
                   end;
                 end;
-              end;
+              end;  
           end;
         end;
         skipfr = false;
         if (nonblank(RepSpec.FirstAcc)) then begin
           if (IVr.FrItem<>RepSpec.FirstAcc) then begin
-            skipfr = true;
+            skipfr = true; 
             wholeinv = false;
           end;
         end;
@@ -791,7 +827,7 @@ begin
         end;
       end;//testf
     end;//while
-  end;
+  end;  
   Gray_Divider(0,1);
   StartFormat(15);
   OutString(0,0,USetStr(2365),false);
@@ -812,7 +848,7 @@ begin
   OutVal(430,0,sumcsum,M4Val,true);
   EndFormat;
 
-  if (RepSpec.flags[12]==1) then begin
+  if (RepSpec.flags[12]==1) then begin 
     frdra = FirstInRange(RepSpec.f5,5);
     todra = LastInRange(RepSpec.f5,5);
     StartFormat(15);
@@ -838,4 +874,4 @@ begin
   end;
   EndJob;
   return;
-end;
+end;  

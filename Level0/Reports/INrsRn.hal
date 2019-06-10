@@ -137,7 +137,7 @@ procedure PrintItemTotals_Overview(record RcVc RepSpec,record INVc INr,
                                    val fwdqty,val fwdcp,val fwdtotcp,val itemqin,val itemqout,val itemcpin,val itemcpout)
 begin
   Boolean testf;
-
+  
   testf = false;
   switch (RepSpec.ArtMode) begin
     case 0:
@@ -165,7 +165,7 @@ begin
     case mtExcel:
 LPrintItemTotals_OverviewExcel:;
         StartFormat(15);
-        OutString(0,"DblINVc",INr.Code,false);
+        OutString(0,"DblINVc",INr.Code,false);// Edit ************************** BPI Ukraine - KramarAlexandr - 05, 07 06 2019 y. at 4:08:33 PM
         OutString(70,0,INr.Name,false);
         OutString(70,0,"",false);
         switch (RepSpec.ArtMode) begin
@@ -182,13 +182,13 @@ LPrintItemTotals_OverviewExcel:;
           case 3:
             OutVal(240,0,fwdqty,M4Qty,true);
             OutVal(320,0,itemqin,M4Qty,true);
-            OutVal(420,0,itemqout,M4Qty,true);
+            OutVal(420,0,itemqout,M4Qty,true);         
             OutVal(480,0,fwdqty+itemqin+itemqout,M4Qty,true);
         end;
         EndFormat;
     otherwise
         StartFormat(15);
-        OutString(0,"DblINVc",INr.Code,false);
+        OutString(0,"DblINVc",INr.Code,false);// Edit ************************** BPI Ukraine - KramarAlexandr - 05, 07 06 2019 y. at 4:08:41 PM
         OutString(70,0,INr.Name,false);
         switch (RepSpec.ArtMode) begin
           case 0:
@@ -259,7 +259,7 @@ LPrintItemTotals_Overview_PerLocationExcel:;
            StartFormat(15);
            switch (RepSpec.ArtMode) begin
              case 0:
-               OutString(15,"DblINVc",INr.Code,false);
+               OutString(15,"DblINVc",INr.Code,false);// Edit ************************** BPI Ukraine - KramarAlexandr - 05, 07 06 2019 y. at 4:09:13 PM
                OutString(90,0,INr.Name,false);
                OutString(90,0,"",false);
 //EBS-->
@@ -299,7 +299,7 @@ LPrintItemTotals_Overview_PerLocationExcel:;
           StartFormat(15);
           switch (RepSpec.ArtMode) begin
             case 0:
-              OutString(200,"DblINVc",INr.Code,false);
+              OutString(200,"DblINVc",INr.Code,false);// Edit ************************** BPI Ukraine - KramarAlexandr - 05, 07 06 2019 y. at 4:09:22 PM
               OutVal(480,0,fwdqty+itemqin+itemqout,M4UVal,true);
             case 1:
               OutString(200,0,INr.Code,false);
@@ -335,7 +335,7 @@ LPrintItemTotals_Overview_PerLocationExcel:;
                 OutVal(480,0,fwdqty+itemqin+itemqout,M4UVal,true);
               end; //EBS
             case 1:
-              OutString(15,"DblINVc",INr.Code,false);
+              OutString(15,"DblINVc",INr.Code,false);// Edit ************************** BPI Ukraine - KramarAlexandr - 05, 07 06 2019 y. at 4:09:50 PM
               OutString(90,0,Left(INr.Name,100),false);
 //EBS-->
               if RepSpec.flags[9]==2 then begin
@@ -361,7 +361,7 @@ LPrintItemTotals_Overview_PerLocationExcel:;
           StartFormat(15);
           switch (RepSpec.ArtMode) begin
             case 0:
-              OutString(200,"DblINVc",INr.Code,false);
+              OutString(200,"DblINVc",INr.Code,false);// Edit ************************** BPI Ukraine - KramarAlexandr - 05, 07 06 2019 y. at 4:09:56 PM
               OutVal(480,0,fwdqty+itemqin+itemqout,M4UVal,true);
             case 1:
               OutString(200,0,INr.Code,false);
@@ -381,7 +381,7 @@ procedure ItemHistLineToFile_Detailed(record RcVc RepSpec,record INVc INr,Boolea
                              val itemq2in,val bal)
 begin
   StartFormat(15);
-  OutString(0,"DblINVc",INr.Code,false);
+  OutString(0,"DblINVc",INr.Code,false);// Edit ************************** BPI Ukraine - KramarAlexandr - 05, 07 06 2019 y. at 4:10:03 PM
   OutString(100,0,INr.Name,false);
   OutString(300,0,INr.Unittext,false);
   OutString(300,0,"",false);
@@ -393,7 +393,7 @@ begin
       if (RepSpec.flags[12]!=0) then begin
         OutVal(375,0,itemq2in,M45Val,true);
       end else begin
-        OutString(300,0,"",false);
+        OutString(300,0,"",false);          
       end;
       OutVal(410,0,fwdqty+itemqin+itemqout,M4UVal,true);
       OutVal(480,0,bal,M45Val,true);
@@ -401,7 +401,7 @@ begin
       if (RepSpec.flags[12]!=0) then begin
         OutVal(375,0,itemq2in,M45Val,true);
       end else begin
-        OutString(300,0,"",false);
+        OutString(300,0,"",false);                
       end;
       OutVal(300,0,fwdqty+itemqin+itemqout,M4UVal,true);
       OutVal(480,0,Round(fwdtotcp+itemcpin-itemcpout,SetRoundModeD(2)),M4Val,true);
@@ -409,7 +409,7 @@ begin
       if (RepSpec.flags[12]!=0) then begin
         OutVal(375,0,itemq2in,M45Val,true);
       end else begin
-        OutString(300,0,"",false);
+        OutString(300,0,"",false);                
       end;
       OutVal(300,0,fwdqty+itemqin+itemqout,M4UVal,true);
       OutVal(480,0,bal,M45Val,true);
@@ -485,10 +485,10 @@ begin
 
       PrOr.SerNr = IHr.TransNr;
       if (ReadFirstMain(PrOr,1,true)) then begin end;
-      if (PrOr.StatusFlag<3) then begin
-        strid = 5057;
+      if (PrOr.StatusFlag<3) then begin 
+        strid = 5057; 
       end else begin
-        strid = 5016;
+        strid = 5016; 
       end;
       dblstr = "DblProdOrder";
       end;
@@ -497,10 +497,10 @@ begin
 
       Prodr.SerNr = IHr.TransNr;
       if (ReadFirstMain(Prodr,1,true)) then begin end;
-      if (Prodr.PRStatusFlag<3) then begin
-        strid = 5037;
+      if (Prodr.PRStatusFlag<3) then begin 
+        strid = 5037; 
       end else begin
-        strid = 5016;
+        strid = 5016; 
       end;
       dblstr = "DblProd";
       end;
@@ -510,9 +510,9 @@ begin
         POr.SerNr = IHr.TransNr;
         if (ReadFirstMain(POr,1,true)) then begin end;
         if (POr.OKFlag==0) then begin
-          strid = 5036;
+          strid = 5036; 
         end else begin
-          strid = 5038;
+          strid = 5038; 
         end;
         dblstr = "DblPOVc";
       end;
@@ -527,26 +527,26 @@ LPrintItemHist_PerLocationExcel:;
       StartFormat(15);
       switch (RepSpec.ArtMode) begin
         case 0:
-          OutString(0,"DblINVc",INr.Code,false);
+          OutString(0,"DblINVc",INr.Code,false);// Edit ************************** BPI Ukraine - KramarAlexandr - 05, 07 06 2019 y. at 4:10:22 PM
           OutString(100,0,INr.Name,false);
           OutString(300,0,INr.Unittext,false);
           OutDate(0,0,IHr.TransDate,false);
-          OutString(60,0,USetStr(strid),false);
-          OutLongInt(160,dblstr,IHr.TransNr,false);
-          if (RepSpec.flags[21]==1) then begin
-            PrintCustName(IHr.FileName,IHr.TransNr,210);
+          OutString(60,0,USetStr(strid),false);       
+          OutLongInt(160,dblstr,IHr.TransNr,false);  
+          if (RepSpec.flags[21]==1) then begin  
+            PrintCustName(IHr.FileName,IHr.TransNr,210);    
           end;
           OutVal(480,0,IHr.Qty,M4UVal,true);
         case 1:
-          OutString(0,"DblINVc",INr.Code,false);
+          OutString(0,"DblINVc",INr.Code,false);// Edit ************************** BPI Ukraine - KramarAlexandr - 05, 07 06 2019 y. at 4:10:29 PM
           OutString(100,0,INr.Name,false);
           OutString(300,0,INr.Unittext,false);
           OutDate(0,0,IHr.TransDate,false);
-          OutString(60,0,USetStr(strid),false);
-          OutLongInt(140,dblstr,IHr.TransNr,false);
-          if (RepSpec.flags[21]==1) then begin
-            PrintCustName(IHr.FileName,IHr.TransNr,200);
-          end;
+          OutString(60,0,USetStr(strid),false);            
+          OutLongInt(140,dblstr,IHr.TransNr,false);   
+          if (RepSpec.flags[21]==1) then begin     
+            PrintCustName(IHr.FileName,IHr.TransNr,200);  
+          end;      
           OutVal(300,0,IHr.Qty,M4UVal,true);
           if (outf) then begin
             OutVal(400,0,-Round(bal/IHr.Qty,SetRoundModeD(5)),M45Val,true);
@@ -556,19 +556,19 @@ LPrintItemHist_PerLocationExcel:;
             OutVal(480,0,IHr.TotCostPrice,M4Val,true);
           end;
         case 3://INRS
-          OutString(0,"DblINVc",INr.Code,false);
+          OutString(0,"DblINVc",INr.Code,false);// Edit ************************** BPI Ukraine - KramarAlexandr - 05, 07 06 2019 y. at 4:10:39 PM
           OutString(100,0,INr.Name,false);
           OutString(300,0,INr.Unittext,false);
           OutDate(0,0,IHr.TransDate,false);
-          OutString(60,0,USetStr(strid),false);
-          OutLongInt(160,dblstr,IHr.TransNr,false);
-          if (RepSpec.flags[21]==1) then begin
-            PrintCustName(IHr.FileName,IHr.TransNr,210);
+          OutString(60,0,USetStr(strid),false);           
+          OutLongInt(160,dblstr,IHr.TransNr,false);   
+          if (RepSpec.flags[21]==1) then begin     
+            PrintCustName(IHr.FileName,IHr.TransNr,210);                  
           end;
-          OutString(310,0,Right(IHr.Variety,len(IHr.Variety)-1),false);
+          OutString(310,0,Right(IHr.Variety,len(IHr.Variety)-1),false);      
           switch (RepSpec.flags[12]) begin
             case 1: OutVal(375,0,IHr.Qty2,M4UVal,true);
-            case 2:
+            case 2: 
               if (MSb.UnitConvCalc==0) then begin
                 OutVal(375,0,IHr.Qty/IHr.Qty2,M4Qty,true);
               end else begin
@@ -577,25 +577,25 @@ LPrintItemHist_PerLocationExcel:;
           end;
           OutVal(410,0,IHr.Qty,M4UVal,true);
           OutVal(480,0,bal,M4UVal,true);
-      end;
+      end;   
       EndFormat;
     otherwise
       StartFormat(15);
       switch (RepSpec.ArtMode) begin
         case 0:
           OutDate(0,0,IHr.TransDate,false);
-          OutString(60,0,USetStr(strid),false);
-          OutLongInt(160,dblstr,IHr.TransNr,false);
-          if (RepSpec.flags[21]==1) then begin
-            PrintCustName(IHr.FileName,IHr.TransNr,210);
+          OutString(60,0,USetStr(strid),false);       
+          OutLongInt(160,dblstr,IHr.TransNr,false);    
+          if (RepSpec.flags[21]==1) then begin  
+            PrintCustName(IHr.FileName,IHr.TransNr,210);        
           end;
-          OutValBiDi(480,0,IHr.Qty,M4UVal,true,520);
+          OutValBiDi(480,0,IHr.Qty,M4UVal,true,520);                
         case 1:
           OutDate(0,0,IHr.TransDate,false);
-          OutString(60,0,USetStr(strid),false);
-          OutLongInt(140,dblstr,IHr.TransNr,false);
+          OutString(60,0,USetStr(strid),false);            
+          OutLongInt(140,dblstr,IHr.TransNr,false);        
           if (RepSpec.flags[21]==1) then begin
-            PrintCustName(IHr.FileName,IHr.TransNr,200);
+            PrintCustName(IHr.FileName,IHr.TransNr,200);                  
           end;
           OutValBiDi(300,0,IHr.Qty,M4UVal,true,340);
           if (outf) then begin
@@ -607,15 +607,15 @@ LPrintItemHist_PerLocationExcel:;
           end;
         case 3://INRS
           OutDate(0,0,IHr.TransDate,false);
-          OutString(60,0,USetStr(strid),false);
-          OutLongInt(160,dblstr,IHr.TransNr,false);
+          OutString(60,0,USetStr(strid),false);           
+          OutLongInt(160,dblstr,IHr.TransNr,false);        
           if (RepSpec.flags[21]==1) then begin
-            PrintCustName(IHr.FileName,IHr.TransNr,210);
+            PrintCustName(IHr.FileName,IHr.TransNr,210);                     
           end;
           OutString(300,0,Right(IHr.Variety,len(IHr.Variety)-1),false);
           switch (RepSpec.flags[12]) begin
             case 1: OutValBiDi(375,0,IHr.Qty2,M4UVal,true,420);
-            case 2:
+            case 2: 
               if (MSb.UnitConvCalc==0) then begin
                 OutValBiDi(375,0,IHr.Qty/IHr.Qty2,M4Qty,true,420);
               end else begin
@@ -624,7 +624,7 @@ LPrintItemHist_PerLocationExcel:;
           end;
           OutValBiDi(410,0,IHr.Qty,M4UVal,true,450);
           OutValBiDi(480,0,bal,M4UVal,true,520);
-      end;
+      end;   
       EndFormat;
   end;
   return;
@@ -786,11 +786,11 @@ LPrintReportTotalsExcel:;
 //EBS<--
       end;
       Gray_Divider(0,1);
-  end;
+  end; 
   return;
 end;
 
-procedure ItemHistList_In(record RcVc RepSpec,record ItemHistVc IHr,record INVc INr,record MainStockBlock MSb,
+procedure ItemHistList_In(record RcVc RepSpec,record ItemHistVc IHr,record INVc INr,record MainStockBlock MSb,                         
                           record CostAccBlock CAb,var Boolean itemheaderf,
                           val fwdqty,val fwdtotcp,val fwdqty2,
                           var val itemqin,var val itemcpin,var val itemq2in,var val bal)
@@ -821,7 +821,7 @@ begin
       end;
   end;
 
-  if (testf) then begin
+  if (testf) then begin    
     if (RepSpec.flags[15]==0) then begin
       ItemHistItemHeader(RepSpec,INr.Code,INr.Name,INr.Unittext,fwdqty,fwdtotcp,fwdqty2,bal,itemheaderf);
     end else begin
@@ -829,9 +829,9 @@ begin
     end;
     itemqin = itemqin + IHr.Qty;
     itemq2in = itemq2in + IHr.Qty2;
-    cp = IHr.TotCostPrice;
+    cp = IHr.TotCostPrice;    
     itemcpin = itemcpin + cp;
-    if (RepSpec.flags[9]==1) then begin
+    if (RepSpec.flags[9]==1) then begin      
       switch (RepSpec.ArtMode) begin
         case 0: bal = bal + IHr.Qty;
         case 1: bal = cp;
@@ -847,7 +847,7 @@ begin
   return;
 end;
 
-procedure ItemHistList_Out(record RcVc RepSpec,record ItemHistVc IHr,record INVc INr,record MainStockBlock MSb,
+procedure ItemHistList_Out(record RcVc RepSpec,record ItemHistVc IHr,record INVc INr,record MainStockBlock MSb,                         
                           record CostAccBlock CAb,var Boolean itemheaderf,
                           val fwdqty,val fwdtotcp,val fwdqty2,
                           var val itemqout,var val itemcpout,var val itemq2out,var val bal)
@@ -857,7 +857,7 @@ begin
   Integer primary,queuecostmodel;
   val cp;
   Boolean testf;
-
+    
   testf = true;
   switch (IHr.FileName) begin
     case "Fut1POVc": begin
@@ -896,7 +896,7 @@ begin
   if (testf==false) then begin
     goto LItemHistList_Out;
   end;
-  GetCostModel(INr,CAb,ITr,primary,queuecostmodel,false);
+  GetCostModel(INr,CAb,ITr,primary,queuecostmodel,false);  
   if (RepSpec.flags[15]==0) then begin
     ItemHistItemHeader(RepSpec,INr.Code,INr.Name,INr.Unittext,fwdqty,fwdtotcp,fwdqty2,bal,itemheaderf);
   end else begin
@@ -939,8 +939,7 @@ begin
 //  end;
 //
   itemcpout = itemcpout + cp;
-
-  if (RepSpec.flags[9]==1) then begin
+  if (RepSpec.flags[9]==1) then begin      
     switch (RepSpec.ArtMode) begin
       case 0: bal = bal + IHr.Qty;
       case 1: bal = -cp;
@@ -952,7 +951,7 @@ begin
       PrintItemHist(RepSpec,INr,IHr,MSb,true,bal);
     end;
   end;
-LItemHistList_Out:;
+LItemHistList_Out:;  
   return;
 end;
 
@@ -973,10 +972,10 @@ begin
   fwdcp = blankval;
   if (INr.ItemType!=0) then begin
     dt = AddDay(RepSpec.sStartDate,-1);
-    if (nonblank(RepSpec.f7) or nonblank(RepSpec.f8)) then begin
+    if (nonblank(RepSpec.f7) or nonblank(RepSpec.f8)) then begin 
       locfound = true;
-      while (LoopMain(Locr,1,locfound)) begin
-        testf = true;
+      while (LoopMain(Locr,1,locfound)) begin  
+        testf = true;  
         if (nonblank(RepSpec.f7)) then begin
           if (Locr.Group!=RepSpec.f7) then begin
             testf = false;
@@ -987,20 +986,20 @@ begin
             testf = false;
           end;
         end;
-        if (testf) then begin
+        if (testf) then begin 
           fwdqty = fwdqty + GetStockQty(INr.Code,Locr.Code,dt,false);
         end;
-      end;
-    end else begin
+      end;  
+    end else begin       
       fwdqty = GetStockQty(INr.Code,RepSpec.TransStr,dt,false);
-    end;
+    end;  
     if (RepSpec.ArtMode==1) then begin
       GetCostModel(INr,CAb,ITr,primary,queuecostmodel,false);
       switch (primary) begin
         case 1: fwdtotcp = FindCPPriceBackdated(CostPricePerLocation(INr,ITr,CAb),INr,RepSpec.TransStr,fwdqty,dt,false) * fwdqty;
         case 2: fwdtotcp = FindBPPriceBackdated(CAb,INr,RepSpec.TransStr,fwdqty,dt,false) * fwdqty;
         case 3: fwdtotcp = FindWAPriceBackdated(WAPerLocation(INr,ITr,CAb),INr,RepSpec.TransStr,fwdqty,dt,false,0);
-        case 4:
+        case 4: 
           if (ItemCostPerLocation(INr)!=0) then begin
             if (blank(RepSpec.TransStr)) then begin
               fwdqty = blankval;
@@ -1021,7 +1020,7 @@ begin
                 end;
               end;
               if (blank(mainstock)) and (nostockf) then begin
-                fwdqty = GetStockQty(INr.Code,"",dt,false);
+                fwdqty = GetStockQty(INr.Code,"",dt,false); 
               end;
             end else begin
               switch (queuecostmodel) begin
@@ -1067,27 +1066,27 @@ procedure PrintItemHistoryRecord(record RcVc RepSpec,record ItemHistVc sumIHr,re
                               var val bal)
 begin
   switch (sumIHr.FileName) begin
-    case "Fut2ProdOrderInVc":
+    case "Fut2ProdOrderInVc": 
       if (RepSpec.flags[14]!=0) then begin
         ItemHistList_In(RepSpec,sumIHr,INr,MSb,CAb,itemheaderf,fwdqty,fwdtotcp,fwdqty2,itemqin,itemcpin,itemq2in,bal);
       end;
-    case "Fut2ProdOrderOutVc":
+    case "Fut2ProdOrderOutVc": 
       if (RepSpec.flags[14]!=0) then begin
         ItemHistList_Out(RepSpec,sumIHr,INr,MSb,CAb,itemheaderf,fwdqty,fwdtotcp,fwdqty2,itemqin,itemcpin,itemq2in,bal);
       end;
-    case "Fut2ProdInVc":
+    case "Fut2ProdInVc": 
       if (RepSpec.flags[14]!=0) then begin
         ItemHistList_In(RepSpec,sumIHr,INr,MSb,CAb,itemheaderf,fwdqty,fwdtotcp,fwdqty2,itemqin,itemcpin,itemq2in,bal);
       end;
-    case "Fut2ProdOutVc":
+    case "Fut2ProdOutVc": 
       if (RepSpec.flags[14]!=0) then begin
         ItemHistList_Out(RepSpec,sumIHr,INr,MSb,CAb,itemheaderf,fwdqty,fwdtotcp,fwdqty2,itemqin,itemcpin,itemq2in,bal);
       end;
-    case "Fut1POVc":
+    case "Fut1POVc": 
       if (RepSpec.flags[14]!=0) then begin
         ItemHistList_In(RepSpec,sumIHr,INr,MSb,CAb,itemheaderf,fwdqty,fwdtotcp,fwdqty2,itemqin,itemcpin,itemq2in,bal);
       end;
-    case "Fut3ORVc":
+    case "Fut3ORVc": 
       if (RepSpec.flags[14]!=0) then begin
         ItemHistList_Out(RepSpec,sumIHr,INr,MSb,CAb,itemheaderf,fwdqty,fwdtotcp,fwdqty2,itemqout,itemcpout,itemq2out,bal);
       end;
@@ -1098,7 +1097,7 @@ begin
         end else begin
           ItemHistList_Out(RepSpec,sumIHr,INr,MSb,CAb,itemheaderf,fwdqty,fwdtotcp,fwdqty2,itemqout,itemcpout,itemq2out,bal);
         end;
-      end;
+      end;      
     case "IVCashVc":
       if (RepSpec.flags[1]!=0) then begin
         if (sumIHr.Qty>0) then begin
@@ -1106,12 +1105,12 @@ begin
         end else begin
           ItemHistList_Out(RepSpec,sumIHr,INr,MSb,CAb,itemheaderf,fwdqty,fwdtotcp,fwdqty2,itemqout,itemcpout,itemq2out,bal);
         end;
-      end;
-    case "INTransferVc":
+      end;      
+    case "INTransferVc": 
       if (RepSpec.flags[17]!=0) then begin
         ItemHistList_Out(RepSpec,sumIHr,INr,MSb,CAb,itemheaderf,fwdqty,fwdtotcp,fwdqty2,itemqout,itemcpout,itemq2out,bal);
       end;
-    case "ProdVc":
+    case "ProdVc": 
       if (RepSpec.flags[5]!=0) then begin
         if (sumIHr.Qty>0) then begin
           ItemHistList_In(RepSpec,sumIHr,INr,MSb,CAb,itemheaderf,fwdqty,fwdtotcp,fwdqty2,itemqin,itemcpin,itemq2in,bal);
@@ -1119,7 +1118,7 @@ begin
           ItemHistList_Out(RepSpec,sumIHr,INr,MSb,CAb,itemheaderf,fwdqty,fwdtotcp,fwdqty2,itemqout,itemcpout,itemq2out,bal);
         end;
       end;
-    case "ProdOperationVc":
+    case "ProdOperationVc": 
       if (RepSpec.flags[20]!=0) then begin
         if (sumIHr.Qty>0) then begin
           ItemHistList_In(RepSpec,sumIHr,INr,MSb,CAb,itemheaderf,fwdqty,fwdtotcp,fwdqty2,itemqin,itemcpin,itemq2in,bal);
@@ -1127,22 +1126,22 @@ begin
           ItemHistList_Out(RepSpec,sumIHr,INr,MSb,CAb,itemheaderf,fwdqty,fwdtotcp,fwdqty2,itemqout,itemcpout,itemq2out,bal);
         end;
       end;
-    case "PUVc":
+    case "PUVc": 
       if (RepSpec.flags[3]!=0) then begin
         ItemHistList_In(RepSpec,sumIHr,INr,MSb,CAb,itemheaderf,fwdqty,fwdtotcp,fwdqty2,itemqin,itemcpin,itemq2in,bal);
       end;
-    case "RetPUVc":
+    case "RetPUVc": 
       if (RepSpec.flags[19]!=0) then begin
         ItemHistList_Out(RepSpec,sumIHr,INr,MSb,CAb,itemheaderf,fwdqty,fwdtotcp,fwdqty2,itemqout,itemcpout,itemq2out,bal);
-      end;
-    case "RetVc":
+      end;      
+    case "RetVc": 
       if (RepSpec.flags[8]!=0) then begin
         ItemHistList_In(RepSpec,sumIHr,INr,MSb,CAb,itemheaderf,fwdqty,fwdtotcp,fwdqty2,itemqin,itemcpin,itemq2in,bal);
-      end;
-    case "SDVc":
+      end;      
+    case "SDVc": 
       if (RepSpec.flags[6]!=0) then begin
         ItemHistList_Out(RepSpec,sumIHr,INr,MSb,CAb,itemheaderf,fwdqty,fwdtotcp,fwdqty2,itemqout,itemcpout,itemq2out,bal);
-      end;
+      end;      
     case "SRVc":
       if (RepSpec.flags[22]!=0) then begin
         if (sumIHr.Qty>0) then begin
@@ -1150,12 +1149,12 @@ begin
         end else begin
           ItemHistList_Out(RepSpec,sumIHr,INr,MSb,CAb,itemheaderf,fwdqty,fwdtotcp,fwdqty2,itemqout,itemcpout,itemq2out,bal);
         end;
-      end;
-    case "SHVc":
+      end;      
+    case "SHVc": 
       if (RepSpec.flags[2]!=0) then begin
         ItemHistList_Out(RepSpec,sumIHr,INr,MSb,CAb,itemheaderf,fwdqty,fwdtotcp,fwdqty2,itemqout,itemcpout,itemq2out,bal);
-      end;
-    case "StockMovVc":
+      end;      
+    case "StockMovVc": 
       if (RepSpec.flags[4]!=0) then begin
         if (sumIHr.Qty>0) then begin
           ItemHistList_In(RepSpec,sumIHr,INr,MSb,CAb,itemheaderf,fwdqty,fwdtotcp,fwdqty2,itemqin,itemcpin,itemq2in,bal);
@@ -1163,11 +1162,11 @@ begin
           ItemHistList_Out(RepSpec,sumIHr,INr,MSb,CAb,itemheaderf,fwdqty,fwdtotcp,fwdqty2,itemqout,itemcpout,itemq2out,bal);
         end;
       end;
-    case "WSVc":
+    case "WSVc": 
       if (RepSpec.flags[7]!=0) then begin
         ItemHistList_Out(RepSpec,sumIHr,INr,MSb,CAb,itemheaderf,fwdqty,fwdtotcp,fwdqty2,itemqout,itemcpout,itemq2out,bal);
-      end;
-  end;
+      end;      
+  end;         
   return;
 end;
 
@@ -1197,14 +1196,14 @@ begin
   itemcpin = blankval;
   itemcpout = blankval;
   itemq2in = blankval;
-  bal = blankval;
+  bal = blankval;      
   return;
 end;
 
 function Boolean SignEqual(val Qty1,val Qty2)
 begin
   Boolean res;
-
+  
   res = false;
   if (Qty1<0) then begin
     if (Qty2<0) then begin
@@ -1226,7 +1225,7 @@ begin
   Integer sorting,ihkeys;
   string 255 ihckey;
   Boolean foundIH,testf;
-
+  
   sorting = RepSpec.flags[10];
   ResetLoop(IHr);
   switch (sorting) begin
@@ -1268,12 +1267,12 @@ begin
       end else begin
         if (RepSpec.TransStr!=IHr.Location) then begin testf = false; end;
       end;
-    end;
+    end; 
     if (RepSpec.flags[11]!=0) then begin
       if (INr.ItemType!=1) then begin testf = false; end;
     end;
     if (RepSpec.flags[14]!=0) then begin
-      if (IHr.StockAffectf==0) then begin
+      if (IHr.StockAffectf==0) then begin 
         if (Left(IHr.FileName,3)!="Fut") then begin
           testf = false;
         end;
@@ -1304,10 +1303,10 @@ begin
   record ItemHistVc sumIHr;
   record ItemHistVc lastIHr;
   record LocationVc Locationr;
-  Boolean foundIH,foundIN,testf,itemheaderf,ihtestf,foundpi,itemhistf;
+  Boolean foundIH,foundIN,testf,itemheaderf,ihtestf,foundpi,itemhistf;  
   val itemqin,itemq2in,itemqout,bal,itemcpin,itemcpout,itemq2out;
   val fwdqty,fwdqty2,fwdcp,fwdtotcp;
-
+    
   sorting = RepSpec.flags[10];
   frin = FirstInRange(RepSpec.f1,20);
   toin = LastInRange(RepSpec.f1,20);
@@ -1328,25 +1327,25 @@ begin
     if (foundIN) then begin
       if (nonblank(toin)) then  begin
         if (INr.Code>toin) then begin foundIN = false; end;
-      end;
+      end;  
     end;
     if (foundIN) then begin
       if (nonblank(RepSpec.f3)) then begin
         if (INr.Group!=RepSpec.f3) then begin foundIN = false; end;
-      end;
+      end;  
     end;
     if (foundIN) then begin
       if (RepSpec.flags[11]==1) then begin
         if (INr.ItemType!=1) then begin
           goto LINwhileend;
         end;
-      end;
+      end;    
       if (nonblank(toloc)) then begin
         if (INr.Department>toloc) then begin goto LINwhileend; end;
-      end;
+      end;  
       if (nonblank(frloc)) then begin
         if (INr.Department<frloc) then begin goto LINwhileend; end;
-      end;
+      end;  
       if (nonblank(RepSpec.f2)) then begin
         PIr.DefaultChoice = 1;
         PIr.ItemCode = INr.Code;
@@ -1406,14 +1405,14 @@ begin
           end;
         end;
       end else begin
-//when Show Balance for Items with no History it is done on other place
+//when Show Balance for Items with no History it is done on other place      
         if (fwdqty!=0) then begin
           if (RepSpec.flags[15]==0) then begin
 //            ItemHistItemHeader(RepSpec,INr.Code,INr.Name,INr.Unittext,fwdqty,fwdtotcp,fwdqty2,bal,itemheaderf);
           end else begin
 //            ItemHistItemHeader_PerLocation(RepSpec,INr.Code,INr.Name,INr.Unittext,fwdqty,fwdtotcp,fwdqty2,itemheaderf);
           end;
-        /*what was this for ?
+        /*what was this for ? 
           if (CheckIfAnyHistory(RepSpec,INr)==false) then begin
             fwdqty = blankval;
             fwdtotcp = blankval;
@@ -1465,16 +1464,16 @@ begin
           end else begin
             if (RepSpec.TransStr!=IHr.Location) then begin testf = false; end;
           end;
-        end;
+        end; 
         if (RepSpec.flags[14]!=0) then begin
-          if (IHr.StockAffectf==0) then begin
+          if (IHr.StockAffectf==0) then begin 
             if (Left(IHr.FileName,3)!="Fut") then begin
               testf = false;
             end;
           end;
         end else begin
           if (RepSpec.flags[11]==0) then begin
-            if (INr.ItemType==kItemTypeStocked) then begin
+            if (INr.ItemType==kItemTypeStocked) then begin 
               if (IHr.StockAffectf==0) then begin testf = false; end;
               if (IHr.ItemType!=kItemTypeStocked) then begin testf = false; end;
             end else begin
@@ -1482,7 +1481,7 @@ begin
             end;
           end else begin
             if (IHr.ItemType!=kItemTypeStocked) or (IHr.StockAffectf==0) then begin testf = false; end;
-/*
+/*            
 StartFormat(15);
  OutString(0,0,"jarek",false);
  OutString(50,0,IHr.FileName,false);
@@ -1554,8 +1553,8 @@ EndFormat;
       end else begin
         PrintItemTotals_Overview_PerLocation(RepSpec,INr,fwdqty,fwdcp,fwdtotcp,itemqin,itemqout,itemcpin,itemcpout);
       end;
-    end;
-LINwhileend:;
+    end;    
+LINwhileend:;  
   end;
   return;
 end;
@@ -1692,7 +1691,7 @@ begin
   ItemHistHeader(RepSpec);
   Gray_Divider(0,1);
   switch (RepSpec.flags[15]) begin // Per Location
-    case 0:
+    case 0: 
       if (frloc!=toloc) then begin
         StartFormat(15);
          OutString(0,0,USetStr(11687),false);
@@ -1723,7 +1722,7 @@ begin
         if (testf) then begin
           SetSumBlankVals(LocSumQFwd,LocSumCPFwd,LocSumQIn,LocSumQOut,LocSumCPIn,LocSumCPOut,LocSumQ2);
           PrintLocation(Locr);
-          RepSpec.TransStr = Locr.Code;
+          RepSpec.TransStr = Locr.Code;          
           INrsRnRun(RepSpec,MSb,CAb,LocSumQFwd,LocSumQIn,LocSumQOut,LocSumCPFwd,LocSumCPIn,LocSumCPOut,LocSumQ2);
           PrintLocationTotals(RepSpec,Locr.Code,LocSumQFwd,LocSumCPFwd,LocSumQIn,LocSumQOut,LocSumCPIn,LocSumCPOut,LocSumQ2);
           SumTotals(LocSumQFwd,LocSumCPFwd,LocSumQIn,LocSumQOut,LocSumCPIn,LocSumCPOut,LocSumQ2,SumQFwd,SumCPFwd,SumQIn,SumQOut,SumCPIn,SumCPOut,SumQ2);
@@ -1731,8 +1730,8 @@ begin
       end;
       RepSpec.TransStr = "";
       PrintLocationTotals(RepSpec,"",SumQFwd,SumCPFwd,SumQIn,SumQOut,SumCPIn,SumCPOut,SumQ2);
-  end;
-LINrsRn:;
-  EndJob;
+  end;  
+LINrsRn:;  
+  EndJob; 
   return;
 end;

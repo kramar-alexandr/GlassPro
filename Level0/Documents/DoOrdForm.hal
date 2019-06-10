@@ -1,3 +1,5 @@
+external updating procedure FormSetDocumentFilename(string);
+external function string 60 AddStringToStringList(string,string);
 external function Boolean UseTaxTemplatesforTaxCalc();
 external procedure PrintTaxMatrix_ORVc(record ORVc,record DocVc,record LangNrVc,record SysFormatBlock,Boolean,record RcVc);
 external procedure PrintCurrencyCode(string,string);
@@ -82,15 +84,15 @@ global
 procedure PrintSalesContract(LongInt ORCONr)
 begin
   record ORCOVc ORCOr;
-
+  
   if (ORCONr>0) then begin
     ORCOr.SerNr = ORCONr;
     ReadFirstMain(ORCOr,1,true);
-    OUTFORMFIELD("F_ORCONR",ORCOr.SerNr);
-    OUTFORMFIELD("F_ORCODATE",ORCOr.CODate);
-    OUTFORMFIELD("F_ORCOPAYDEAL",ORCOr.PayDeal);
-    OUTFORMFIELD("F_ORCOTYPE",ORCOr.Type);
-  end;
+    OUTFORMFIELD("F_ORCONR",ORCOr.SerNr);  
+    OUTFORMFIELD("F_ORCODATE",ORCOr.CODate);  
+    OUTFORMFIELD("F_ORCOPAYDEAL",ORCOr.PayDeal);  
+    OUTFORMFIELD("F_ORCOTYPE",ORCOr.Type);  
+  end;  
   return;
 end;
 
@@ -108,7 +110,7 @@ begin
     end;
     notenr = notenr + 1;
   end;
-LORPrintNote:;
+LORPrintNote:;  
   return;
 end;
 
@@ -117,7 +119,7 @@ procedure ORVat(Integer stp,Integer incvat,Integer NoTAXonVAT,Integer exportflag
 BEGIN
   Integer rn;
   val tax1;
-
+  
   vatprcp = blankval;
   vatvalp = blankval;
   vatexclprc = blankval;
@@ -135,7 +137,7 @@ BEGIN
           if (GetVATincl(vatcode,vatinclprc,rn)) then begin
           end;
         end;
-      otherwise
+      otherwise 
         Mul2VAT(vatcode,rowsump,vatvalp,vatprcp,incvat);
         if (GetVAT2(vatcode,vatexclprc,rn,0)) then begin
         end;
@@ -151,7 +153,7 @@ procedure GetSupplier(string artcode,string location,var record CUVc VEp)
 BEGIN
   record PIVc PIr;
   Boolean res;
-
+  
   RecordClear(VEp);
   PIr.ItemCode = artcode;
   PIr.Location = location;
@@ -174,7 +176,7 @@ Integer CountOrderRows(record ORVc ORr)
 BEGIN
   Integer i,rwcnt;
   row ORVc ORrw;
-
+  
   rwcnt = MatRowCnt(ORr);
   for (i=0;i<rwcnt;i=i+1) begin
     MatRowGet(ORr,i,ORrw);
@@ -217,7 +219,7 @@ BEGIN
   totvolume = blankval;
   totweight = blankval;
   totcombase2sum = blankval;
-  SetupVATBase(nodiscVATr,vatcnt);
+  SetupVATBase(nodiscVATr,vatcnt);          
   for (i=0;i<rwcnt;i=i+1) begin
     MatRowGet(ORr,i,ORrw);
     SetRowStyle(Docr,"ORVc",ORrw.stp,ORrw.ArtCode,ORrw.Sum);
@@ -227,24 +229,24 @@ BEGIN
     case kInvoiceRowTypeSubtotal:
       PrintValueInclZero("F_BELOPP",ORrw.Sum,M4Val,LangNrr,SysFormatRec,false);
       PrintValueInclZero("F_SUBTOTALAMOUNT",ORrw.Sum,M4Val,LangNrr,SysFormatRec,false);
-      OUTFORMFIELD("F_SPECIFIKATION",ORrw.Spec);
+      OUTFORMFIELD("F_SPECIFIKATION",ORrw.Spec); 
       OutFormImage(dummyINr);
-      EndFormRow;
+      EndFormRow;        
     case kInvoiceRowTypeHeader:
-      OUTFORMFIELD("F_SPECIFIKATION",ORrw.Spec);
+      OUTFORMFIELD("F_SPECIFIKATION",ORrw.Spec);    
       OutFormImage(dummyINr);
-      EndFormRow;
+      EndFormRow;        
     case kInvoiceRowTypePerceptionTax:
       OUTFORMFIELD("F_ROWNAME",USetStr(8108));
       OUTFORMFIELD("F_REGIONROW",ORrw.Region);
       Regionr.Code = ORrw.Region;
       ReadFirstMain(Regionr,1,true);
       OUTFORMFIELD("F_REGIONNAMEROW",Regionr.Name);
-      OUTFORMFIELD("F_SPECIFIKATION",ORrw.Spec);
+      OUTFORMFIELD("F_SPECIFIKATION",ORrw.Spec); 
       OUTFORMFIELD("F_SALESACC",ORrw.SalesAcc);
-      PrintValue("F_TAX2PRC",ORrw.TAX2Prc,M4Val,LangNrr,SysFormatRec,false);
-      PrintValue("F_BELOPP",ORrw.Sum,M4Val,LangNrr,SysFormatRec,false);
-      EndFormRow;
+      PrintValue("F_TAX2PRC",ORrw.TAX2Prc,M4Val,LangNrr,SysFormatRec,false);          
+      PrintValue("F_BELOPP",ORrw.Sum,M4Val,LangNrr,SysFormatRec,false);        
+      EndFormRow;        
     case kInvoiceRowTypeNormal:
 LkInvoiceRowTypeNormal:;
       //EBS -->
@@ -275,7 +277,7 @@ LkInvoiceRowTypeNormal:;
       MulVATIV(ORrw.VATCode,ORrw.Sum,vatval,t,ORr.InclVAT,ORr.NoTAXonVAT);
       if (vatval<>0) or (ORrw.Sum!=0) then begin
         vatval = Round(vatval,GetVATRoundModeRB);
-      end;
+      end;    
 //      if (vatval==0) then begin vatval = blankval; end;
       if (ReadFirstItem(ORrw.ArtCode,INr,true,false)) then begin
       end;
@@ -320,7 +322,7 @@ LkInvoiceRowTypeNormal:;
         end;
         PrintValue("F_BASPRIS",t,M423Val,LangNrr,SysFormatRec,false);
       end;
-
+      
       OUTFORMFIELD("F_COMMODITYCODE",INr.EUCodex);
       OUTFORMFIELD("F_ALTERNATIVECODE",INr.AlternativeCode);
       OUTFORMFIELD("F_CPSCODE",INr.CPSCode);
@@ -340,16 +342,16 @@ LkInvoiceRowTypeNormal:;
       t = ORrw.Quant*INr.Volume;
       if (t==0) then begin t = blankval; end;
       PrintValue("F_ROWVOLUME",t,M4Qty,LangNrr,SysFormatRec,false);
-      SetConversionFields(INr,ORrw.Quant,qtyconv1,qtyconv2,qtyconv3);
+      SetConversionFields(INr,ORrw.Quant,qtyconv1,qtyconv2,qtyconv3);      
       PrintValue("F_CONVERSION1",qtyconv1,M4UVal,LangNrr,SysFormatRec,false);
       PrintValue("F_CONVERSION2",qtyconv2,M4UVal,LangNrr,SysFormatRec,false);
       PrintValue("F_CONVERSION3",qtyconv3,M4UVal,LangNrr,SysFormatRec,false);
       PrintValue("F_CONVERSIONVAL1",INr.Conversion1,M4UVal,LangNrr,SysFormatRec,false);
       PrintValue("F_CONVERSIONVAL2",INr.Conversion2,M4UVal,LangNrr,SysFormatRec,false);
-
-
-      OUTFORMFIELD("F_SOURCE",ORrw.Source);
-      OUTFORMFIELD("F_KOSTPRIS",ORrw.BasePrice);
+      
+      
+      OUTFORMFIELD("F_SOURCE",ORrw.Source);      
+      OUTFORMFIELD("F_KOSTPRIS",ORrw.BasePrice);      
       OUTFORMFIELD("F_ROWWIDTH",ORrw.UnitXval);
       OUTFORMFIELD("F_ROWHEIGHT",ORrw.UnitYval);
       OUTFORMFIELD("F_ROWDEPTH",ORrw.UnitZval);
@@ -361,14 +363,14 @@ LkInvoiceRowTypeNormal:;
       if (FIELDINFORM("F_ROWOBJEKTTEXT")) then begin
         GetObjectText(ORrw.Objects,tstr);
         OUTFORMFIELD("F_ROWOBJEKTTEXT",tstr);
-      end;
+      end;        
       OrderCalcCommisionValue(ORr,ORrw.Quant,ORrw.Price,t);
       t = t + ORrw.Price;
       t = MulRateToBase2(ORr.CurncyCode,t,ORr.FrRate,ORr.ToRateB1,ORr.ToRateB2,ORr.BaseRate1,ORr.BaseRate2,DefaultCurRoundOff);
       PrintValue("F_COMROWPRICEBASECURNCY2",t,M4Val,LangNrr,SysFormatRec,false);
       totcombase2sum = totcombase2sum + t;
-
-
+      
+       
       if (FIELDINFORM("F_COMBASE2ROWTOT")) then begin
         OrderCalcCommisionValue(ORr,ORrw.Quant,ORrw.Price,t);
         t = t + ORrw.Price;
@@ -393,15 +395,15 @@ LkInvoiceRowTypeNormal:;
       if (FIELDINFORM("F_ARTNRBC39")) then begin
         ItemBC39(ORrw.ArtCode,tstr);
         OUTFORMFIELD("F_ARTNRBC39",tstr);
-      end;
+      end;  
       if (FIELDINFORM("F_ARTNRBCEAN")) then begin
         ItemBCEAN(ORrw.ArtCode,tstr);
         OUTFORMFIELD("F_ARTNRBCEAN",tstr);
-      end;
+      end;  
       if (FIELDINFORM("F_ARTNRBCEAN13")) then begin
-        ItemBCEAN13(ORrw.ArtCode,tstr);
+        ItemBCEAN13(ORrw.ArtCode,tstr);      
         OUTFORMFIELD("F_ARTNRBCEAN13",tstr);
-      end;
+      end;  
       OUTFORMFIELD("F_ROWLOCATION",ORrw.Location);
       OUTFORMFIELD("F_ROWPICKINGDATE",ORrw.PickingDate);
       OUTFORMFIELD("F_ROWPICKINGTIME",ORrw.PickingTime);
@@ -484,18 +486,18 @@ LkInvoiceRowTypeNormal:;
           t = MulRateToBase2(ORr.CurncyCode,v,ORr.FrRate,ORr.ToRateB1,ORr.ToRateB2,ORr.BaseRate1,ORr.BaseRate2,DefaultCurRoundOff);
           PrintValue("F_BASE2ROWBASE",t,M4Val,LangNrr,SysFormatRec,false);
         end;
-      end;
+      end;      
       OUTFORMFIELD("F_RECEPY",ORrw.Recepy);
       OUTFORMFIELD("F_MOMSKOD",ORrw.VATCode);
       if (nonblank(ORrw.RvrsVATCode)) then begin
         OUTFORMFIELD("F_REVERSEVATCODE",ORrw.RvrsVATCode);
         if (HasLocalization("GBR,LIT")) then begin
-          if (blank(ORr.Sum3)) then begin
+          if (nonblank(ORr.RvrsVAT) and nonblank(ORr.Sum3)) then begin
             OUTFORMFIELD("F_ROWREVERSEVATTEXT",USetStr(39370));
           end;
         end;
       end;
-      SelectUnitText(ORr.LangCode,INr.Unittext,tstr);
+      SelectUnitText(ORr.LangCode,INr.Unittext,tstr);    
       OUTFORMFIELD("F_ENHET",tstr);
       t = Round(ORrw.Sum/ORrw.Quant,DefaultRoundMode);
       PrintValue("F_UNITPRICEINCDISC",t,M4Val,LangNrr,SysFormatRec,false);
@@ -511,39 +513,39 @@ LkInvoiceRowTypeNormal:;
           t = INr.Weight*(ORrw.Quant-ORrw.Shipd1);
           PrintValue("F_KVARATTLEVVIKT",t,M4UVal,LangNrr,SysFormatRec,false);
         end;
-      end;
+      end;  
       tstr = -ORrw.vRebate;
       if (nonblank(tstr)) then begin
         tstr = tstr & "%";
         OUTFORMFIELD("F_RABATTSPEC",tstr);
       end;
-
+      
       if (FIELDINFORM("F_PRICEFACTOR")) then begin
         if (ORrw.PriceFactor==blankval) then begin
           OUTFORMFIELD("F_PRICEFACTOR","");
         end else begin
           PrintValue("F_PRICEFACTOR",ORrw.PriceFactor,M4UVal,LangNrr,SysFormatRec,false);
         end;
-      end;
+      end;  
       if (FIELDINFORM("F_UNITPRICE")) then begin
         if (ORrw.PriceFactor==blankval) then begin
           PrintValue("F_UNITPRICE",ORrw.Price,M423Val,LangNrr,SysFormatRec,false);
         end else begin
           PrintValue("F_UNITPRICE",ORrw.Price/ORrw.PriceFactor,M423Val,LangNrr,SysFormatRec,false);
         end;
-      end;
+      end;  
       PrintValue("F_AMOUNTROUNDED",Round(ORrw.Sum,DefaultRoundMode),M4Val,LangNrr,SysFormatRec,false);
       if (MainStockRec.UnitConvCalc==0) then begin
         t = ORrw.Quant*ORrw.Coefficient;
       end else begin
         t = ORrw.Quant/ORrw.Coefficient;
       end;
-      PrintValue("F_OUTQTY",t,M4Qty,LangNrr,SysFormatRec,false);
-  		if (MainStockRec.UnitConvCalc==0) then begin
+      PrintValue("F_OUTQTY",t,M4Qty,LangNrr,SysFormatRec,false);      
+      if (MainStockRec.UnitConvCalc==0) then begin
         tstr = ValToString(ORrw.Quant*INr.UnitCoefficient,M4UVal,SysFormatRec.thousSep,SysFormatRec.decimalPt,LangNrr.CutDecimals);
-		  end else begin
+      end else begin
         tstr = ValToString(ORrw.Quant/INr.UnitCoefficient,M4UVal,SysFormatRec.thousSep,SysFormatRec.decimalPt,LangNrr.CutDecimals);
-  		end;
+      end;
       OUTFORMFIELD("F_ANTAL2",tstr);
       PrintValue("F_DIFFROWVALUE",(ORr.DiscPerc*ORrw.Sum)/100,M4Val,LangNrr,SysFormatRec,false);
       location = ORrw.Location;
@@ -558,7 +560,7 @@ LkInvoiceRowTypeNormal:;
         SelectUnitText(ORr.LangCode,ORrw.UnitCode,tstr);
         OUTFORMFIELD("F_ENHETLEV",tstr);
         OUTFORMFIELD("F_SPECIFIKATIONLEV",ORrw.Spec);
-      end;
+      end;      
       ORVat(1,ORr.InclVAT,ORr.NoTAXonVAT,ORr.ExportFlag,ORrw.VATCode,ORrw.Sum,vatprc,vatval,vatexclprc,vatinclprc,rowtax);
       PrintValue("F_ROWTAXVAL",rowtax,M4Val,LangNrr,SysFormatRec,false);
       PrintValue("F_ROWVATVAL",vatval,M4Val,LangNrr,SysFormatRec,false);
@@ -578,7 +580,7 @@ LkInvoiceRowTypeNormal:;
       totnodiscount = totnodiscount + ORrw.Quant * ORrw.Price;
       PrintValue("F_ROWSUMWITHVAT",ORrw.Sum+vatval,M4Val,LangNrr,SysFormatRec,false);
 
-      AddVATBase(nodiscVATr,ORrw.VATCode,ORrw.Quant * ORrw.Price,blankval,vatcnt,ORr.InclVAT,ORr.NoTAXonVAT);
+      AddVATBase(nodiscVATr,ORrw.VATCode,ORrw.Quant * ORrw.Price,blankval,vatcnt,ORr.InclVAT,ORr.NoTAXonVAT);      
 
       t = ORrw.Sum;
       if (ORr.InclVAT>0) then begin
@@ -595,9 +597,9 @@ LkInvoiceRowTypeNormal:;
       PrintUserDefinedItemFields(INr.UserStr1,INr.UserStr2,INr.UserStr3,INr.UserStr4,INr.UserStr5,INr.UserDate1,INr.UserDate2,INr.UserDate3,INr.UserVal1,INr.UserVal2,INr.UserVal3);
       PrintValueInclZero("F_REMAININGQTY",ORrw.Quant-ORrw.Shipd1,M4UVal,LangNrr,SysFormatRec,false);
       PrintValueInclZero("F_LEVANTAL",ORrw.Shipd1,M4UVal,LangNrr,SysFormatRec,false);
-      PrintValueInclZero("F_ORDQTY",ORrw.Quant,M4UVal,LangNrr,SysFormatRec,false);
+      PrintValueInclZero("F_ORDQTY",ORrw.Quant,M4UVal,LangNrr,SysFormatRec,false);      
       OutFormImage(INr);
-      EndFormRow;
+      EndFormRow;        
     end;
   end;
   //EBS -->
@@ -634,22 +636,22 @@ BEGIN
   record RoundBlock Rb;
   boolean negamountf;
   record RcVc RepSpec;
-
+  
   BlockLoad(Rb);
   RecordClear(VATr);
-  SetupVATBase(VATr,vatcnt);
+  SetupVATBase(VATr,vatcnt);          
   swoutfisc = blankval;
   totcost = blankval;
   rwcnt = MatRowCnt(ORr);
   for (i=0;i<rwcnt;i=i+1) begin
     MatRowGet(ORr,i,ORrw);
-    if (ORrw.stp==1) or (ORrw.stp==kInvoiceRowTypeStructuredItemComponent) then begin
+    if (ORrw.stp==1) or (ORrw.stp==kInvoiceRowTypeStructuredItemComponent) then begin      
       swoutfisc = swoutfisc + ORrw.Quant*ORrw.Price;
       switch (ITType(ORrw.ArtCode)) begin
-        case 0:
+        case 0: 
           totgoods = totgoods + ORrw.Sum;
           totdiscnopack = totdiscnopack + (ORrw.Quant*ORrw.Price - ORrw.Sum);
-        case 1:
+        case 1: 
           tottrans = tottrans + ORrw.Sum;
           totdiscnopack = totdiscnopack + (ORrw.Quant*ORrw.Price - ORrw.Sum);
         case 2: totpack = totpack + ORrw.Sum;
@@ -657,21 +659,21 @@ BEGIN
       totsubtotwdisc = totsubtotwdisc + ORrw.Quant*ORrw.Price;
       totcost = totcost + ORrw.Quant*ORrw.BasePrice;
       totreb = totreb + (ORrw.Quant*ORrw.Price - ORrw.Sum);
-      AddVATBase(VATr,ORrw.VATCode,ORrw.Sum,blankval,vatcnt,ORr.InclVAT,ORr.NoTAXonVAT);
+      AddVATBase(VATr,ORrw.VATCode,ORrw.Sum,blankval,vatcnt,ORr.InclVAT,ORr.NoTAXonVAT);      
       if (ORrw.vRebate!=0) then begin
-        totdisc = totdisc + (ORrw.Quant*ORrw.Price - ORrw.Sum);
+        totdisc = totdisc + (ORrw.Quant*ORrw.Price - ORrw.Sum);        
       end;
-    end;
-  end;
+    end;  
+  end;    
   if (UseTaxTemplatesforTaxCalc==false) then begin
   for (i=0;i<vatcnt;i=i+1) begin
-    MatRowGet(VATr,i,VATrw);
+    MatRowGet(VATr,i,VATrw);    
     MulVATIV(VATrw.VATCode,VATrw.DebVal,vatv,t1,ORr.InclVAT,ORr.NoTAXonVAT);
     if (vatv!=0) or (nonblank(VATrw.DebVal)) then begin
       vatval = Round(vatv,GetVATRoundModeRB);
       totvatval = totvatval + vatval;
       totvatbase = totvatbase + VATrw.DebVal;
-      totrowtot = totrowtot + VATrw.DebVal;
+      totrowtot = totrowtot + VATrw.DebVal;    
       if (ORr.InclVAT>0) then begin
         totvatbase = totvatbase - vatval;
         vatbase = VATrw.DebVal - vatval;
@@ -682,7 +684,7 @@ BEGIN
         vattot = VATrw.DebVal + vatval;
       end;
 //      CashDiscVAT(vatval,ORr.pdvrebt,Rb,cdiscvat);
-      OUTFORMFIELD("F_MOMSKODTOTAL",VATrw.VATCode);
+      OUTFORMFIELD("F_MOMSKODTOTAL",VATrw.VATCode);    
       if (FIELDINFORM("F_VATBASE")) then begin
         valtyp = M4Val;
         GetFieldArgument(Docr,F_VATBASE,tstr);
@@ -690,7 +692,7 @@ BEGIN
           valtyp = M4NegVal;
         end;
         PrintValueInclZero("F_VATBASE",vatbase,valtyp,LangNrr,SysFormatRec,false);
-      end;
+      end;    
       PrintValueInclZero("F_SUMMAMEDMOMS",VATrw.DebVal,valtyp,LangNrr,SysFormatRec,false);
       if (FIELDINFORM("F_VATVAL")) then begin
         valtyp = M4Val;
@@ -775,10 +777,10 @@ BEGIN
             valtyp = M4NegVal;
           end;
           PrintValueInclZero("F_BASE2VATTOT",Round(t,GetVATRoundMode(Rb)),valtyp,LangNrr,SysFormatRec,false);
-        end;
+        end;    
       end;
       GetVATproc(VATrw.VATCode,0,t);
-      PrintValue("F_VATEXCLPRC",t,M4Val,LangNrr,SysFormatRec,false);
+      PrintValueInclZero("F_VATEXCLPRC",t,M4Val,LangNrr,SysFormatRec,false);    
       if (HasLocalization("POL")) then begin//vatPolish
         if (GetVAT2(VATrw.VATCode,vatexclprc,rn,0)) then begin
         end;
@@ -802,7 +804,7 @@ BEGIN
         if (blank(tstr)) then begin
           tstr = USetStr(1244);
         end;
-        OUTFORMFIELD("F_VATPRC",tstr);
+        OUTFORMFIELD("F_VATPRC",tstr);    
       end else begin
         tstr = ValToString(t,M4Val,SysFormatRec.thousSep,SysFormatRec.decimalPt,LangNrr.CutDecimals);
         if (blank(tstr)) then begin
@@ -816,22 +818,22 @@ BEGIN
   end;
   end else begin
     PrintTaxMatrix_ORVc(ORr,Docr,LangNrr,SysFormatRec,negamountf,RepSpec);
-  end;
+  end;  
   if (FIELDINFORM("F_TOTALGOODS")) then begin
     PrintValue("F_TOTALGOODS",totgoods,M4Val,LangNrr,SysFormatRec,false);
-  end;
+  end;        
   if (FIELDINFORM("F_TOTTRANSPORT")) then begin
     PrintValue("F_TOTTRANSPORT",tottrans,M4Val,LangNrr,SysFormatRec,false);
-  end;
+  end;        
   if (FIELDINFORM("F_TOTPACKAGES")) then begin
     PrintValue("F_TOTPACKAGES",totpack,M4Val,LangNrr,SysFormatRec,false);
-  end;
+  end;        
   if (FIELDINFORM("F_SUBTOTALWITHOUTPACKAGES")) then begin
     PrintValue("F_SUBTOTALWITHOUTPACKAGES",totgoods + tottrans,M4Val,LangNrr,SysFormatRec,false);
-  end;
+  end;        
   if (FIELDINFORM("F_TOTALDISCOUNTNOPACK")) then begin
     PrintValue("F_TOTALDISCOUNTNOPACK",totdiscnopack,M4Val,LangNrr,SysFormatRec,false);
-  end;
+  end;        
   totvatval = Round(totvatval,GetVATRoundMode(Rb));
   totvatbase = Round(totvatbase,GetTotalRoundMode(Rb));
   totrowtot = Round(totrowtot,GetTotalRoundMode(Rb));
@@ -844,7 +846,7 @@ BEGIN
   PrintValue("F_SUBTOTALWITHOUTDISCOUNT",swoutfisc,M4Val,LangNrr,SysFormatRec,false);
   PrintValue("F_TOTALCOST",totcost,M4Val,LangNrr,SysFormatRec,false);
 //  PrintValue("F_TOTALINPRICE",totinprice,M4Val,LangNrr,SysFormatRec,false);
-  RETURN;
+  RETURN;        
 END;
 
 procedure PrintOrder(string formcode,record RcVc RepSpec,record ORVc ORr,record SysFormatBlock SysFormatRec,record LangNrVc LangNrr)
@@ -867,7 +869,7 @@ BEGIN
   record BankVc Bankr;
 
   rwcnt2 = CountOrderRows(ORr);
-  CommonDocumentFields(RepSpec);
+  CommonDocumentFields(RepSpec);    
   NumberofDocumentPages(formcode,rwcnt2);
   OUTFORMFIELD("F_DOCTYPE",USetStr(23456));
 //  OUTFORMFIELD("F_DOCTYPE",GetRegisterName());
@@ -898,15 +900,15 @@ BEGIN
   if (FIELDINFORM("F_RUSPAYNR")) then begin
     RussianPaymentNr(ORr.SerNr,tstr);
     OUTFORMFIELD("F_RUSPAYNR",tstr);
-  end;
+  end;  
   CalcORTotals(ORr,Docr,SysFormatRec,LangNrr);
-
+  
   tstr = GetJwl_CustomerName(ORr.CustCode);
-  OUTFORMFIELD("F_KUNDNAMNJWL",tstr);
-
-  OUTFORMFIELD("F_CREDCARD",ORr.CreditCard);
-  OUTFORMFIELD("F_AUTHORISATION",ORr.AuthorizationCode);
-  OUTFORMFIELD("F_PROJEKTNUMMER",ORr.PRCode);
+  OUTFORMFIELD("F_KUNDNAMNJWL",tstr);  
+  
+  OUTFORMFIELD("F_CREDCARD",ORr.CreditCard);  
+  OUTFORMFIELD("F_AUTHORISATION",ORr.AuthorizationCode);  
+  OUTFORMFIELD("F_PROJEKTNUMMER",ORr.PRCode);  
   GetPRName(ORr.PRCode,tstr);
   OUTFORMFIELD("F_PROJECTNAME",tstr);
   OUTFORMFIELD("F_DOWNPAYSENT",ORr.DownPaySent);
@@ -927,7 +929,7 @@ BEGIN
   OUTFORMFIELD("F_KUNDFRAKTNR",CUr.FreightNr);
   OUTFORMFIELD("F_REGNUMBER1",CUr.RegNr1);
   OUTFORMFIELD("F_REGNUMBER2",CUr.RegNr2);
-  OUTFORMFIELD("F_CUSTOMEREMAIL",CUr.eMail);
+  OUTFORMFIELD("F_CUSTOMEREMAIL",CUr.eMail);     
   PrintCountryCode("F_CUCOUNTRYCODE",CUr.CountryCode)
   PrintPersonsCustomerDetails(ORr.SalesMan);
   PrintSignature(ORr.Sign);
@@ -953,7 +955,7 @@ BEGIN
   Userr.Code = ORr.SalesMan;
   if (ReadFirstMain(Userr,1,true)) then begin
   end;
-  OUTFORMFIELD("F_SALESMANEMAIL",Userr.emailAddr);
+  OUTFORMFIELD("F_SALESMANEMAIL",Userr.emailAddr); 
   OUTFORMFIELD("F_SAFTHASHCONTROL",SAFTHashControl(ORr.Hash));
   if (HasLocalization("PRT")) then begin
     OUTFORMFIELD("F_OFFICIALSERNO",GetOffSerNrIVJournalID(ORr.SerNr,"ORVc",ORr.OfficialSerNr) & " " & ORr.OfficialSerNrSerie & "/" & Right(ORr.OfficialSerNr,len(ORr.OfficialSerNr)-len(ORr.OfficialSerNrSerie)));
@@ -962,10 +964,10 @@ BEGIN
   end;
   OUTFORMFIELD("F_RECIPIENTGLN",ORr.RecipientGLN);
   OUTFORMFIELD("F_GOODSRECIPIENTGLN",ORr.DelRecipientGLN);
-
-  PrintValue("F_AMOUNTWITHOUTDISCSUM",ORr.Sum4-ORr.DiscSum,M4Val,LangNrr,SysFormatRec,false);
-  PrintValue("F_DISCSUM",ORr.DiscSum,M4Val,LangNrr,SysFormatRec,false);
-  PrintValue("F_DISCPERC",ORr.DiscPerc,M4Val,LangNrr,SysFormatRec,false);
+  
+  PrintValueInclZero("F_AMOUNTWITHOUTDISCSUM",ORr.Sum4-ORr.DiscSum,M4Val,LangNrr,SysFormatRec,false);
+  PrintValueInclZero("F_DISCSUM",ORr.DiscSum,M4Val,LangNrr,SysFormatRec,false);
+  PrintValueInclZero("F_DISCPERC",ORr.DiscPerc,M4Val,LangNrr,SysFormatRec,false);
   OUTFORMFIELD("F_ORDERNUMMER",ORr.SerNr);
   OUTFORMFIELD("F_FAKTURANUMMER",ORr.SerNr);
   OUTFORMFIELD("F_KUNDNR",ORr.CustCode);
@@ -1017,7 +1019,7 @@ BEGIN
 //  OUTFORMFIELD("F_LEVADRESS2",tstr);
 
   OutAddress("F_LEVADRESS2",tstr,tstr1,tstr2,tstr3,tstr4,tstr5);
-
+  
   OUTFORMFIELD("F_KUNDNAMN",ORr.Addr0);
   OUTFORMFIELD("F_ADRESS1",ORr.Addr1);
   OUTFORMFIELD("F_ADRESS2",ORr.Addr2);
@@ -1027,7 +1029,7 @@ BEGIN
   if (FIELDINFORM("F_VILLKOR")) then begin
     GetPayDealText(ORr.PayDeal,ORr.LangCode,tstr);
     OUTFORMFIELD("F_VILLKOR",tstr);
-  end;
+  end;       
   OUTFORMFIELD("F_VARREFERENS",ORr.OurContact);
   OUTFORMFIELD("F_ERREFERENS",ORr.CustContact);
   OUTFORMFIELD("F_PLANLEVDATUM",ORr.PlanShip);
@@ -1047,7 +1049,7 @@ BEGIN
   if (FIELDINFORM("F_SHIPTERMTEXT")) then begin
     GetShipDealText(ORr.ShipDeal,ORr.LangCode,tstr);
     OUTFORMFIELD("F_SHIPTERMTEXT",tstr);
-  end;
+  end;  
   OUTFORMFIELD("F_KUNDORDNR",ORr.CustOrdNr);
   OUTFORMFIELD("F_KOMMENTAR",ORr.Comment);
   OUTFORMFIELD("F_KOMMENTAR",ORr.Comment2);
@@ -1056,10 +1058,10 @@ BEGIN
   if (FIELDINFORM("F_SALJARNAMN")) then begin
     GetUserName(ORr.SalesMan,tstr);
     OUTFORMFIELD("F_SALJARNAMN",tstr);
-  end;
+  end;  
   if (FIELDINFORM("F_ATTBETALATEXT")) then begin
     ValToText(ORr.Sum4,M4Val,ORr.CurncyCode,ORr.LangCode,tstr);
-    OUTFORMFIELD("F_ATTBETALATEXT",tstr);
+    OUTFORMFIELD("F_ATTBETALATEXT",tstr);  
   end;
   PrintValue("F_FRAKT",ORr.FrPrice,M4Val,LangNrr,SysFormatRec,false);
   if (FIELDINFORM("F_FRAKTSEDELNR")) then begin
@@ -1068,20 +1070,24 @@ BEGIN
     OUTFORMFIELD("F_FRAKTSEDELNR",tstr);
   end;
   if (FIELDINFORM("F_ATTBETALA")) then begin
-    PrintValue("F_ATTBETALA",ORr.Sum4,M4Val,LangNrr,SysFormatRec,false);
+    PrintValueInclZero("F_ATTBETALA",ORr.Sum4,M4Val,LangNrr,SysFormatRec,false);
   end;
   if (FIELDINFORM("F_SUMMA")) then begin
-    PrintValue("F_SUMMA",ORr.Sum1,M4Val,LangNrr,SysFormatRec,false);
+    PrintValueInclZero("F_SUMMA",ORr.Sum1,M4Val,LangNrr,SysFormatRec,false);
   end;
   if (FIELDINFORM("F_MOMS")) then begin
-    PrintValue("F_MOMS",ORr.Sum3,M4Val,LangNrr,SysFormatRec,false);
-  end;
+    if (ORr.Sum1==0) then begin
+      PrintValueInclZero("F_MOMS",0,M4Val,LangNrr,SysFormatRec,false);
+    end else begin
+      PrintValueInclZero("F_MOMS",ORr.Sum3,M4Val,LangNrr,SysFormatRec,false);
+    end;
+  end; 
   if (FIELDINFORM("F_TOTALGP")) then begin
-    PrintValue("F_TOTALGP",ORr.TotGP,M4Val,LangNrr,SysFormatRec,false);
-  end;
-
+    PrintValueInclZero("F_TOTALGP",ORr.TotGP,M4Val,LangNrr,SysFormatRec,false);
+  end; 
+         
   tstr = "";
-  if (MatRowCnt(ORr)>0) then begin
+  if (MatRowCnt(ORr)>0) then begin  
     MatRowGet(ORr,0,ORrw);
     tstr = ORrw.ArtCode;
     if (FIELDINFORM("F_KFAKTURANR")) then begin
@@ -1105,7 +1111,7 @@ BEGIN
   if (FIELDINFORM("F_LEVBETVILLKORTEXT")) then begin
     GetPayDealText(VEr.VEPayDeal,VEr.LangCode,tstr);
     OUTFORMFIELD("F_LEVBETVILLKORTEXT",tstr);
-  end;
+  end;       
   OUTFORMFIELD("F_LEVSHIPTERM",VEr.VEShipDeal);
   if (FIELDINFORM("F_LEVSHIPTERMTEXT")) then begin
     GetShipDealText(VEr.VEShipDeal,VEr.LangCode,tstr);
@@ -1156,23 +1162,23 @@ BEGIN
   end;
   if (FIELDINFORM("F_COMBASE2TOPAY")) then begin
     t = MulRateToBase2(ORr.CurncyCode,ORr.SumIncCom,ORr.FrRate,ORr.ToRateB1,ORr.ToRateB2,ORr.BaseRate1,ORr.BaseRate2,DefaultCurRoundOff);
-    PrintValue("F_COMBASE2TOPAY",t,M4Val,LangNrr,SysFormatRec,false);
+    PrintValueInclZero("F_COMBASE2TOPAY",t,M4Val,LangNrr,SysFormatRec,false);
   end;
   if (FIELDINFORM("F_BASE1SUMMA")) then begin
     t = MulRateToBase1(ORr.CurncyCode,ORr.Sum1,ORr.FrRate,ORr.ToRateB1,ORr.ToRateB2,ORr.BaseRate1,ORr.BaseRate2,DefaultCurRoundOff);
-    PrintValue("F_BASE1SUMMA",t,M4Val,LangNrr,SysFormatRec,false);
+    PrintValueInclZero("F_BASE1SUMMA",t,M4Val,LangNrr,SysFormatRec,false);
   end;
   if (FIELDINFORM("F_BASE1BETALA")) then begin
     t = MulRateToBase1(ORr.CurncyCode,ORr.Sum4,ORr.FrRate,ORr.ToRateB1,ORr.ToRateB2,ORr.BaseRate1,ORr.BaseRate2,DefaultCurRoundOff);
-    PrintValue("F_BASE1BETALA",t,M4Val,LangNrr,SysFormatRec,false);
+    PrintValueInclZero("F_BASE1BETALA",t,M4Val,LangNrr,SysFormatRec,false);
   end;
   if (FIELDINFORM("F_BASE1MOMS")) then begin
     t = MulRateToBase1(ORr.CurncyCode,ORr.Sum3,ORr.FrRate,ORr.ToRateB1,ORr.ToRateB2,ORr.BaseRate1,ORr.BaseRate2,DefaultCurRoundOff);
-    PrintValue("F_BASE1MOMS",t,M4Val,LangNrr,SysFormatRec,false);
-  end;
+    PrintValueInclZero("F_BASE1MOMS",t,M4Val,LangNrr,SysFormatRec,false);
+  end;  
   if (FIELDINFORM("F_BASE2MOMS")) then begin
     t = MulRateToBase2(ORr.CurncyCode,ORr.Sum3,ORr.FrRate,ORr.ToRateB1,ORr.ToRateB2,ORr.BaseRate1,ORr.BaseRate2,DefaultCurRoundOff);
-    PrintValue("F_BASE2MOMS",t,M4Val,LangNrr,SysFormatRec,false);
+    PrintValueInclZero("F_BASE2MOMS",t,M4Val,LangNrr,SysFormatRec,false);
   end;
   if (FIELDINFORM("F_BASE2SUMMA")) then begin
     t = MulRateToBase2(ORr.CurncyCode,ORr.Sum1,ORr.FrRate,ORr.ToRateB1,ORr.ToRateB2,ORr.BaseRate1,ORr.BaseRate2,DefaultCurRoundOff);
@@ -1180,7 +1186,7 @@ BEGIN
   end;
   if (FIELDINFORM("F_BASE2BETALA")) then begin
     t = MulRateToBase2(ORr.CurncyCode,ORr.Sum4,ORr.FrRate,ORr.ToRateB1,ORr.ToRateB2,ORr.BaseRate1,ORr.BaseRate2,DefaultCurRoundOff);
-    PrintValue("F_BASE2BETALA",t,M4Val,LangNrr,SysFormatRec,false);
+    PrintValueInclZero("F_BASE2BETALA",t,M4Val,LangNrr,SysFormatRec,false);
   end;
 
   PrintValue("F_REVERSEVATAMOUNT",ORr.RvrsVAT,M4Val,LangNrr,SysFormatRec,false);
@@ -1195,41 +1201,41 @@ BEGIN
     end;
     if (HasLocalization("GBR")) then begin
       if (blank(ORr.Sum3)) then begin
-        OUTFORMFIELD("F_ROWREVERSEVATTEXT",USetStr(39372));
+        OUTFORMFIELD("F_REVERSEVATTEXT",USetStr(39372));
       end else begin
-        OUTFORMFIELD("F_ROWREVERSEVATTEXT",USetStr(39374));
+        OUTFORMFIELD("F_REVERSEVATTEXT",USetStr(39374));
       end;
     end;
   end;
-
+  
   PrintValue("F_SUMFREIGHT",ORr.Sum1-ORr.FrPrice,M4Val,LangNrr,SysFormatRec,false);
   PrintValue("F_TOPAYEXCLFREIGHT",ORr.Sum1-ORr.FrPrice+ORr.Sum3,M4Val,LangNrr,SysFormatRec,false);
 //  PrintFreightInfo(ORr.FreightCode);
   OUTFORMFIELD("F_OBJECT",ORr.Objects);
-  GetObjectText(ORr.Objects,tstr);
+  GetObjectText(ORr.Objects,tstr);  
   OUTFORMFIELD("F_OBJECTTEXT",tstr);
   if (FIELDINFORM("F_RATE")) then begin
-    GetFullCurncyRateText(true,tstr,ORr.FrRate,ORr.ToRateB1,ORr.ToRateB2,ORr.BaseRate1,ORr.BaseRate2);
+    GetFullCurncyRateText(true,tstr,ORr.FrRate,ORr.ToRateB1,ORr.ToRateB2,ORr.BaseRate1,ORr.BaseRate2);        
     OUTFORMFIELD("F_RATE",tstr);
-  end;
+  end;  
   if (FIELDINFORM("F_BASERATE")) then begin
-    GetFullCurncyRateText(false,tstr,ORr.FrRate,ORr.ToRateB1,ORr.ToRateB2,ORr.BaseRate1,ORr.BaseRate2);
+    GetFullCurncyRateText(false,tstr,ORr.FrRate,ORr.ToRateB1,ORr.ToRateB2,ORr.BaseRate1,ORr.BaseRate2);        
     OUTFORMFIELD("F_BASERATE",tstr);
-  end;
+  end;  
   if (FIELDINFORM("F_NROFITEMSINTEXT")) then begin
     IntToText(ORr.LangCode,CountNrofItemsOR(ORr),tstr);
-    OUTFORMFIELD("F_NROFITEMSINTEXT",tstr);
-  end;
+    OUTFORMFIELD("F_NROFITEMSINTEXT",tstr);  
+  end;  
   if (FIELDINFORM("F_AMOUNTINTEXTBASECUR1")) then begin
     t = MulRateToBase1(ORr.CurncyCode,ORr.Sum4,ORr.FrRate,ORr.ToRateB1,ORr.ToRateB2,ORr.BaseRate1,ORr.BaseRate2,DefaultCurRoundOff);
     PrintValToTextBaseCur(t,M4Val,ORr.LangCode,1,tstr);
-    OUTFORMFIELD("F_AMOUNTINTEXTBASECUR1",tstr);
-  end;
+    OUTFORMFIELD("F_AMOUNTINTEXTBASECUR1",tstr);  
+  end;  
   if (FIELDINFORM("F_AMOUNTINTEXTBASECUR2")) then begin
     t = MulRateToBase2(ORr.CurncyCode,ORr.Sum4,ORr.FrRate,ORr.ToRateB1,ORr.ToRateB2,ORr.BaseRate1,ORr.BaseRate2,DefaultCurRoundOff);
     PrintValToTextBaseCur(t,M4Val,ORr.LangCode,2,tstr);
-    OUTFORMFIELD("F_AMOUNTINTEXTBASECUR2",tstr);
-  end;
+    OUTFORMFIELD("F_AMOUNTINTEXTBASECUR2",tstr);  
+  end;  
   if (FIELDINFORM("F_ORT")) then begin
     if (nonblank(ORr.ShipAddr3)) then begin
       t2 = ORr.ShipAddr3;
@@ -1240,9 +1246,9 @@ BEGIN
         t2 = ORr.ShipAddr2;
       end;
     end;
-    SplitAddress(t2,t1,tstr);
-    OUTFORMFIELD("F_ORT",tstr);
-  end;
+    SplitAddress(t2,t1,tstr);  
+    OUTFORMFIELD("F_ORT",tstr);  
+  end;  
   if (FIELDINFORM("F_ORTMEDPOSTNR")) then begin
     if (nonblank(ORr.ShipAddr3)) then begin
       t2 = ORr.ShipAddr3;
@@ -1253,11 +1259,11 @@ BEGIN
         t2 = ORr.ShipAddr2;
       end;
     end;
-    OUTFORMFIELD("F_ORTMEDPOSTNR",tstr);
-  end;
-  BlockLoad(IIRec);
-  OUTFORMFIELD("F_RANTASATS",IIRec.IntRate);
-  OUTFORMFIELD("F_LOCATION",ORr.Location);
+    OUTFORMFIELD("F_ORTMEDPOSTNR",tstr);  
+  end;  
+  BlockLoad(IIRec);  
+  OUTFORMFIELD("F_RANTASATS",IIRec.IntRate);  
+  OUTFORMFIELD("F_LOCATION",ORr.Location);  
   OUTFORMFIELD("F_LOCATIONNAME",Locr.Name);
   OUTFORMFIELD("F_LOCCONTACT",Locr.Contact);
   OUTFORMFIELD("F_LOCPHONE",Locr.Phone);
@@ -1271,7 +1277,7 @@ BEGIN
   if (FIELDINFORM("F_DUEDATE")) then begin
     CalcDueDate(ORr.PayDeal,ORr.OrdDate,td);
     OUTFORMFIELD("F_DUEDATE",td);
-  end;
+  end;  
   LongDateToStr(ORr.OrdDate,SetDateOrder(ORr.LangCode),tstr);
   OUTFORMFIELD("F_FAKTURADATUM",tstr);
   OUTFORMFIELD("F_ORDERDATE",ORr.OrdDate);
@@ -1279,24 +1285,24 @@ BEGIN
   GetDateMonthInWords(ORr.OrdDate,tstr);
   OUTFORMFIELD("F_DATEMONTHINWORDS",tstr);
   OUTFORMFIELD("F_REFERENSNUMMER",ORr.RefStr);
-
+  
   if (FIELDINFORM("F_NOTE")) then begin
     GetFieldArgument(Docr,F_NOTE,tstr);
     ORPrintNote(ORr,tstr);
   end;
-  PrintOrderRows(RepSpec,Docr,ORr,LangNrr,SysFormatRec,totinprice,totweight,totvolume,totcombase2sum,totqty,totqty2,totnodiscount,rwcnt2);
+  PrintOrderRows(RepSpec,Docr,ORr,LangNrr,SysFormatRec,totinprice,totweight,totvolume,totcombase2sum,totqty,totqty2,totnodiscount,rwcnt2);  
   PrintValue("F_DISCSUMTOT",totnodiscount - ORr.Sum1 ,M4Val,LangNrr,SysFormatRec,false);
   PrintValue("F_TOTVOLUME",totvolume,M4Qty,LangNrr,SysFormatRec,false);
   PrintValue("F_TOTWEIGHT",totweight,M4Qty,LangNrr,SysFormatRec,false);
   PrintValue("F_TOTALINPRICE",totinprice,M4Val,LangNrr,SysFormatRec,false);
-  PrintValue("F_COMBASE2SUM",totcombase2sum,M4Val,LangNrr,SysFormatRec,false);
+  PrintValue("F_COMBASE2SUM",totcombase2sum,M4Val,LangNrr,SysFormatRec,false);        
   PrintValue("F_SUMMQTY",totqty,M4Qty,LangNrr,SysFormatRec,false);
   PrintValue("F_SUMMQTY2",totqty2,M4Qty,LangNrr,SysFormatRec,false);
   PrintSalesContract(ORr.ORCONr);
   OutFormImage(ORr);
   ORSetFax(CUr,ORr);
- LPrintOrder:;
-  RETURN;
+ LPrintOrder:;   
+  RETURN;        
 END;
 
 global
@@ -1306,12 +1312,14 @@ BEGIN
   row FormDefVc FDrw;
   record SysFormatBlock SysFormatRec;
   record LangNrVc LangNrr;
-  Integer i,rwcnt;
+  Integer i,rwcnt;  
   Boolean printf,langf;
   Integer intdocnr;
-  string 30 formcode,langcode;
-
-  BlockLoad(SysFormatRec);
+  string 30 formcode,langcode,fname;
+  transaction Boolean gPDFEmailf;
+  transaction string 255 gaPDFEmailFiles;
+    
+  BlockLoad(SysFormatRec);  
   FDr.repname = RepSpec.repname;
   FDr.shortname = RepSpec.shortname;
   if (ReadFirstMain(FDr,1,true)==false) then begin
@@ -1331,11 +1339,11 @@ BEGIN
   GetLangNr(ORr.LangCode,LangNrr);
   intdocnr = 1;
   printf = true;
-  while (printf) begin
+  while (printf) begin  
     formcode = "";
     for (i=rwcnt-1;i>=0;i=i-1) begin
       MatRowGet(FDr,i,FDrw);
-      if (FindFormcode(ORr.OKFlag,FDrw.Typ)) then begin
+      if (FindFormcode(ORr.OKFlag,FDrw.Typ)) then begin 
         if (Getformcode(i,FDrw.intdocnr,FDrw.FPCode,FDrw.UserGroup,FDrw.LangCode,FDrw.SerNr,ORr.SerNr,FDrw.PrintGroupCode,
                         langcode,intdocnr,"ORVc",formcode)) then
         begin
@@ -1345,9 +1353,18 @@ BEGIN
     end;
 LBREAKOrd:;
     if (nonblank(formcode)) then begin
+      if (gPDFEmailf) then begin
+        if (nonblank(gaPDFEmailFiles)) then begin
+          fname = "tmp/" & USetStr(1816) & " " & ORr.SerNr & "-" & formcode & ".pdf";
+        end else begin
+          fname = "tmp/" & USetStr(1816) & " " & ORr.SerNr & ".pdf";
+        end;
+        gaPDFEmailFiles = AddStringToStringList(gaPDFEmailFiles,fname);
+        qupdating.FormSetDocumentFilename(fname);
+      end;
       if (OpenForm(formcode)) then begin
         PrintOrder(formcode,RepSpec,ORr,SysFormatRec,LangNrr);
-
+        
         CloseForm;
       end else begin
         printf = false;
@@ -1361,7 +1378,7 @@ LBREAKOrd:;
     end;
     intdocnr = intdocnr + 1;
   end;
-LDoOrdForm:;
+LDoOrdForm:;  
   RETURN;
 END;
 
@@ -1372,12 +1389,12 @@ BEGIN
   row FormDefVc FDrw;
   record SysFormatBlock SysFormatRec;
   record LangNrVc LangNrr;
-  Integer i,rwcnt;
+  Integer i,rwcnt;  
   Boolean printf,langf;
   Integer intdocnr;
   string 30 formcode,langcode;
-
-  BlockLoad(SysFormatRec);
+    
+  BlockLoad(SysFormatRec);  
   FDr.repname = RepSpec.repname;
   FDr.shortname = RepSpec.shortname;
   if (ReadFirstMain(FDr,1,true)==false) then begin
@@ -1397,7 +1414,7 @@ BEGIN
   GetLangNr(ORr.LangCode,LangNrr);
   intdocnr = 1;
   printf = true;
-  while (printf) begin
+  while (printf) begin  
     formcode = "";
     for (i=rwcnt-1;i>=0;i=i-1) begin
       MatRowGet(FDr,i,FDrw);
@@ -1412,7 +1429,7 @@ BEGIN
 LBREAKOr2:;
     if (nonblank(formcode)) then begin
       if (OpenForm(formcode)) then begin
-        PrintOrder(formcode,RepSpec,ORr,SysFormatRec,LangNrr);
+        PrintOrder(formcode,RepSpec,ORr,SysFormatRec,LangNrr);        
         CloseForm;
       end else begin
         printf = false;

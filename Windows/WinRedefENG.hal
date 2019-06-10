@@ -121,6 +121,7 @@ begin
   EndWindow;
 end;
 
+/*
 window NatResourceTypeDClass:1
   wtag("language","ENG"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
@@ -164,5 +165,5 @@ begin
   MatCol(1,-110,"Packaging Category",0,PackagingCategory,false,SetSClass);
   EndMatrix;
   EndWindow;
-end;
+end;*/
 

@@ -26,7 +26,7 @@ end;
 
 global
 procedure PrintCustName(string filename,string transnr,integer colpos)
-BEGIN
+BEGIN 
   record IVVc IVr;
   record SHVc SHr;
   record PUVc PUr;
@@ -35,43 +35,43 @@ BEGIN
   record WSVc WSr;
   record ProdVc Prodr;
   integer l;
-
+  
   l = 11;
   switch (filename) begin
     case "IVVc":
       IVr.SerNr = transnr;
       if (ReadFirstMain(IVr,1,true)) then begin
-        OutStringID(colpos,"DblCUVc",Left(IVr.Addr0,l),false,IVr.CustCode);
+        OutStringID(colpos,"DblCUVc",Left(IVr.Addr0,l),false,IVr.CustCode);  
       end;
     case "SHVc":
       SHr.SerNr = transnr;
       if (ReadFirstMain(SHr,1,true)) then begin
-        OutStringID(colpos,"DblCUVc",Left(SHr.Addr0,l),false,SHr.CustCode);
+        OutStringID(colpos,"DblCUVc",Left(SHr.Addr0,l),false,SHr.CustCode);  
       end;
     case "PUVc":
       PUr.SerNr = transnr;
       if (ReadFirstMain(PUr,1,true)) then begin
-        OutStringID(colpos,"DblCUVc",Left(PUr.VEName,l),false,PUr.VECode);
+        OutStringID(colpos,"DblCUVc",Left(PUr.VEName,l),false,PUr.VECode);  
       end;
     case "RetVc":
       Retr.SerNr = transnr;
       if (ReadFirstMain(Retr,1,true)) then begin
-        OutStringID(colpos,"DblCUVc",Left(Retr.CustName,l),false,Retr.CustCode);
+        OutStringID(colpos,"DblCUVc",Left(Retr.CustName,l),false,Retr.CustCode);  
       end;
     case "RetPUVc":
       RetPUr.SerNr = transnr;
       if (ReadFirstMain(RetPUr,1,true)) then begin
-        OutStringID(colpos,"DblCUVc",Left(RetPUr.VEName,l),false,RetPUr.VECode);
-      end;
+        OutStringID(colpos,"DblCUVc",Left(RetPUr.VEName,l),false,RetPUr.VECode);  
+      end;   
     case "WSVc":
       WSr.SerNr = transnr;
       if (ReadFirstMain(WSr,1,true)) then begin
-        OutString(colpos,0,Left(WSr.Addr0,l),false);
+        OutString(colpos,0,Left(WSr.Addr0,l),false);  
       end;
     case "ProdVc":
       Prodr.SerNr = transnr;
       if (ReadFirstMain(Prodr,1,true)) then begin
-        OutString(colpos,0,Left(Prodr.RecName,l),false);
+        OutString(colpos,0,Left(Prodr.RecName,l),false);  
       end;
     otherwise
       OutString(colpos,0,"",false);
@@ -106,14 +106,14 @@ LLPrintItemHistHeaderExcel:;
         if ((RepSpec.ArtMode==0) or (RepSpec.ArtMode==3)) then begin
           StartFormat(15);
           OutString(0,0,USetStr(5007),false);
-          OutString(60,0,USetStr(5006),false);
-          OutString(115,0,USetStr(3080),false);
+          OutString(60,0,USetStr(5006),false);    
+          OutString(115,0,USetStr(3080),false);   
           if (RepSpec.flags[22]==1) then begin
-            OutString(170,0,USetStr(3084),false);
+            OutString(170,0,USetStr(3084),false);   
           end;
           if (RepSpec.flags[21]==1) then begin
             OutString(210,0,USetStr(9660)&"/"&USetStr(10476),false);
-          end;
+          end;   
           if (RepSpec.ArtMode==3) then begin
             OutString(300,0,USetStr(4997),false);
           end else begin
@@ -121,8 +121,8 @@ LLPrintItemHistHeaderExcel:;
               OutString(300,0,USetStr(5010),false);
             end;
           end;
-          if (RepSpec.flags[12]==1) then begin OutStringAdjustBiDi(375,0,USetStr(7593),true,M4Val,420); end;
-          if (RepSpec.flags[12]==2) then begin OutStringAdjustBiDi(375,0,USetStr(7594),true,M4Val,420); end;
+          if (RepSpec.flags[12]==1) then begin OutStringAdjustBiDi(375,0,USetStr(7593),true,M4Val,420); end;    
+          if (RepSpec.flags[12]==2) then begin OutStringAdjustBiDi(375,0,USetStr(7594),true,M4Val,420); end;     
           OutStringAdjustBiDi(410,0,USetStr(5009),true,M4Val,450);
           OutStringAdjustBiDi(480,0,USetStr(5011),true,M4Val,520);
           EndFormat;
@@ -130,22 +130,22 @@ LLPrintItemHistHeaderExcel:;
         if ((RepSpec.ArtMode==1) or (RepSpec.ArtMode==2)) then begin
           StartFormat(15);
           OutString(0,0,USetStr(5007),false);
-          OutString(60,0,USetStr(5006),false);
+          OutString(60,0,USetStr(5006),false);       
           if (RepSpec.flags[22]==1) then begin
-            OutString(115,0,USetStr(3080),false);
-            OutString(150,0,USetStr(3084),false);
+            OutString(115,0,USetStr(3080),false); 
+            OutString(150,0,USetStr(3084),false);   
           end else begin
-            OutString(135,0,USetStr(3080),false);
+            OutString(135,0,USetStr(3080),false); 
           end;
-          if (RepSpec.flags[21]==1) then begin
-            OutString(185,0,USetStr(9660)&"/"&USetStr(10476),false);
+          if (RepSpec.flags[21]==1) then begin   
+            OutString(185,0,USetStr(9660)&"/"&USetStr(10476),false);           
           end;
           if (HasMultiLocations) then begin
-            OutString(260,0,USetStr(5010),false);
+            OutString(260,0,USetStr(5010),false);      
           end;
-          OutStringAdjustBiDi(340,0,USetStr(5009),true,M4Val,350);
+          OutStringAdjustBiDi(340,0,USetStr(5009),true,M4Val,350);        
           if (UserCanAction("ViewCostPrice",true)) then begin
-            OutStringAdjustBiDi(400,0,USetStr(5013),true,M4Val,420);
+            OutStringAdjustBiDi(400,0,USetStr(5013),true,M4Val,420);       
             OutStringAdjustBiDi(480,0,USetStr(5015),true,M4Val,500);
           end;
           EndFormat;
@@ -194,17 +194,17 @@ begin
           case 0:
             StartFormat(15);
             OutString(0,0,USetStr(5007),false);
-            OutString(60,0,USetStr(5006),false);
-            OutString(115,0,USetStr(3080),false);
-            OutString(215,0,USetStr(9660)&"/"&USetStr(10476),false);
+            OutString(60,0,USetStr(5006),false);          
+            OutString(115,0,USetStr(3080),false);          
+            OutString(215,0,USetStr(9660)&"/"&USetStr(10476),false);               
             OutString(480,0,USetStr(5009),true);
             EndFormat;
           case 1:
             StartFormat(15);
             OutString(0,0,USetStr(5007),false);
-            OutString(60,0,USetStr(5006),false);
-            OutString(140,0,USetStr(3080),false);
-            OutString(200,0,USetStr(9660)&"/"&USetStr(10476),false);
+            OutString(60,0,USetStr(5006),false);           
+            OutString(140,0,USetStr(3080),false);          
+            OutString(200,0,USetStr(9660)&"/"&USetStr(10476),false);              
             OutString(300,0,USetStr(5009),true);
             OutString(380,0,USetStr(5013),true);
             OutString(480,0,USetStr(5015),true);
@@ -277,8 +277,8 @@ procedure ItemHistHeader(record RcVc RepSpec)
 BEGIN
   string 255 tstr;
   Integer rw ;
-
-  StartReportJob(USetStr(5001));
+  
+  StartReportJob(USetStr(5001));  
   rw = 1;
   HT2Per(RepSpec.sStartDate,RepSpec.sEndDate,tstr);
   Header(rw,tstr,1);
@@ -308,12 +308,12 @@ BEGIN
   end;
   if (RepSpec.flags[13]!=0) then begin
     Header(rw,USetStr(11691),0);
-  end;
+  end;  
   if ((RepSpec.ArtMode==0) or (RepSpec.ArtMode==3)) then begin
     tstr = USetStr(6656);
   end else begin
     tstr = USetStr(6655);
-  end;
+  end;  
   Header(rw,tstr,1);
   rw = rw + 1;
   if (RepSpec.flags[10]==0) then begin
@@ -331,7 +331,7 @@ BEGIN
   if (RepSpec.flags[14]!=0) then begin
     Header(rw,USetStr(11692),1);
     rw = rw + 1;
-  end;
+  end;  
   if ((RepSpec.ArtMode==0) or (RepSpec.ArtMode==3)) then begin
     if (RepSpec.flags[9]>0) then begin
       Header(rw,USetStr(11693+RepSpec.flags[12]),1);
@@ -345,11 +345,11 @@ BEGIN
     tstr = USetStr(11696) & ": " & RepSpec.f2;
     Header(rw,tstr,1);
     rw = rw + 1;
-  end;
+  end;  
   if (RepSpec.flags[15]!=0) then begin
     Header(rw,USetStr(11699),1);
     rw = rw + 1;
-  end;
+  end;  
   EndHeader;
   if (RepSpec.flags[15]==0) then begin
     PrintItemHistHeader(RepSpec);
@@ -370,7 +370,7 @@ begin
       otherwise
         if (RepSpec.flags[9]!=0) and (RepSpec.flags[9]!=2) then begin //EBS edit
           StartFormat(15);
-          OutString(15,"DblINVc",item,false);
+          OutString(15,"DblINVc",item,false);// Edit ************************** BPI Ukraine - KramarAlexandr - 05, 07 06 2019 y. at 4:13:22 PM
           OutString(100,0,name,false);
           OutString(300,0,unittext,false);
           EndFormat;
@@ -379,7 +379,7 @@ begin
           switch (RepSpec.ArtMode) begin
             case 0:
               OutString(200,0,USetStr(2492),false);
-              OutVal(380,0,fwdqty,M4UVal,true);
+              OutVal(380,0,fwdqty,M4UVal,true);   
               OutVal(480,0,fwdtotcp,M4UVal,true);
             case 1:
               OutString(200,0,USetStr(2492),false);
@@ -389,7 +389,7 @@ begin
           end;
           EndFormat;
         end;
-    end;
+    end; 
     itemheaderf = true;
   end;
   return;
@@ -412,7 +412,7 @@ begin
 LItemHistItemHeader:;
       if (RepSpec.ArtMode!=0) then begin
         StartFormat(15);
-        OutString(0,"DblINVc",item,false);
+        OutString(0,"DblINVc",item,false);// Edit ************************** BPI Ukraine - KramarAlexandr - 05, 07 06 2019 y. at 4:13:32 PM
         OutString(100,0,name,false);
         OutString(300,0,unittext,false);
         OutString(300,0,"",false);
@@ -424,7 +424,7 @@ LItemHistItemHeader:;
             if (RepSpec.flags[12]!=0) then begin
               OutVal(380,0,fwdqty2,M45Val,true);
             end else begin
-              OutString(300,0,"",false);
+              OutString(300,0,"",false);               
             end;
             OutVal(410,0,fwdqty,M4UVal,true);
             OutVal(480,0,bal,M45Val,true);
@@ -432,7 +432,7 @@ LItemHistItemHeader:;
             if (RepSpec.flags[12]!=0) then begin
               OutVal(380,0,fwdqty2,M45Val,true);
             end else begin
-              OutString(300,0,"",false);
+              OutString(300,0,"",false);              
             end;
             OutVal(300,0,fwdqty,M4UVal,true);
             OutVal(480,0,bal,M4Val,true);
@@ -440,7 +440,7 @@ LItemHistItemHeader:;
             if (RepSpec.flags[12]!=0) then begin
               OutVal(380,0,fwdqty2,M45Val,true);
             end else begin
-              OutString(300,0,"",false);
+              OutString(300,0,"",false);               
             end;
             OutVal(300,0,fwdqty,M4UVal,true);
             OutVal(480,0,bal,M45Val,true);
@@ -450,7 +450,7 @@ LItemHistItemHeader:;
       otherwise
         if (RepSpec.flags[9]!=0) and (RepSpec.flags[9]!=2) then begin //EBS edit
           StartFormat(15);
-          OutString(0,"DblINVc",item,false);
+          OutString(0,"DblINVc",item,false);// Edit ************************** BPI Ukraine - KramarAlexandr - 05, 07 06 2019 y. at 4:13:42 PM
           OutString(60,0,name,false);
           OutString(300,0,unittext,false);
           EndFormat;
@@ -458,31 +458,31 @@ LItemHistItemHeader:;
           StartFormat(15);
           switch (RepSpec.ArtMode) begin
             case 0:
-              OutString(60,0,USetStr(2492),false);
+              OutString(60,0,USetStr(2492),false);        
               OutString(120,0,RepSpec.TransStr,false);
-              OutValBiDi(375,0,fwdqty2,M45Val,true,420);
+              OutValBiDi(375,0,fwdqty2,M45Val,true,420);           
               OutValBiDi(410,0,fwdqty,M45Val,true,450);
               OutValBiDi(480,0,bal,M45Val,true,520);
             case 1:
-              OutString(60,0,USetStr(2492),false);
-              OutString(260,0,RepSpec.TransStr,false);
-              OutValBiDi(340,0,fwdqty,M45Val,true,340);
+              OutString(60,0,USetStr(2492),false);           
+              OutString(260,0,RepSpec.TransStr,false);     
+              OutValBiDi(340,0,fwdqty,M45Val,true,340);            
               if (UserCanAction("ViewCostPrice",true)) then begin
-                OutValBiDi(400,0,Round(fwdtotcp/fwdqty,SetRoundModeD(5)),M45Val,true,420);
+                OutValBiDi(400,0,Round(fwdtotcp/fwdqty,SetRoundModeD(5)),M45Val,true,420);   
                 OutValBiDi(480,0,fwdtotcp,M45Val,true,500);
               end else begin
                 OutString(300,0,"",false);
-                OutString(300,0,"",false);
+                OutString(300,0,"",false);   
               end;
             case 3:
-              OutString(60,0,USetStr(2492),false);
+              OutString(60,0,USetStr(2492),false);        
               OutString(120,0,RepSpec.TransStr,false);
-              OutValBiDi(375,0,fwdqty2,M45Val,true,420);
+              OutValBiDi(375,0,fwdqty2,M45Val,true,420);           
               OutValBiDi(410,0,fwdqty,M45Val,true,450);
               OutValBiDi(480,0,bal,M45Val,true,520);
           end;
           EndFormat;
-        end;
+        end;  
     end;
     itemheaderf = true;
   end;
@@ -505,7 +505,7 @@ begin
   printf = true;
   transnr = IHr.TransNr;
   switch (IHr.FileName) begin
-    case "IVVc":
+    case "IVVc":  
       if (outf) then begin
         strid = 5004;
         if (IsStandardProduct and HasLocalization("POL")) then begin
@@ -515,7 +515,7 @@ begin
             transnr = IVr.OfficialSerNr;
           end;
         end;
-      end else begin
+      end else begin                
         IVr.SerNr = IHr.TransNr;
         if (ReadFirstMain(IVr,1,true)) then begin end;
         if (IVr.Invalid!=0) then begin
@@ -553,10 +553,10 @@ begin
 
       PrOr.SerNr = IHr.TransNr;
       if (ReadFirstMain(PrOr,1,true)) then begin end;
-      if (PrOr.StatusFlag<3) then begin
-        strid = 5057;
+      if (PrOr.StatusFlag<3) then begin 
+        strid = 5057; 
       end else begin
-        strid = 5016;
+        strid = 5016; 
       end;
       dblstr = "DblProdOrder";
       end;
@@ -565,10 +565,10 @@ begin
 
       PrOr.SerNr = IHr.TransNr;
       if (ReadFirstMain(PrOr,1,true)) then begin end;
-      if (PrOr.StatusFlag<3) then begin
-        strid = 5057;
+      if (PrOr.StatusFlag<3) then begin 
+        strid = 5057; 
       end else begin
-        strid = 5016;
+        strid = 5016; 
       end;
       dblstr = "DblProdOrder";
       end;
@@ -577,10 +577,10 @@ begin
 
       Prodr.SerNr = IHr.TransNr;
       if (ReadFirstMain(Prodr,1,true)) then begin end;
-      if (Prodr.PRStatusFlag<3) then begin
-        strid = 5037;
+      if (Prodr.PRStatusFlag<3) then begin 
+        strid = 5037; 
       end else begin
-        strid = 5016;
+        strid = 5016; 
       end;
       dblstr = "DblProd";
       end;
@@ -589,10 +589,10 @@ begin
 
       Prodr.SerNr = IHr.TransNr;
       if (ReadFirstMain(Prodr,1,true)) then begin end;
-      if (Prodr.PRStatusFlag<3) then begin
-        strid = 5037;
+      if (Prodr.PRStatusFlag<3) then begin 
+        strid = 5037; 
       end else begin
-        strid = 5016;
+        strid = 5016; 
       end;
       dblstr = "DblProd";
       end;
@@ -602,9 +602,9 @@ begin
         POr.SerNr = IHr.TransNr;
         if (ReadFirstMain(POr,1,true)) then begin end;
         if (POr.OKFlag==0) then begin
-          strid = 5036;
+          strid = 5036; 
         end else begin
-          strid = 5038;
+          strid = 5038; 
         end;
         dblstr = "DblPOVc";
         if (POr.Closed!=0) then begin
@@ -619,7 +619,7 @@ begin
         if (ORr.Closed!=0) then begin
           printf = false;
         end;
-        strid = 5035;
+        strid = 5035; 
         dblstr = "DblORVc";
       end;
   end;
@@ -648,21 +648,21 @@ LPrintItemHistExcel:;
       switch (RepSpec.ArtMode) begin
         case 0:
           StartFormat(15);
-          OutString(0,"DblINVc",INr.Code,false);
+          OutString(0,"DblINVc",INr.Code,false);// Edit ************************** BPI Ukraine - KramarAlexandr - 05, 07 06 2019 y. at 4:14:04 PM
           OutString(100,0,INr.Name,false);
           OutString(300,0,INr.Unittext,false);
           OutDate(0,0,IHr.TransDate,false);
-          OutString(60,0,USetStr(strid),false);
-          OutString(115,dblstr,transnr,false);
-          if (RepSpec.flags[21]==1) then begin
-            PrintCustName(IHr.FileName,IHr.TransNr,210);
+          OutString(60,0,USetStr(strid),false);       
+          OutString(115,dblstr,transnr,false);    
+          if (RepSpec.flags[21]==1) then begin  
+            PrintCustName(IHr.FileName,IHr.TransNr,210);   
           end;
           if (HasMultiLocations) then begin
             OutString(300,0,IHr.Location,false);
           end;
           switch (RepSpec.flags[12]) begin
             case 1: OutVal(375,0,IHr.Qty2,M4UVal,true);
-            case 2:
+            case 2: 
               if (MSb.UnitConvCalc==0) then begin
                 OutVal(375,0,IHr.Qty/IHr.Qty2,M45Val,true);
               end else begin
@@ -691,19 +691,19 @@ LPrintItemHistExcel:;
           EndFormat;
         case 1:
           StartFormat(15);
-          OutString(0,"DblINVc",INr.Code,false);
+          OutString(0,"DblINVc",INr.Code,false);// Edit ************************** BPI Ukraine - KramarAlexandr - 05, 07 06 2019 y. at 4:14:11 PM
           OutString(100,0,INr.Name,false);
           OutString(300,0,INr.Unittext,false);
           OutDate(0,0,IHr.TransDate,false);
-          OutString(60,0,USetStr(strid),false);
-          OutStringOvst(115,dblstr,transnr,false,IHr.Invalid);
+          OutString(60,0,USetStr(strid),false);                        
+          OutStringOvst(115,dblstr,transnr,false,IHr.Invalid);    
           if (RepSpec.flags[21]==1) then begin
-            PrintCustName(IHr.FileName,IHr.TransNr,185);
+            PrintCustName(IHr.FileName,IHr.TransNr,185);                   
           end;
           if (HasMultiLocations) then begin
-            OutString(260,0,IHr.Location,false);
+            OutString(260,0,IHr.Location,false);                         
           end;
-          OutVal(340,0,IHr.Qty,M4UVal,true);
+          OutVal(340,0,IHr.Qty,M4UVal,true);                           
           if (outf) then begin
             OutVal(375,0,Round(bal/IHr.Qty,SetRoundModeD(5)),M45Val,true);
           end else begin
@@ -729,19 +729,19 @@ LPrintItemHistExcel:;
           EndFormat;
         case 3://INRS
           StartFormat(15);
-          OutString(0,"DblINVc",INr.Code,false);
+          OutString(0,"DblINVc",INr.Code,false);// Edit ************************** BPI Ukraine - KramarAlexandr - 05, 07 06 2019 y. at 4:14:21 PM
           OutString(100,0,INr.Name,false);
           OutString(300,0,INr.Unittext,false);
           OutDate(0,0,IHr.TransDate,false);
-          OutString(60,0,USetStr(strid),false);
-          OutString(115,dblstr,transnr,false);
-          if (RepSpec.flags[21]==1) then begin
-            PrintCustName(IHr.FileName,IHr.TransNr,210);
+          OutString(60,0,USetStr(strid),false);                       
+          OutString(115,dblstr,transnr,false);                    
+          if (RepSpec.flags[21]==1) then begin  
+            PrintCustName(IHr.FileName,IHr.TransNr,210);                    
           end;
-          OutString(300,0,Right(IHr.Variety,len(IHr.Variety)-1),false);
+          OutString(300,0,Right(IHr.Variety,len(IHr.Variety)-1),false);   
           switch (RepSpec.flags[12]) begin
             case 1: OutVal(375,0,IHr.Qty2,M4UVal,true);
-            case 2:
+            case 2: 
               if (MSb.UnitConvCalc==0) then begin
                 OutVal(375,0,IHr.Qty/IHr.Qty2,M4Qty,true);
               end else begin
@@ -768,7 +768,7 @@ LPrintItemHistExcel:;
           end;
           EndFormat;
       end;
-    otherwise
+    otherwise    
       switch (RepSpec.ArtMode) begin
         case 0:
           StartFormat(15);
@@ -776,17 +776,17 @@ LPrintItemHistExcel:;
           OutString(60,0,USetStr(strid),false);
           OutString(115,dblstr,transnr,false);
           if (RepSpec.flags[22]!=0) then begin
-            PrintDispatchNumber(IHr.FileName,IHr.TransNr,IHr.Row,170);
+            PrintDispatchNumber(IHr.FileName,IHr.TransNr,IHr.Row,170);   
           end;
           if (RepSpec.flags[21]==1) then begin
-            PrintCustName(IHr.FileName,IHr.TransNr,210);
+            PrintCustName(IHr.FileName,IHr.TransNr,210);   
           end;
           if (HasMultiLocations) then begin
             OutString(300,0,IHr.Location,false);
           end;
           switch (RepSpec.flags[12]) begin
             case 1: OutValBiDi(375,0,IHr.Qty2,M4UVal,true,420);
-            case 2:
+            case 2: 
               if (MSb.UnitConvCalc==0) then begin
                 OutValBiDi(375,0,IHr.Qty/IHr.Qty2,M45Val,true,420);
               end else begin
@@ -799,20 +799,20 @@ LPrintItemHistExcel:;
         case 1:
           StartFormat(15);
           OutDate(0,0,IHr.TransDate,false);
-          OutString(60,0,USetStr(strid),false);
+          OutString(60,0,USetStr(strid),false);                        
           if (RepSpec.flags[22]!=0) then begin
-            OutStringOvst(115,dblstr,transnr,false,IHr.Invalid);
-            PrintDispatchNumber(IHr.FileName,IHr.TransNr,IHr.Row,150);
+            OutStringOvst(115,dblstr,transnr,false,IHr.Invalid);    
+            PrintDispatchNumber(IHr.FileName,IHr.TransNr,IHr.Row,150);   
           end else begin
-            OutStringOvst(135,dblstr,transnr,false,IHr.Invalid);
+            OutStringOvst(135,dblstr,transnr,false,IHr.Invalid);    
           end;
           if (RepSpec.flags[21]==1) then begin
-            PrintCustName(IHr.FileName,IHr.TransNr,185);
+            PrintCustName(IHr.FileName,IHr.TransNr,185);                   
           end;
           if (HasMultiLocations) then begin
-            OutString(260,0,IHr.Location,false);
+            OutString(260,0,IHr.Location,false);                         
           end;
-          OutValBiDi(340,0,IHr.Qty,M45Val,true,340);
+          OutValBiDi(340,0,IHr.Qty,M45Val,true,340);                 
           if (UserCanAction("ViewCostPrice",true)) then begin
             if (outf) then begin
               OutValBiDi(400,0,Round(bal/IHr.Qty,SetRoundModeD(5)),M45Val,true,420);
@@ -825,15 +825,15 @@ LPrintItemHistExcel:;
         case 3://INRS
           StartFormat(15);
           OutDate(0,0,IHr.TransDate,false);
-          OutString(60,0,USetStr(strid),false);
-          OutString(115,dblstr,transnr,false);
+          OutString(60,0,USetStr(strid),false);                       
+          OutString(115,dblstr,transnr,false);                    
           if (RepSpec.flags[21]==1) then begin
-            PrintCustName(IHr.FileName,IHr.TransNr,210);
+            PrintCustName(IHr.FileName,IHr.TransNr,210);                    
           end;
-          OutString(300,0,Right(IHr.Variety,len(IHr.Variety)-1),false);
+          OutString(300,0,Right(IHr.Variety,len(IHr.Variety)-1),false);             
           switch (RepSpec.flags[12]) begin
             case 1: OutValBiDi(375,0,IHr.Qty2,M4UVal,true,420);
-            case 2:
+            case 2: 
               if (MSb.UnitConvCalc==0) then begin
                 OutValBiDi(375,0,IHr.Qty/IHr.Qty2,M4Qty,true,420);
               end else begin

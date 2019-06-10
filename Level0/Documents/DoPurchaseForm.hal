@@ -171,6 +171,12 @@ BEGIN
     OUTFORMFIELD("F_CUSTOMCOST",PUrw.CustomsCost);
     OUTFORMFIELD("F_CUSTOMSDECLDATE",PUrw.CustomsDate);
     OUTFORMFIELD("F_CUSTOMSDECLNUMBER",PUrw.CustomsNr);
+    if (blank(PUrw.CountryOfOrg)) begin
+      tstr = INr.DefaultSource;
+    end else begin
+      tstr = PUrw.CountryOfOrg;
+    end;
+    OUTFORMFIELD("F_COUNTRYOFORIGIN",tstr);    
     PrintValue("F_BELOPP",PUrw.Quant*PUrw.BasePrice,M4Val,LangNrr,SysFormatRec,false);
     PrintValue("F_ROWPRICE",PUrw.BasePrice,M4Val,LangNrr,SysFormatRec,false);
     PrintValue("F_OLDKOSTPRIS",INr.InPrice,M45Val,LangNrr,SysFormatRec,false);

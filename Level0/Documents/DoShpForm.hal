@@ -772,7 +772,7 @@ BEGIN
   end;
   CUr.Code = SHr.CustCode;
   if (ReadFirstMain(CUr,1,true)) then begin
-    SetFaxInfo(CUr.Person,CUr.Name,CUr.Fax,USetStr(1820));
+    SetFaxInfo(CUr.Person,CUr.Name,CUr.Fax,USetStr(1817));
   end;        
   ORr.SerNr = SHr.OrderNr;
   if (ReadFirstMain(ORr,1,true)) then begin
@@ -868,6 +868,7 @@ BEGIN
 
   PrintInvoiceToBankData(CUr.BankAccount,Bankr,ORr.InvoiceToCode);
   PrintBankData(ORr.BankCode);
+  OUTFORMFIELD("F_DELADDRESSCODE",SHr.DelAddrCode);
   OUTFORMFIELD("F_PLANSENTDATE",SHr.PlanSendDate);
   OUTFORMFIELD("F_PLANSENTTIME",SHr.PlanSendTime);
   OUTFORMFIELD("F_PLANARRIVALDATE",SHr.PlanArrDate);

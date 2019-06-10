@@ -1,3 +1,4 @@
+external function Boolean SetInSet2(string,string);
 external procedure AutomatedSalesOrderly(string);
 external procedure OutEmpty(record RcVc,Integer);
 external function Integer CountObjects(string);
@@ -61,7 +62,7 @@ global
 procedure OutputReportIndent(record RCVc RepSpec,Integer cnt)
 begin
   Integer i;
-
+  
   if (RepSpec.Media==mtFile or RepSpec.Media==mtExcel) then begin
     for (i=0;i<cnt;i=i+1) begin
       OutString(0,0,"",false);
@@ -79,7 +80,7 @@ BEGIN
   Boolean res;
   record ObjVc Objr;
   record AccVc Accr;
-
+  
   if (mhractivef[arrcnt]==false) then begin
 // if (mlp->vc==ObjVc) then res = true;
     goto LMainLoopNext;
@@ -87,7 +88,7 @@ BEGIN
   if (mhrfoundf[arrcnt]==false) then begin
     goto LMainLoopNext;
   end;
-L22MainLoopNext:;
+L22MainLoopNext:;  
   if (mhrfirstf[arrcnt]==false) then begin
     if (mhrvc[arrcnt]=="AccVc") then begin
       SetLoopPosition(Accr,mhrLLoop[arrcnt]);
@@ -110,11 +111,11 @@ L22MainLoopNext:;
     end;
 //    mhrLLoop[arrcnt] = mhrLLoop[arrcnt] + 1;
   end;
-  mhrfirstf[arrcnt] = false;
+  mhrfirstf[arrcnt] = false;  
   if (mhrfoundf[arrcnt]==false) then begin
     goto LMainLoopNext;
   end;
-
+  
   if (mhrvc[arrcnt]=="AccVc") then begin
     if (nonblank(mhrfromstr[arrcnt])) then begin
       if (Accr.AccNumber<mhrfromstr[arrcnt]) then begin
@@ -138,7 +139,7 @@ L22MainLoopNext:;
           mhrfoundf[arrcnt] = false;
         end;
       end;
-      if (nonblank(mhrtostr[arrcnt])) then begin
+      if (nonblank(mhrtostr[arrcnt])) then begin      
         if (Objr.Code>mhrtostr[arrcnt]) then begin
           mhrfoundf[arrcnt] = false;
         end;
@@ -164,8 +165,8 @@ global
 procedure MainLoopAccp(Array string mhrckey,Array string mhrvc,Array LongInt mhrLLoop,record AccVc resAccrp)
 BEGIN
   record AccVc Accr;
-  Boolean TrHs;
-
+  Boolean TrHs;  
+    
   RecordCopy(resAccrp,Accr);
   if (mhrvc[0]=="AccVc") then begin
     SetLoopPosition(Accr,mhrLLoop[0]-1);
@@ -201,11 +202,11 @@ LMainLoopAccp:;
   RETURN;
 END;
 
-function
+function 
 Boolean AccBlockedTest(record AccessVc Accessp,string accnr)
 begin
   Boolean resa;
-
+  
   if (AccInRange(accnr,Accessp.BlockAccs)) then begin
     resa = true;
   end;
@@ -219,7 +220,7 @@ BEGIN
   Boolean resb;
   record UserVc Userr;
   record AccessVc Accessr;
-
+  
   Userr.Code = CurrentUser;
   if (ReadFirstMain(Userr,1,true)) then begin
     Accessr.Code = Userr.AccessGroup;
@@ -229,7 +230,7 @@ BEGIN
       end;
     end;
   end else begin
-  end;
+  end;  
   CurUserAccBlockedTest = resb;
   RETURN;
 END;
@@ -243,7 +244,7 @@ BEGIN
   row SMVc VATSumrw;
   record VATCodeBlock VATCodeRec;
   row VATCodeBlock VATCoderw;
-
+  
   vatrows = MatRowCnt(VATSumr);
   BlockLoad(VATCodeRec);
   rwcnt = MatRowCnt(VATCodeRec);
@@ -279,7 +280,7 @@ BEGIN
   OutVal(3,0,totdeb,M4Val,true);
   OutVal(4,0,totcred,M4Val,true);
   EndFormat;
-  RETURN;
+  RETURN;      
 END;
 
 procedure MainInnerLoop(record RcVc RepSpec,Boolean showbasecurf,record SMVc VATSump,var Boolean FirstTrans,var val CurBal,Date AccumStartDate,
@@ -315,17 +316,17 @@ BEGIN
   record SMVc VATSumr;
   val cerfr,certo1,certo2,cerbr1,cerbr2;
   Date fbd;
-
+  
   MainCnt = 0;
   MainLoopAccp(mhrckey,mhrvc,mhrLLoop,Accr);
   headeroutf = false;
-  BlockLoad(CompYear);
-  BlockLoad(BCb);
+  BlockLoad(CompYear);  
+  BlockLoad(BCb);  
   testf = true;
   if (CurUserAccBlockedTest(Accr.AccNumber)) then begin
     testf = false;
   end;
-  if (testf) then begin
+  if (testf) then begin  
     if (RepSpec.flags[12]==kReportBCOneConsolidationRate) then begin
       GetConsolidationRate(Accr.AccNumber,BCb.BaseCur1,RepSpec.sEndDate,cerfr,certo1,certo2,cerbr1,cerbr2);
     end;
@@ -422,7 +423,7 @@ BEGIN
         MainOS = -MainOS;
         MainIS = -MainIS;
       end;
-    end;
+    end;      
   end;
   if (testf) then begin
     if (RepSpec.ArtMode==0) then begin
@@ -443,7 +444,7 @@ BEGIN
     if (RepSpec.flags[28]!=0) then begin
       index = "MainKeyTime";
     end;
-    while (LoopKey(index,mainr,2,TrHs)) begin
+    while (LoopKey(index,mainr,2,TrHs)) begin    
       if (TrHs) then begin
         if (mainr.TransDate>RepSpec.sEndDate) then begin
           TrHs = false;
@@ -455,13 +456,13 @@ BEGIN
           TrHs = false;
         end;
           //&& monbalcheck!!
-      end;
+      end;      
       if (TrHs) then begin
         if (mainr.FileName=="TRVc") then begin
           MR3.Number = mainr.TransNr;
           MR3.IntYc = mainr.IntYc;
           if (ReadFirstMain(MR3,2,true)) then begin
-              // if date has been changed
+              // if date has been changed 
             testf = true;
             if (nonblank(RepSpec.LastAcc)) then begin
               if (MR3.RefStr!=RepSpec.LastAcc) then begin testf = false; end;
@@ -485,7 +486,7 @@ BEGIN
                   end else begin
                     MainOS = MainOS + tmpMainOS;
                   end;
-                end;
+                end;              
               end else begin
                 if (RepSpec.flags[1]!=0) then begin
                   ReadTrR2(RepSpec,MR3,BCb,RepSpec.ObjStr,mainr.TransDate,OldTransMonth,
@@ -533,8 +534,8 @@ BEGIN
             FBr.SerNr = mainr.TransNr;
             if (ReadFirstMain(FBr,1,true)) then begin
               if (mainr.TransDate==FBr.TransDate) then begin
-                if ((blank(RepSpec.ObjStr) and blank(FBr.Objects))) or
-                   ((nonblank(RepSpec.ObjStr) and SetInSet(RepSpec.ObjStr,FBr.Objects) and SetInSet(FBr.Objects,RepSpec.ObjStr))) then begin
+                if ((blank(RepSpec.ObjStr) and blank(FBr.Objects))) or 
+                   ((nonblank(RepSpec.ObjStr) and SetInSet2(RepSpec.ObjStr,FBr.Objects) and SetInSet2(FBr.Objects,RepSpec.ObjStr))) then begin
                   tmpMainOS = blankval;
                   tmpMainCnt = MainCnt;
                   ReadFBRow(RepSpec,FBr,RepSpec.ObjStr,OldTransMonth,tmpMainOS,
@@ -582,7 +583,7 @@ BEGIN
       MainOS = MainOS - CurBalCER;//??
     end;
     if ((headeroutf) or (RepSpec.UsedOnly==0)) then begin
-      if (ProgramType==typHansaRaama) then begin
+      if (ProgramType==typHansaRaama) then begin          
         if (Accr.AccType==0) then begin
           if (CompYear.NS1[0]==1) then begin
             MainIS = -MainIS;
@@ -607,7 +608,7 @@ BEGIN
           if (CompYear.NS1[4]==1) then begin
             MainIS = -MainIS;
           end;
-        end;
+        end;  
       end;
     if (printf) then begin
       StartFooter(45,true);
@@ -625,7 +626,7 @@ BEGIN
         OutAccumulator(5,3,M4Val,true);
         CopyAccumulator(4,2);
         CopyAccumulator(5,3);
-      EndFooter;
+      EndFooter;    
     end;
 
       TotSumDebet = TotSumDebet + SumDebet;
@@ -658,7 +659,7 @@ BEGIN
             OutLongInt(3,0,RepSpec.long1,true);
             OutLongInt(4,0,RepSpec.long2,true);
             EndFormat;
-          end;
+          end;            
           StartFormat(5);
           EndFormat;
         end;
@@ -668,7 +669,7 @@ BEGIN
           StartFormat(15);
           OutString(0,0,Accr.AccNumber,false);
           tstr = Accr.Comment;
-          GetAccountDescription2(Accr.AccNumber,RepSpec.Language,tstr);
+          GetAccountDescription2(Accr.AccNumber,RepSpec.Language,tstr);        
           OutString(50,0,tstr,false);
           OutValBiDi(240,0,MainIS,M4Val,true,280);
           OutValBiDi(3,0,SumDebet,M4Val,true,360);
@@ -681,7 +682,7 @@ BEGIN
         MainOS = 0;
       end;
       if (ProgramType!=typHansaRaama) then begin
-/*    I think it has been negeted already
+/*    I think it has been negeted already  
         if (Accr.AccType==0) then begin
           if (CompYear.NS1[0]==1) then begin
             MainIS = -MainIS;
@@ -706,8 +707,8 @@ BEGIN
           if (CompYear.NS1[4]==1) then begin
             MainIS = -MainIS;
           end;
-        end;
-*/
+        end;  
+*/        
       end;
       if (RepSpec.ArtMode==0) then begin
         if (printf) then begin
@@ -747,9 +748,9 @@ BEGIN
           EndFormat;
           TotTransCnt = TotTransCnt + MainCnt;
         end;
-        if (RepSpec.flags[8]!=0) then begin
+        if (RepSpec.flags[8]!=0) then begin          
           tmp = TotSumDebetCur + TotSumCreditCur;
-/*
+/*          
 I think it was done in MainTool2.hal, line 374
           if (Accr.AccType==0) then begin
             if (CompYear.NS1[0]==1) then begin
@@ -775,8 +776,8 @@ I think it was done in MainTool2.hal, line 374
             if (CompYear.NS1[4]==1) then begin
               tmp = -tmp;
             end;
-          end;
-*/
+          end;  
+*/          
           if (printf) then begin
             StartFormat(15);
             OutString(6,0,USetStr(6650),false);
@@ -809,9 +810,9 @@ BEGIN
   string 255 tstr;
   Integer rw;
   record BaseCurBlock BC;
-
+  
   BlockLoad(BC);
-
+      
   rw = 1;
   HTAccs(RepSpec.f4,RepSpec.f4,RepSpec.UsedOnly,tstr);
   Header(rw,tstr,1);
@@ -825,7 +826,7 @@ BEGIN
   HT2Per(RepSpec.sStartDate,RepSpec.sEndDate,tstr);
   Header(rw,tstr,1);
   rw = rw + 1;
-
+  
   if (HasMultiCurrency) then begin
     tstr = USetStr(2513);
     if (blank(RepSpec.CurncyCode)) then begin
@@ -896,25 +897,25 @@ BEGIN
     tstr = tstr & RepSpec.CurncyCode;
     Header(rw,tstr,1);
     rw = rw + 1;
-  end;
+  end;  
   if (IsBooks==false) then begin
     if (RepSpec.flags[21]!=0) then begin
       tstr = USetStr(6930);
       Header(rw,tstr,1);
       rw = rw + 1;
-    end;
+    end;  
     if (RepSpec.flags[22]!=0) then begin
       tstr = USetStr(1329);
       Header(rw,tstr,1);
       rw = rw + 1;
-    end;
+    end;          
   end;
   if (nonblank(RepSpec.f3)) then begin
     tstr = USetStr(1318) & " " & RepSpec.f3;
     Header(rw,tstr,1);
     rw = rw + 1;
   end;
-  EndHeader;
+  EndHeader;  
   SetRepCol(2,75);
   if (RepSpec.ArtMode==1) then begin
     SetRepCol(3,320);//288);
@@ -935,7 +936,7 @@ BEGIN
     SetRepCol(6,200);
   end;
   SetRepCol(7,120);
-  RETURN;
+  RETURN;      
 END;
 
 procedure MainLoopInit(record RcVc RepSpec,Integer lnr,
@@ -946,7 +947,7 @@ BEGIN
   Boolean accs;
   record OTVc OTr;
   string 20 fromstr,tostr;
-
+  
   if (RepSpec.flags[11]==lnr) then begin
     accs = true;
     mhrvc[arrcnt] = "AccVc";
@@ -976,9 +977,9 @@ procedure MainLoopStart(Array Boolean mhractivef,Array Boolean mhrfirstf,Array B
 BEGIN
   record ObjVc Objr;
   record AccVc Accr;
-
-  if (mhractivef[arrcnt]==false) then begin
-    goto LMainLoopStart;
+  
+  if (mhractivef[arrcnt]==false) then begin 
+    goto LMainLoopStart; 
   end;
   mhrfirstf[arrcnt] = true;
   if (mhrvc[arrcnt]=="AccVc") then begin
@@ -1008,7 +1009,7 @@ procedure MainLoopAddObj(var record RcVc RepSpec,Array Boolean mhractivef,Array 
                          Array string mhrvc,Array string mhrckey,Array LongInt mhrLLoop,Integer arrcnt)
 BEGIN
   record ObjVc Objr;
-
+ 
   if (mhractivef[arrcnt]==false) then begin
     goto LMainLoopAddObj;
   end;
@@ -1021,11 +1022,11 @@ BEGIN
   if (nonblank(RepSpec.ObjStr)) then begin
     RepSpec.ObjStr = RepSpec.ObjStr & ",";
   end;
-
+  
   SetLoopPosition(Objr,mhrLLoop[arrcnt]-1);
   if (LoopKey(mhrckey[arrcnt],Objr,1,true)) then begin
     RepSpec.ObjStr = RepSpec.ObjStr & Objr.Code;
-  end;
+  end;  
 LMainLoopAddObj:;
   RETURN;
 END;
@@ -1062,11 +1063,11 @@ BEGIN
   Array Boolean mhrheaderf;
   Array Boolean mhrotflag;
   record AccVc Accr;
-
+    
   RepSpec.long1 = 0;
-  RepSpec.long2 = 0;
+  RepSpec.long2 = 0;  
   objtype = "";
-
+  
   TotSumDebet = blankval;
   TotSumCredit = blankval;
   TotSumDebetCur = blankval;
@@ -1103,7 +1104,7 @@ L44MainRn:;
     if (MainLoopNext(mhractivef,mhrfoundf,mhrfirstf,mhrheaderf,mhrotflag,mhrLLoop,mhrvc,mhrckey,mhrfromstr,mhrtostr,2)==false) then begin
       goto L33MainRn;
     end;
-  end;
+  end;  
   MainLoopAddObjs(RepSpec,mhractivef,mhrfoundf,mhrvc,mhrckey,mhrLLoop,arrcnt,orgobjstr);//MainLoopAddObjs(&mhr,orgobjstr);
 
   MainInnerLoop(RepSpec,showbasecurf,VATSumr,FirstTrans,CurBal,AccumStartDate,resUseAccum,TotSumDebet,TotSumCredit,TotSumDebetCur,TotSumCreditCur,
@@ -1112,7 +1113,7 @@ L44MainRn:;
 
   goto L44MainRn;
 L88MainRn:;
-  if (found==false) then begin
+  if (found==false) then begin   
     if (RepSpec.IncDaughter!=0) then begin
       headeroutf = false;
       MainLoopAccp(mhrckey,mhrvc,mhrLLoop,Accr);
@@ -1148,9 +1149,9 @@ L88MainRn:;
 //++++++++++++++++++
   RETURN;
 END;
-
+                     
 procedure RunMainRnForDaughterCompany(var record RcVc orgRepSpec,Date AccumStartDate,var Boolean resUseAccum,var val TotSumDebet,var val TotSumCredit,record SMVc VATSumr,Boolean printf,var val totsumFwBal,var val TotSumBal,var LongInt TotTransCnt)
-begin
+begin  
   record DaughterCompBlock DCb;
   row DaughterCompBlock DCrw;
   Integer i,rwcnt;
@@ -1170,20 +1171,20 @@ begin
 
       StartFormat(15);
        OutString(0,0,DCrw.CompName,false);
-      EndFormat;
+      EndFormat;   
       RepSpec = orgRepSpec;
 //      if (RepSpec.basecurncy!=kReportBCOneConsolidationRate) then begin
       if (RepSpec.flags[12]!=kReportBCOneConsolidationRate) then begin
-        RepSpec.basecurncy = cr.ConsCrncy;
+        RepSpec.basecurncy = cr.ConsCrncy;  
       end;
-      if (nonblankdate(DCrw.StartDate)) then begin
+      if (nonblankdate(DCrw.StartDate)) then begin 
         if (DCrw.StartDate>RepSpec.sStartDate) then begin
-          RepSpec.sStartDate = DCrw.StartDate;
+          RepSpec.sStartDate = DCrw.StartDate; 
         end;
       end;
-      if (nonblankdate(DCrw.EndDate)) then begin
+      if (nonblankdate(DCrw.EndDate)) then begin 
         if (DCrw.EndDate>RepSpec.sEndDate) then begin
-          RepSpec.sEndDate = DCrw.EndDate;
+          RepSpec.sEndDate = DCrw.EndDate; 
         end;
       end;
       RunMainRn(RepSpec,true,AccumStartDate,resUseAccum,lTotSumDebet,lTotSumCredit,VATSumr,true,lTotSumFwBal,lTotSumBal,lTotTransCnt);
@@ -1223,7 +1224,7 @@ BEGIN
 
   StartFormat(15);
    OutString(0,0,Cbrw.CompName,false);
-  EndFormat;
+  EndFormat;   
 
   RepSpec = orgRepSpec;
   RepSpec.IncDaughter = 0;
@@ -1235,10 +1236,10 @@ BEGIN
   TotTransCnt = TotTransCnt + lTotTransCnt;
 
   oldcomp = RepSpec.flags[29];  //flags[29] is set in DblNLFunc
-
+  
   RunMainRnForDaughterCompany(orgRepSpec,AccumStartDate,resUseAccum,TotSumDebet,TotSumCredit,VATSumr,true,TotSumFwBal,TotSumBal,TotTransCnt);
-
-/*
+  
+/*  
   BlockLoad(DCb);
   rwcnt = MatRowCnt(DCb);
   for (i=0;i<rwcnt;i=i+1) begin
@@ -1248,17 +1249,17 @@ BEGIN
 
       StartFormat(15);
        OutString(0,0,DCrw.CompName,false);
-      EndFormat;
+      EndFormat;   
       RepSpec = orgRepSpec;
-      RepSpec.basecurncy = cr.ConsCrncy;
-      if (nonblankdate(DCrw.StartDate)) then begin
+      RepSpec.basecurncy = cr.ConsCrncy;  
+      if (nonblankdate(DCrw.StartDate)) then begin 
         if (DCrw.StartDate>RepSpec.sStartDate) then begin
-          RepSpec.sStartDate = DCrw.StartDate;
+          RepSpec.sStartDate = DCrw.StartDate; 
         end;
       end;
-      if (nonblankdate(DCrw.EndDate)) then begin
+      if (nonblankdate(DCrw.EndDate)) then begin 
         if (DCrw.EndDate>RepSpec.sEndDate) then begin
-          RepSpec.sEndDate = DCrw.EndDate;
+          RepSpec.sEndDate = DCrw.EndDate; 
         end;
       end;
       RunMainRn(RepSpec,true,AccumStartDate,resUseAccum,lTotSumDebet,lTotSumCredit,VATSumr,true,lTotSumFwBal,lTotSumBal,lTotTransCnt);
@@ -1269,18 +1270,18 @@ BEGIN
       TotTransCnt = TotTransCnt + lTotTransCnt;
     end;
   end;
-*/
+*/  
   ResetCompany(oldcomp);
   RETURN;
 END;
-
+                     
 procedure SetReportSpecification(var record RcVc RepSpec,Integer conscompany)
 begin
   record DaughterCompBlock DCb;
   row DaughterCompBlock DCrw;
   Integer i,rwcnt;
   Integer oldcomp;
-
+  
   oldcomp = CurrentCompany;
   if (SetCompany(conscompany,false)) then begin
     BlockLoad(DCb);
@@ -1296,7 +1297,7 @@ begin
   ResetCompany(oldcomp);
   return;
 end;
-
+                     
 global
 procedure MainRn(record RcVc specRepSpec)
 BEGIN
@@ -1309,7 +1310,7 @@ BEGIN
   Date sd,ed;
   record RcVc RepSpec;
   Integer oldcomp;
-
+    
   RepSpec = specRepSpec;
   oldcomp = CurrentCompany;
 
@@ -1317,7 +1318,7 @@ BEGIN
     if (SetCompany(RepSpec.flags[29],false)) then begin
     end;
   end;
-// Pageheader
+// Pageheader 
 //  strpblank(gPageHeader);
   TotSumFwBal = 0; TotSumBal = 0;
   FindAccSD(RepSpec.sStartDate,AccumStartDate,resUseAccum);
@@ -1391,7 +1392,7 @@ BEGIN
     end;
   end else begin
     if (RepSpec.flags[29]!=0) then begin
-      SetReportSpecification(RepSpec,oldcomp);
+      SetReportSpecification(RepSpec,oldcomp);    
     end;
     RunMainRn(RepSpec,false,AccumStartDate,resUseAccum,TotSumDebet,TotSumCredit,VATSumr,true,TotSumFwBal,TotSumBal,TotTransCnt);
 
@@ -1441,3 +1442,5 @@ BEGIN
   AutomatedSalesOrderly("HasIntegratedNL+Run_MainRn");
   RETURN;
 END;
+
+ 

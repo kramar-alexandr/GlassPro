@@ -1,3 +1,5 @@
+external updating procedure FormSetDocumentFilename(string);
+external function string 60 AddStringToStringList(string,string);
 external procedure PrintCurrencyCode(string,string);
 external procedure PortugueseFormFields(Integer);
 external procedure PrintSignature(string);
@@ -52,7 +54,7 @@ BEGIN
     end;
     notenr = notenr + 1;
   end;
-LPOPrintNote:;
+LPOPrintNote:;  
   RETURN;
 END;
 
@@ -72,18 +74,18 @@ BEGIN
   row POVc POrw;
   val t,totweight,totvolume,totqty;
   val vatprc,vatval,vatexclprc,vatinclprc,rowtax;
-  record RoundBlock RoundRec;
+  record RoundBlock RoundRec;  
   Boolean found;
   record ORVc ORr;
   record CUVc CUr;
   record LocationVc Locr;
   record UserVc Userr;
 
-  CommonDocumentFields(RepSpec);
+  CommonDocumentFields(RepSpec);    
   NumberofDocumentPages(formcode,MatRowCnt(POr));
   BlockLoad(RoundRec);
-  BlockLoad(IIRec);
-  BlockLoad(SysFormatRec);
+  BlockLoad(IIRec);  
+  BlockLoad(SysFormatRec);  
   GetLangNr("",LangNrr);
   Docr.Code = formcode;
   if (ReadFirstMain(Docr,1,true)) then begin
@@ -98,8 +100,8 @@ BEGIN
 
   Userr.Code = POr.SalesMan;
   ReadFirstMain(Userr,1,true);
-  OUTFORMFIELD("F_SALESMANEMAIL",Userr.emailAddr);
-
+  OUTFORMFIELD("F_SALESMANEMAIL",Userr.emailAddr); 
+  
   if (HasLocalization("PRT")) then begin
     PortugueseFormFields(16149);
   end;
@@ -117,7 +119,7 @@ BEGIN
     POPrintNote(POr,tstr);
   end;
   PrintValue("F_RANTASATS",IIRec.IntRate,M4Val,LangNrr,SysFormatRec,false);
-  OUTFORMFIELD("F_SUPPLIEREMAIL",VEr.eMail);
+  OUTFORMFIELD("F_SUPPLIEREMAIL",VEr.eMail);     
   OUTFORMFIELD("F_LEVPHONE",VEr.Phone);
   OUTFORMFIELD("F_LEVFAX",VEr.Fax);
   OUTFORMFIELD("F_LEVVATNR",VEr.VATNr);
@@ -133,7 +135,7 @@ BEGIN
   OUTFORMFIELD("F_ORDNUMMER",POr.OrdNr);
   OUTFORMFIELD("F_ORDERNUMMER",POr.OrdNr);
   OUTFORMFIELD("F_ORDERDATE",POr.TransDate);
-  OUTFORMFIELD("F_VALIDTO",POr.ValidUntil);
+  OUTFORMFIELD("F_VALIDTO",POr.ValidUntil); 
   OUTFORMFIELD("F_ORDERDATEHIJRI",ConvertDate(kCalendarGregorian,POr.TransDate,kCalendarHijri));
   OUTFORMFIELD("F_SERNR",POr.SerNr);
   if (FIELDINFORM("F_SUMMA")) then begin
@@ -165,7 +167,7 @@ BEGIN
   end;
   if (FIELDINFORM("F_ATTBETALATEXT")) then begin
     ValToText(POr.Sum4,M4Val,POr.CurncyCode,POr.LangCode,tstr);
-    OUTFORMFIELD("F_ATTBETALATEXT",tstr);
+    OUTFORMFIELD("F_ATTBETALATEXT",tstr);  
   end;
   OUTFORMFIELD("F_COMMENT",POr.Comment);
   OUTFORMFIELD("F_LEVNR",POr.VECode);
@@ -195,7 +197,7 @@ BEGIN
   end;
   OUTFORMFIELD("F_VARREFERENS",POr.OurContact);
   OUTFORMFIELD("F_CONTACTEMAIL",VEr.eMail);
-  OUTFORMFIELD("F_CUSTOMEREMAIL",VEr.eMail);
+  OUTFORMFIELD("F_CUSTOMEREMAIL",VEr.eMail);     
   OUTFORMFIELD("F_ERREFERENS",POr.VEContact);
   OUTFORMFIELD("F_PLANLEVDATUM",POr.PlanShip);
   OUTFORMFIELD("F_LEVSATT",POr.ShipMode);
@@ -251,29 +253,29 @@ BEGIN
     if (FIELDINFORM("F_ARTNRBC39")) then begin
       ItemBC39(POrw.ArtCode,tstr);
       OUTFORMFIELD("F_ARTNRBC39",tstr);
-    end;
+    end;  
     if (FIELDINFORM("F_ARTNRBCEAN")) then begin
       ItemBCEAN(POrw.ArtCode,tstr);
       OUTFORMFIELD("F_ARTNRBCEAN",tstr);
-    end;
+    end;  
     if (FIELDINFORM("F_ARTNRBCEAN13")) then begin
-      ItemBCEAN13(POrw.ArtCode,tstr);
+      ItemBCEAN13(POrw.ArtCode,tstr);      
       OUTFORMFIELD("F_ARTNRBCEAN13",tstr);
-    end;
+    end;  
     if (FIELDINFORM("F_LEVARTNRBC39")) then begin
-      BC39(POrw.VEArtCode,tstr);
+      BC39(POrw.VEArtCode,tstr);      
       OUTFORMFIELD("F_LEVARTNRBC39",tstr);
-    end;
+    end;  
     if (FIELDINFORM("F_LEVARTNRBCEAN")) then begin
-      BCEAN(POrw.VEArtCode,tstr);
+      BCEAN(POrw.VEArtCode,tstr);      
       OUTFORMFIELD("F_LEVARTNRBCEAN",tstr);
-    end;
+    end;  
     OUTFORMFIELD("F_SPECIFIKATION",POrw.Spec);
     OUTFORMFIELD("F_BESKRIVNING",POrw.Comment);
-    PrintValue("F_VARTANTAL",POrw.Quant,M4UVal,LangNrr,SysFormatRec,false);
+    PrintValue("F_VARTANTAL",POrw.Quant,M4UVal,LangNrr,SysFormatRec,false);    
     PrintValue("F_BELOPP",POrw.Sum,M4Val,LangNrr,SysFormatRec,false);
     PrintValue("F_ANTAL",POrw.VEQuant,M4UVal,LangNrr,SysFormatRec,false);
-
+    
     GetFieldArgument(Docr,F_APRIS,tstr);
     if (blank(tstr)) then begin
       PrintValue("F_APRIS",POrw.Price,M45Val,LangNrr,SysFormatRec,false);
@@ -305,9 +307,9 @@ BEGIN
     end;
     PrintValue("FF_UNITPRICE",Round(POrw.Sum/POrw.Quant,DefaultCurRoundOff),M45Val,LangNrr,SysFormatRec,false); //EBS
     OUTFORMFIELD("F_UNITCODE",POrw.UnitCode);
-    SelectUnitText(POr.LangCode,INr.Unittext,tstr);
+    SelectUnitText(POr.LangCode,INr.Unittext,tstr);    
     OUTFORMFIELD("F_ENHET",tstr);
-    if (FIELDINFORM("F_ENHETLEV")) then begin
+    if (FIELDINFORM("F_ENHETLEV")) then begin        
       tstr = "";
       PIr.VEItemCode = POrw.VEArtCode;
       PIr.ItemCode = POrw.ArtCode;
@@ -322,7 +324,7 @@ BEGIN
           PIr.VECode = POr.VECode;
           found = ReadFirstMain(PIr,4,true);
         end;
-      end;
+      end;      
       if (found) then begin
         SelectUnitText(VEr.LangCode,PIr.VEUnit,tstr);
       end else begin
@@ -331,7 +333,7 @@ BEGIN
         end;
       end;
       OUTFORMFIELD("F_ENHETLEV",tstr);
-    end;
+    end;  
     PrintValue("F_VOLUME",INr.Volume,M4Qty,LangNrr,SysFormatRec,false);
     PrintValue("F_WIDTH",INr.Width,M4Qty,LangNrr,SysFormatRec,false);
     PrintValue("F_HEIGHT",INr.Height,M4Qty,LangNrr,SysFormatRec,false);
@@ -359,7 +361,7 @@ BEGIN
     if (nonblank(POrw.ArtCode)) then begin
       rownr = rownr + 1;
       OUTFORMFIELD("F_ROWNR",rownr);
-    end;
+    end;    
     OutFormImage(INr);
     EndFormRow;
   end;
@@ -377,9 +379,11 @@ BEGIN
   row FormDefVc FDrw;
   Boolean printf,langf;
   Integer intdocnr;
-  string 30 formcode,langcode;
+  string 30 formcode,langcode,fname;
   Integer i,rwcnt;
-
+  transaction Boolean gPDFEmailf;
+  transaction string 255 gaPDFEmailFiles;
+    
   FDr.repname = RepSpec.repname;
   FDr.shortname = RepSpec.shortname;
   if (ReadFirstMain(FDr,1,true)==false) then begin
@@ -398,11 +402,11 @@ BEGIN
   if (langf==false) then begin langcode = ""; end;
   intdocnr = 1;
   printf = true;
-  while (printf) begin
+  while (printf) begin  
     formcode = "";
     for (i=rwcnt-1;i>=0;i=i-1) begin
       MatRowGet(FDr,i,FDrw);
-      if (FindFormcode(POr.OKFlag,FDrw.Typ)) then begin
+      if (FindFormcode(POr.OKFlag,FDrw.Typ)) then begin 
         if (Getformcode(i,FDrw.intdocnr,FDrw.FPCode,FDrw.UserGroup,FDrw.LangCode,FDrw.SerNr,POr.SerNr,FDrw.PrintGroupCode,
                         langcode,intdocnr,"POVc",formcode)) then
         begin
@@ -412,6 +416,15 @@ BEGIN
     end;
 LBREAKPO:;
     if (nonblank(formcode)) then begin
+      if (gPDFEmailf) then begin
+        if (nonblank(gaPDFEmailFiles)) then begin
+          fname = "tmp/" & USetStr(1822) & POr.SerNr & "-" & formcode & ".pdf";
+        end else begin
+          fname = "tmp/" & USetStr(1822) & POr.SerNr & ".pdf";
+        end;
+        gaPDFEmailFiles = AddStringToStringList(gaPDFEmailFiles,fname);
+        qupdating.FormSetDocumentFilename(fname);
+      end;
       if (OpenForm(formcode)) then begin
         PrintPO(RepSpec,POr,formcode);
         CloseForm;
@@ -427,7 +440,7 @@ LBREAKPO:;
     end;
     intdocnr = intdocnr + 1;
   end;
-LDoPOForm:;
+LDoPOForm:;  
   RETURN;
 END;
 
@@ -440,7 +453,7 @@ BEGIN
   Integer intdocnr;
   string 30 formcode,langcode;
   Integer i,rwcnt;
-
+    
   FDr.repname = RepSpec.repname;
   FDr.shortname = RepSpec.shortname;
   if (ReadFirstMain(FDr,1,true)==false) then begin
@@ -459,11 +472,11 @@ BEGIN
   if (langf==false) then begin langcode = ""; end;
   intdocnr = 1;
   printf = true;
-  while (printf) begin
+  while (printf) begin  
     formcode = "";
     for (i=rwcnt-1;i>=0;i=i-1) begin
       MatRowGet(FDr,i,FDrw);
-      if (FindFormcode(POr.OKFlag,FDrw.Typ)) then begin
+      if (FindFormcode(POr.OKFlag,FDrw.Typ)) then begin 
         if (Getformcode(i,FDrw.intdocnr,FDrw.FPCode,FDrw.UserGroup,FDrw.LangCode,FDrw.SerNr,POr.SerNr,FDrw.PrintGroupCode,
                         langcode,intdocnr,"POVc",formcode)) then
         begin
@@ -488,7 +501,7 @@ LBREAKPOConf:;
     end;
     intdocnr = intdocnr + 1;
   end;
-LDoPOConfForm:;
+LDoPOConfForm:;  
   RETURN;
 END;
 
@@ -501,7 +514,7 @@ BEGIN
   Integer intdocnr;
   string 30 formcode,langcode;
   Integer i,rwcnt;
-
+    
   FDr.repname = RepSpec.repname;
   FDr.shortname = RepSpec.shortname;
   if (ReadFirstMain(FDr,1,true)==false) then begin
@@ -520,11 +533,11 @@ BEGIN
   if (langf==false) then begin langcode = ""; end;
   intdocnr = 1;
   printf = true;
-  while (printf) begin
+  while (printf) begin  
     formcode = "";
     for (i=rwcnt-1;i>=0;i=i-1) begin
       MatRowGet(FDr,i,FDrw);
-      if (FindFormcode(POr.OKFlag,FDrw.Typ)) then begin
+      if (FindFormcode(POr.OKFlag,FDrw.Typ)) then begin 
         if (Getformcode(i,FDrw.intdocnr,FDrw.FPCode,FDrw.UserGroup,FDrw.LangCode,FDrw.SerNr,POr.SerNr,FDrw.PrintGroupCode,
                         langcode,intdocnr,"POVc",formcode)) then
         begin
@@ -549,6 +562,6 @@ LBREAKPORem:;
     end;
     intdocnr = intdocnr + 1;
   end;
-LDoPORemForm:;
+LDoPORemForm:;  
   RETURN;
 END;

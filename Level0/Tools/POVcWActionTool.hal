@@ -1,3 +1,5 @@
+external function string 10 GetItemCostAcc(record INVc,string);
+external function Boolean GetItemNameStr(Integer,var string,string,string,string);
 external function Integer POApprovalStatus(record POVc,var record AcceptanceRulesVc);
 external function Boolean HasApprovals();
 external procedure GetItemSalesAcc(string,Integer,var string);
@@ -81,8 +83,8 @@ BEGIN
     BlockLoad(SRRec);
     newnr = GetCurUserLastNr("PUVc");
     if (newnr==-1) then begin
-      newnr = SRRec.LastPurNr;
-    end;
+      newnr = SRRec.LastPurNr;      
+    end;    
     PUp.SerNr = NextSerNr("PUVc",PUp.TransDate,newnr,false,"");
   end;
   PUp.PUClass = POp.POClass;
@@ -100,7 +102,7 @@ BEGIN
   end else begin
     GetFullCurncyRate(PUp.CurncyCode,PUp.TransDate,fr,to1,to2,br1,br2);
     PUp.FrRate = fr;
-    PUp.ToRateB1 = to1;
+    PUp.ToRateB1 = to1; 
     PUp.ToRateB2 = to2;
     PUp.BaseRate1 = br1;
     PUp.BaseRate2 = br2;
@@ -113,16 +115,16 @@ procedure AddToSkiposArray(string poscode,var Array string askippos,var Integer 
 BEGIN
   row PUVc PUrw;
   Integer i;
-
+  
   if (blank(poscode)) then begin goto LAddToSkiposArray; end;
   for (i=0;i<acnt;i=i+1) begin
     if (askippos[i]==poscode) then begin
       goto LAddToSkiposArray;
     end;
   end;
-  askippos[acnt] = poscode;
+  askippos[acnt] = poscode; 
   acnt = acnt + 1;
-LAddToSkiposArray:;
+LAddToSkiposArray:;  
   RETURN;
 END;
 
@@ -130,7 +132,7 @@ procedure PrepareSkiposArray(record PUVc PUr,var Array string askippos,var Integ
 BEGIN
   row PUVc PUrw;
   Integer i,rwcnt;
-
+  
   rwcnt = MatRowCnt(PUr);
   for (i=0;i<rwcnt-1;i=i+1) begin
     MatRowGet(PUr,i,PUrw);
@@ -160,28 +162,28 @@ BEGIN
   array string 20 aloc;
   Integer arescnt;
   Integer apos;
-
+  
   LocRec.Code = PUr.Location;
-  if (blank(LocRec.Code)) then begin
+  if (blank(LocRec.Code)) then begin 
     BlockLoad(MSb);
     LocRec.Code = MSb.MainStock;
   end;
-  if (ReadFirstMain(LocRec,1,true)) then begin end;
-  res = 0;
+  if (ReadFirstMain(LocRec,1,true)) then begin end;  
+  res = 0;    
   lrownr = rownr;
   MatRowGet(PUr,lrownr,PUrw);
   CopyRow(PUr,PUrw,orgPUrw);
   orgquant = orgPUrw.Quant;
   BuildReservationArray(pordnr,PUrw.ArtCode,aqty,aloc,arescnt);
   apos = 0;
-LPUFromPO_PasteQuantAGAIN:;
+LPUFromPO_PasteQuantAGAIN:;  
   if (apos<arescnt) then begin
     if (aqty[apos]<PUrw.Quant) then begin
       PUrw.Quant =  aqty[apos];
     end;
     PUrw.Location =  aloc[apos];
   end;
-  if (LocRec.RequirePos!=0) then begin
+  if (LocRec.RequirePos!=0) then begin    
     PrepareSkiposArray(PUr,askippos,acnt);
     if (ReadFirstItem(PUrw.ArtCode,INr,true,true)) then begin
       if (nonblank(INr.DefPalletItem)) then begin
@@ -193,24 +195,24 @@ LPUFromPO_PasteQuantAGAIN:;
       end;
     end;
   end;
-
+  
   CalculatePURowSum(PUrw.Quant,PUrw.UPrice,PUrw.Extra,PUrw.CostPrice,PUrw.ShipCost,PUrw.RowCost1,PUrw.RowCost2,PUrw.RowCost3,PUrw.RowCost4,PUrw.RowCost5,
                     PUrw.CustomsCost,p,false,PUr.CurncyCode,PUr.FrRate,PUr.ToRateB1,PUr.ToRateB2,PUr.BaseRate1,PUr.BaseRate2);
 
   PUrw.Sum = p;
   chsum = true;
-  if (LocRec.RequirePos!=0) then begin
+  if (LocRec.RequirePos!=0) then begin    
     if (blank(PUrw.PosCode)) then begin PUrw.PosCode = LocRec.WHMDefPUPosCode; end;
     if (blank(PUrw.ToPosCode)) then begin
       defposhight = INr.DefPosHeight;
       if (defposhight==0) then begin
-        defposhight = INr.PalletHeight + 3;
+        defposhight = INr.PalletHeight + 3; 
       end;
       PUrw.ToPosCode = FindFreePositionInLocArea_ExcludePositionFromArray(LocRec.Code,INr.LocArea,defposhight,INr,LocRec.WHMHighestPosCodeFirst,askippos,acnt);
     end;
   end;
 
-  MatRowPut(PUr,lrownr,PUrw);
+  MatRowPut(PUr,lrownr,PUrw);    
   if ((LocRec.RequirePos!=0) or (apos<arescnt)) then begin
     if (nonblank(INr.DefPalletItem)) then begin
       lrownr = lrownr + 1;
@@ -220,8 +222,8 @@ LPUFromPO_PasteQuantAGAIN:;
       palletPUrw.ArtCode = INr.DefPalletItem;
       palletPUrw.Quant = 1;
       palletPUrw.MotherPURow = lrownr;
-      MatRowInsert(PUr,lrownr,palletPUrw);
-      testf = PUVc_PasteArtCode(PUr,lrownr,tstr,tstr2);
+      MatRowInsert(PUr,lrownr,palletPUrw); 
+      testf = PUVc_PasteArtCode(PUr,lrownr,tstr,tstr2);       
     end;
     lrownr = lrownr + 1;
     if (maxrownr>0) then begin
@@ -242,8 +244,8 @@ LPUFromPO_PasteQuantAGAIN:;
       goto LPUFromPO_PasteQuantAGAIN;
     end;
   end;
-
-LPUFromPO_PasteQuant:;
+  
+LPUFromPO_PasteQuant:; 
   PUSumUp(PUr);
   PUFromPO_PasteQuant = res;
   RETURN;
@@ -259,7 +261,7 @@ begin
   row OPVc OPrw;
   Integer i,rwcnt;
   record APPayHistVc APPayHistr;
-
+  
   found = true;
   OPPr.OrderNr = ordernr;
   while (LoopKey("OrderNr",OPPr,1,found)) begin
@@ -280,7 +282,7 @@ begin
               br1 = OPrw.BaseRate1BankVal;
               br2 = OPrw.BaseRate2BankVal;
               res = true;
-//Trace("APPayHistr.Val " & APPayHistr.Val,"");
+//Trace("APPayHistr.Val " & APPayHistr.Val,"");              
             end;
           end;
         end;
@@ -294,7 +296,7 @@ end;
 function val Max(val a,val b)
 begin
   val res;
-
+  
   if (a>=b) then begin
     res = a;
   end else begin
@@ -316,7 +318,7 @@ begin
   record APPayHistVc APPayHistr;
   val totppval,rempuincur,ppval;
   val pufr,puto1,puto2,pubr1,pubr2;
-
+  
   if (ordernr<=0) then begin goto LCalculateOPPrepaymentAvgRate; end;
   found = true;
   OPPr.OrderNr = ordernr;
@@ -343,8 +345,8 @@ begin
               br1 = br1 + ppval*OPrw.BaseRate1BankVal;
               br2 = br2 + ppval*OPrw.BaseRate2BankVal;
               totppval = totppval + ppval;
-//Trace("fr " & fr," to1 " & to1 & " totppval " & totppval & " ppval " & ppval & " totpuincur " & totpuincur);
-//Trace("APPayHistr.Val " & APPayHistr.Val,"");
+//Trace("fr " & fr," to1 " & to1 & " totppval " & totppval & " ppval " & ppval & " totpuincur " & totpuincur);              
+//Trace("APPayHistr.Val " & APPayHistr.Val,"");              
             end;
           end;
         end;
@@ -354,7 +356,7 @@ begin
 
 
   rempuincur = Max(totpuincur-totppval,0);
-//Trace("fr " & fr," to1 " & to1 & " totpuincur " & totpuincur);
+//Trace("fr " & fr," to1 " & to1 & " totpuincur " & totpuincur);              
   if (rempuincur>0) then begin
     GetFullCurncyRate(PUp.CurncyCode,PUp.TransDate,pufr,puto1,puto2,pubr1,pubr2);
     fr = fr + pufr*rempuincur;
@@ -369,7 +371,7 @@ begin
   to2 = to2/totpuincur;
   br1 = br1/totpuincur;
   br2 = br2/totpuincur;
-LCalculateOPPrepaymentAvgRate:;
+LCalculateOPPrepaymentAvgRate:;  
   CalculateOPPrepaymentAvgRate = res;
   return;
 end;
@@ -384,7 +386,7 @@ begin
   record PIVc PIr;
   Boolean foundpi;
   val frrate,torate1,torate2,baserate1,baserate2;
-
+  
   ClearRow(PUp,PUrw,1);
   PUrw.StockType = POrw.StockType;
   PUrw.TREO = POrw.TREO;
@@ -447,15 +449,15 @@ begin
   end else begin
     CalcExtra(PUrw.UPrice,extra,v1);
   end;
-
+  
   if (nonblank(POrw.CustomsCost)) then begin
     PUrw.CustomsCost = POrw.CustomsCost;
-  end else begin
+  end else begin  
     PUrw.CustomsCost = v1;
   end;
   if (POrw.ShipCost<>blankval and POrw.ShipCost<>0) then begin
     PUrw.ShipCost = POrw.ShipCost;
-  end else begin
+  end else begin  
     PUrw.ShipCost = v2;
   end;
   PUrw.RowCost1 = POrw.RowCost1;
@@ -470,7 +472,7 @@ begin
                   PUp.FrRate,PUp.ToRateB1,PUp.ToRateB2,PUp.BaseRate1,PUp.BaseRate2,
                   PUrw.ShipCost,PUrw.RowCost1,PUrw.RowCost2,PUrw.RowCost3,PUrw.RowCost4,PUrw.RowCost5,
                   PUrw.CustomsCost,pv,PUrw.Quant,sv,PUrw.VATCode,PUp.ExportFlag);
-  PUrw.CostPrice = pv;
+  PUrw.CostPrice = pv;                                        
   PUrw.Sum = sv;
   PUrw.OrdRow = rownr;
   if (MSb.PONoOnPURowsOnly==1) then begin
@@ -549,17 +551,17 @@ BEGIN
   val fr,to1,to2,br1,br2;
   val pv,sv,totpuincur;
   LongInt ponr;
-  string 60 sz,msk,mskrep;
+  string 60 sz,msk,mskrep;  
   string 200 varsubset;
   string 255 tstr;
   string 20 stockacc,purchacc;
   Boolean testf,foundpi;
   record TaxMatrixVc TMr;
   record SerNrTrackBlock SNrb;
-
+  
   res = -1;
-  if (POp.Closed!=0) then begin goto LPastePOInPU; end;
-  if (POp.OrderType!=kOrderTypeNormal) then begin
+  if (POp.Closed!=0) then begin goto LPastePOInPU; end;  
+  if (POp.OrderType!=kOrderTypeNormal) then begin 
     res = 22075;
     goto LPastePOInPU;
   end;
@@ -598,12 +600,12 @@ BEGIN
     case kPURateOnGoodsReceiptDate:
       GetFullCurncyRate(PUp.CurncyCode,PUp.TransDate,fr,to1,to2,br1,br2);
       PUp.FrRate = fr;
-      PUp.ToRateB1 = to1;
+      PUp.ToRateB1 = to1; 
       PUp.ToRateB2 = to2;
       PUp.BaseRate1 = br1;
       PUp.BaseRate2 = br2;
     case kPURateFromPrepayment:
-      rwcnt = MatRowCnt(POp);
+      rwcnt = MatRowCnt(POp);  
       for (i=0;i<rwcnt;i=i+1) begin
         MatRowGet(POp,i,POrw);
         if (blank(POrw.ArtCode)) and (POrw.Sum!=0) then begin goto LSKIPROWPastePOInPU; end;
@@ -617,7 +619,7 @@ BEGIN
       end;
       if (CalculateOPPrepaymentAvgRate(PUp,POp.SerNr,POp.Sum4,fr,to1,to2,br1,br2)) then begin
         PUp.FrRate = fr;
-        PUp.ToRateB1 = to1;
+        PUp.ToRateB1 = to1; 
         PUp.ToRateB2 = to2;
         PUp.BaseRate1 = br1;
         PUp.BaseRate2 = br2;
@@ -629,8 +631,8 @@ BEGIN
         PUp.BaseRate2 = POp.BaseRate2;
       end;
   end;
-
-  rwcnt = MatRowCnt(POp);
+  
+  rwcnt = MatRowCnt(POp);  
   PUp.InclVAT = POp.InclVAT;
   nrwcnt = 0;
   totqty = blankval;
@@ -660,16 +662,16 @@ BEGIN
       if (SNrb.BulkSerialNos!=0) then begin
         res = PasteRowToPU(POSetb,CAb,MSb,PUp,POp,POrw,i,INr,POrw.Quant,nrwcnt);
       end else begin
-
+      
         while (remn>0) begin
           if (nrwcnt>=maxrows) then begin
             ponr = PUp.PONr;
-
+ 
             nrwcnt = 0;
             PUSumUp(PUp);
             if (RecordStore(PUp,false)) then begin end;
-            CreateRecordLink(PUp,CurrentCompany,POp,CurrentCompany);
-            CreateRecordLink(POp,CurrentCompany,PUp,CurrentCompany);
+            CreateRecordLink(PUp,CurrentCompany,POp,CurrentCompany);  
+            CreateRecordLink(POp,CurrentCompany,PUp,CurrentCompany);  
             CreateNewPUFromPO(PUp,POp,ponr);
           end;
           remn = remn - 1;
@@ -745,7 +747,7 @@ BEGIN
       CalcSum(1,p,0,POrw.vRebate,t,0);
       PUrw.UPrice = ROund(t,SetRoundModeD(5)); //only 5 in DB
       //EBS <--
-      PUrw.VEUnit = POrw.VEUnit;
+      PUrw.VEUnit = POrw.VEUnit;      
       DivPIFactor(PUrw.Quant,PUrw.PIFactor,t);
       PUrw.VEQuant = t;
       PUrw.Extra = ValToString(Round(INr.ExtraCost,SetRoundModeD(5)),M45Val,"","",0);
@@ -794,15 +796,15 @@ BEGIN
         end;
         v1 = Round(v1,SetRoundModeD(5));
         v2 = Round(v2,SetRoundModeD(5));
-
+  
         if (nonblank(POrw.CustomsCost)) then begin
           PUrw.CustomsCost = POrw.CustomsCost;
-        end else begin
+        end else begin  
           PUrw.CustomsCost = v1;
         end;
         if (POrw.ShipCost<>blankval and POrw.ShipCost<>0) then begin
           PUrw.ShipCost = POrw.ShipCost;
-        end else begin
+        end else begin  
           PUrw.ShipCost = v2;
         end;
         PUrw.RowCost1 = POrw.RowCost1;
@@ -810,14 +812,14 @@ BEGIN
         PUrw.RowCost3 = POrw.RowCost3;
         PUrw.RowCost4 = POrw.RowCost4;
         PUrw.RowCost5 = POrw.RowCost5;
-
+        
         PUrw.Extra = INr.ExtraCost;
         PUrw.CostPrice = blankval;
         PUCalcCostPrice(PUrw.ArtCode,PUrw.UPrice,PUp.InclVAT,PUp.NoTAXonVAT,PUrw.Extra,PUp.CurncyCode,
                         PUp.FrRate,PUp.ToRateB1,PUp.ToRateB2,PUp.BaseRate1,PUp.BaseRate2,
                         PUrw.ShipCost,PUrw.RowCost1,PUrw.RowCost2,PUrw.RowCost3,PUrw.RowCost4,PUrw.RowCost5,
                         PUrw.CustomsCost,pv,PUrw.Quant,sv,PUrw.VATCode,PUp.ExportFlag);
-      PUrw.CostPrice = pv;
+      PUrw.CostPrice = pv;                                        
       PUrw.Sum = sv;
       PUrw.VEItemCode = POrw.VEArtCode;
       PUrw.VARList = POrw.VARList;
@@ -868,7 +870,7 @@ BEGIN
       PackRowFieldMatrix(PUrw,"TaxMatrix",TMr);
       MatRowPut(PUp,nrwcnt,PUrw);
       RowCalculateTaxMatrix_PUVc(PUp,nrwcnt,PUrw,0);
-      MatRowPut(PUp,nrwcnt,PUrw);
+      MatRowPut(PUp,nrwcnt,PUrw);     
       if (PUFromPO_PasteQuant(PUp,POp.SerNr,nrwcnt,200,POp)==0) then begin end;
       nrwcnt = MatRowCnt(PUp);
     end;
@@ -876,7 +878,7 @@ LSKIPROWPastePOInPU:;
   end;
   PUSumUp(PUp);
 LPastePOInPU:;
-  PastePOInPU = res;
+  PastePOInPU = res; 
   RETURN;
 END;
 
@@ -886,7 +888,7 @@ BEGIN
   record INVc INr;
   record CUVc VEp;
   integer ctype;
-
+  
   res = pucreditacc;
   if (nonblank(res)) then begin
     goto LGetPurchaseControlAcc;
@@ -901,12 +903,12 @@ BEGIN
     end;
     if (VEp.ExportFlag==2) or (VEp.ExportFlag==4) then begin
       ctype = 2;
-    end;
+    end;  
   end;
   if (ItemGroupAccounts!=0) then begin
     INr.Code = artcode;
     if (ReadFirstMain(INr,1,true)) then begin
-      GetITPurchAcc(INr.Group,res,ctype);
+      GetITPurchAcc(INr.Group,res,ctype);      
       if (nonblank(res)) then begin
         goto LGetPurchaseControlAcc;
       end;
@@ -919,15 +921,15 @@ BEGIN
       res = ARb.ExpPurchAcc;
     otherwise
       res = ARb.PurchAcc;
-  end;
+  end;  
   if (nonblank(res)) then begin
     goto LGetPurchaseControlAcc;
   end;
   res = veacccost;
   if (nonblank(res)) then begin
     goto LGetPurchaseControlAcc;
-  end;
-LGetPurchaseControlAcc:;
+  end;  
+LGetPurchaseControlAcc:;  
   RETURN;
 END;
 
@@ -952,25 +954,25 @@ begin
   string 255 tstr,viitgroup;
   record SMVc VATr;
   vector val vrecqty;
-
+  
   res = 24152;
   VIp.PayVal = blankval;
   vicnt = MatRowCnt(VIp);
   found = true;
   PUr.PONr = POr.SerNr;
   PUr.SerNr = 9999999999;
-  while (LoopBackKey("PONr",PUr,2,found)) begin
+  while (LoopBackKey("PONr",PUr,2,found)) begin 
     if (PUr.PONr!=POr.SerNr) then begin found = false; end;
     if (found) then begin
       testf = true;
       if (PUr.OKFlag==0) then begin testf = false; end;
       if (found and testf) then begin
         res = 0;
-
+        
         if (itempricef==false) then begin goto LPastePURowsToVISKIPROWS; end;
-
+        
         rwcnt = MatRowCnt(PUr);
-        for (i=0;i<rwcnt;i=i+1) begin
+        for (i=0;i<rwcnt;i=i+1) begin  
           MatRowGet(PUr,i,PUrw);
           ClearRow(VIp,VIrw,1);
           vifound = PUQtyInvoiced(PUr.SerNr,i,PUr.PONr,puqinvd);
@@ -984,7 +986,7 @@ begin
               if (rPOr.SerNr<=0) then begin
                 rPOr.SerNr = PUr.PONr;
               end;
-              if (ReadFirstMain(rPOr,1,true)) then begin
+              if (ReadFirstMain(rPOr,1,true)) then begin 
                 if (PUrw.OrdRow>=0) then begin
                   MatRowGet(rPOr,PUrw.OrdRow,POrw);
                   if (q>(POrw.Shipd2-POrw.Invd)) then begin//needs to take Ret Goods into account
@@ -994,7 +996,7 @@ begin
                 end;
               end;
             end;
-            if (q>0) then begin
+            if (q>0) then begin 
               VIrw.Item = PUrw.ArtCode;
               VIrw.qty = q;
               VIrw.PUNr = PUr.SerNr;
@@ -1015,12 +1017,12 @@ begin
                     end;
                   end else begin
                     q = POrw.Quant - POrw.Invd;
-                  end;
+                  end;  
                 end;
               end;
             end;
-            if (q>0) then begin
-              VIrw.OrdRow = -2; // Row comes from Order, but is not connected to a specific row
+            if (q>0) then begin 
+              VIrw.OrdRow = -2; // Row comes from Order, but is not connected to a specific row 
               if (TransferItems==2) or (PUrw.StockType==kStockTypeConsigment) then begin
                 VIrw.Item = PUrw.ArtCode;
                 VIrw.qty = q;
@@ -1042,7 +1044,7 @@ begin
                   goto LPastePURowsToVISKIPROW;
                 end;
               end;
-            end;
+            end;      
           end;
           vrecqty[PUrw.OrdRow] = vrecqty[PUrw.OrdRow] + PUrw.Quant;
           if (PUrw.Quant==0) then begin goto LPastePURowsZeroQty; end;
@@ -1055,11 +1057,11 @@ begin
           if (blank(VIrw.VATCode)) then begin
             GetItemVATCode(PUrw.ArtCode,VEr.ExportFlag,tstr,false);
             VIrw.VATCode = tstr;
-          end;
+          end;  
           GetPurchaseControlAcc(PUrw.CredAcc,CAb.ItemGroupAccounts,PUrw.ArtCode,ARb,VEr.AccCost,tstr,PUr.VECode);
           VIrw.AccNumber = tstr;
           if (GetAccName(VIrw.AccNumber,tstr,60)) then begin end;
-          VIrw.Comment = tstr;
+          VIrw.Comment = tstr;    
           purowsum = PUrw.Quant*PUrw.UPrice;
           if (PUrw.PONr>0) or (PUr.PONr>0) then begin
             purowsum = PUrw.Quant*PUrw.UPrice;
@@ -1069,22 +1071,22 @@ begin
             sum = purowsum - sum;
           end else begin
             sum = purowsum;
-          end;
+          end;  
           VIrw.Sum = Round(sum,DefaultRoundMode);
           net = net + VIrw.Sum;
-
+          
           if (nonblank(VIrw.Item)) then begin
             if (blank(viitgroup)) then begin
               if (ReadFirstItem(VIrw.Item,INr,true,true)) then begin
                 viitgroup = INr.Group;
               end;
-            end;
+            end;    
           end;
           if (VIrw.Sum!=0) then begin
             MatRowPut(VIp,vicnt,VIrw);
-            vicnt = vicnt + 1;
+            vicnt = vicnt + 1;         
           end;
-LPastePURowsToVISKIPROW:;
+LPastePURowsToVISKIPROW:;    
         end;
 //        PUAddFreightRow(PUr,VIp,ARb,APb,BCb,vicnt);
 
@@ -1093,7 +1095,7 @@ LPastePURowsToVISKIPROWS:;
         if (customsf) then begin
           AddExtraCostRow(ARB,BCb,VIp,"customs",PUr.CustomsCost,PUr.InclVAT,ExportFlag,PUr.ExportFlag,PUr.CurncyCode,VATr,vatcnt);
         end;
-        if (freightf) then begin
+        if (freightf) then begin  
           AddExtraCostRow(ARB,BCb,VIp,"freight",PUr.ShipCost,PUr.InclVAT,ExportFlag,PUr.ExportFlag,PUr.CurncyCode,VATr,vatcnt);
         end;
         if (cost1f) then begin
@@ -1132,15 +1134,15 @@ LPastePURowsZeroQty:;
           if (nonblank(VITb.autoVATVal)) then begin
             if ((VIp.ExportFlag==0) or (VIp.ExportFlag==3) or (VIp.ExportFlag==4)) then begin
               MulM4ProcVal(StringToVal(VITb.autoVATVal,M4Rate),VIp.PayVal,t);
-              RoundVATSum(VIp.CurncyCode,VIp.PayDeal,"VIVc",t);
+              RoundVATSum(VIp.CurncyCode,VIp.PayDeal,"VIVc",t);      
               VIp.VATVal = t;
             end;
           end;
-        end;
+        end;  
 
       end;
     end;
-  end;
+  end;  
   PastePURowsToVI = res;
   return;
 end;
@@ -1148,21 +1150,22 @@ end;
 procedure DownpaymentPerVATCode(record VIVc theVIp,record PODownPayBlock DPb,val downp,var Integer srw)
 begin
   record VIVc VIr;
-  record POVc POr;
+  record POVc POr; 
   row VIVc VIrw;
   row VIVc theVIrw;
   row VIVc newVIrw;
   Boolean TrHs,testf,subvatf;
   Integer di,drwcnt;
   Integer i,rwcnt;
-  val t,qty,sum;
+  val t,qty,sum;  
   val totd,v;
   string 255 tstr;
   LongInt ordrow;
   record RoundBlock Roundb;
   record TaxMatrixVc TMr;
+  record INVc INr;
   val vatv,t1;
-
+    
   BlockLoad(Roundb);
   POr.SerNr = VIr.POSerNr;
   ReadFirstMain(POr,1,true);
@@ -1180,6 +1183,8 @@ begin
   if (t<=0) then begin
     goto LDownpaymentPerVATCode;
   end;
+  INr.Code = DPb.ArtCode;
+  ReadFirstMain(INr,1,true);
 
   rwcnt = MatRowCnt(theVIp);
   for (i=0;i<rwcnt;i=i+1) begin
@@ -1221,7 +1226,7 @@ begin
             end;
             switch (VIrw.stp) begin
               case kInvoiceRowTypeDownpayment:
-                if (VIrw.OrdRow==ordrow) then begin
+                if (VIrw.OrdRow==ordrow) then begin 
                   v = VIrw.Sum;
                   if (POr.InclVAT==0) then begin
                     if (DPb.CalcMode==0) then begin
@@ -1271,15 +1276,20 @@ begin
                       UnpackRowFieldMatrix(VIrw,"TaxMatrix",TMr);
                       FindSalesExVat(TMr,VIrw.VATCode,v,1,0,v);
                     end;
-                  end;
+                  end;        
                   ClearRow(theVIp,newVIrw,kInvoiceRowTypeDownpayment);
                   newVIrw.Item = VIr.SerNr;
-                  newVIrw.Comment = DPb.TextA;
-                  newVIrw.Comment = newVIrw.Comment & " ";
-                  newVIrw.Comment = newVIrw.Comment & theVIp.POSerNr;
+                  if (nonblank(DPb.TextA)) then begin
+                    newVIrw.Comment = DPb.TextA;
+                    newVIrw.Comment = newVIrw.Comment & " ";
+                    newVIrw.Comment = newVIrw.Comment & theVIp.POSerNr;
+                  end else begin
+                    newVIrw.Comment = VIrw.Comment;
+                  end;
                   newVIrw.Sum =  newVIrw.Sum - v;
                   if (blank(tstr)) then begin
-                    GetItemSalesAcc(DPb.ArtCode,theVIp.ExportFlag,tstr);
+                    tstr = GetItemCostAcc(INr,theVIp.VECode);
+//                    GetItemSalesAcc(DPb.ArtCode,theVIp.ExportFlag,tstr);
                   end;
                   newVIrw.AccNumber = tstr;
                   newVIrw.VATCode = VIrw.VATCode;
@@ -1300,22 +1310,24 @@ LSkiDpRow:;;
           end;
         end;
       end;
-    end;
-  end;
-LDownpaymentPerVATCode:;
+    end;  
+  end;    
+LDownpaymentPerVATCode:;   
   return;
 end;
 
-procedure AddDownpaymentRows(record POVc POp,var record VIVc VIp)
+global
+procedure VIAddDownpaymentRows(record POVc POp,var record VIVc VIp)
 begin
   val t;
   record PODownPayBlock DPb;
   Boolean subvatf;
-  string 255 taxtemplatecode,VATCode;
+  string 255 taxtemplatecode,VATCode,tstr;
   record TaxMatrixVc TMr;
   row VIVc VIrw;
   Integer srw;
-
+  record INVc INr;
+  
   BlockLoad(DPb);
   t = POp.DownPaySent - POp.DownPayRedcd;
   if (t>0) then begin
@@ -1330,7 +1342,7 @@ begin
         if (t>VIp.PayVal) then begin
           t = VIp.PayVal;
           subvatf = false;
-        end;
+        end;        
       end;
       if (UseTaxTemplatesforTaxCalc) then begin
         taxtemplatecode = "";
@@ -1342,7 +1354,7 @@ begin
             subvatf = true;
           end else begin
             subvatf = false;
-          end;
+          end;      
           if (subvatf) then begin
             FindSalesExVat(TMr,"",t,1,0,t);//no vat like in InvDownPaySum
           end;
@@ -1358,7 +1370,7 @@ begin
             subvatf = true;
           end else begin
             subvatf = false;
-          end;
+          end;      
           if (subvatf) then begin
             RecordClear(TMr);
             FindSalesExVat(TMr,VATCode,t,1,0,t);//no vat like in InvDownPaySum
@@ -1366,15 +1378,20 @@ begin
         end;
       end;
       if (t>0) then begin
+        INr.Code = DPb.ArtCode;
+        ReadFirstMain(INr,1,true);
         t = -t;
         ClearRow(VIp,VIrw,kInvoiceRowTypeDownpayment);
-        VIrw.Comment = DPb.TextA;
+//        VIrw.Comment = DPb.TextA;
+        GetItemNameStr(1,tstr,POp.LangCode,INr.Name,INr.Code);
+        VIrw.Comment = tstr;
         VIrw.Comment = VIrw.Comment & " ";
         VIrw.Comment = VIrw.Comment & POp.SerNr;
         VIrw.Sum = t;
-        GetItemSalesAcc(DPb.ArtCode,VIp.ExportFlag,VIrw.AccNumber);
-        VIrw.VATCode = VATCode;
-        VIrw.TaxTemplateCode = taxtemplatecode;
+//        GetItemSalesAcc(DPb.ArtCode,VIp.ExportFlag,VIrw.AccNumber);
+        VIrw.AccNumber = GetItemCostAcc(INr,POp.VECode);
+        VIrw.VATCode = VATCode;        
+        VIrw.TaxTemplateCode = taxtemplatecode;        
         PackRowFieldMatrix(VIrw,"TaxMatrix",TMr);
         RowCalculateTaxMatrix_VIVc(VIp,MatRowCnt(VIp),VIrw,0);
         MatRowPut(VIp,MatRowCnt(VIp),VIrw);
@@ -1384,14 +1401,15 @@ begin
       DownpaymentPerVATCode(VIp,DPb,t,srw);
     end;
   end;
-
+    
   return;
 end;
 
 global
-updating function Integer PastePOInVI(var record POVc POp,var record VIVc VIp,string vecode,
+updating function Integer PastePOInVI2(var record POVc POp,var record VIVc VIp,string vecode,
                                       Boolean itempricef,Boolean customsf,Boolean freightf,
-                                      Boolean cost1f,Boolean cost2f,Boolean cost3f,Boolean cost4f,Boolean cost5f)
+                                      Boolean cost1f,Boolean cost2f,Boolean cost3f,Boolean cost4f,Boolean cost5f,
+                                      var string fieldgoto,var LongInt rowgoto)
 begin
   Integer i,rwcnt,vatcnt;
   Integer j,virwcnt;
@@ -1411,7 +1429,7 @@ begin
   Boolean itemfoundf,othersupf;
   val from,to1,to2,base1,base2,tmp;
   record SMVc VATr;
-  string 255 tstr;
+  string 255 tstr;  
   record AcceptSetBlock AcceptSet;
   string 20 viitgroup;
   string 20 lvecode,crncy;
@@ -1429,6 +1447,8 @@ begin
   BlockLoad(POSb);
   BlockLoad(CYb);
   BlockLoad(MSb);
+  fieldgoto = "";
+  rowgoto = -1;
   TransferItems = VITb.TransferItems;
   //if any row ordertype is dropship
   rwcnt = MatRowCnt(POp);
@@ -1436,7 +1456,7 @@ begin
     TransferItems = 2;
 //per ship note?
   end else begin
-    for (i=0;i<rwcnt;i=i+1) begin
+    for (i=0;i<rwcnt;i=i+1) begin  
       MatRowGet(POp,i,POrw);
       if (POrw.OrderType==kOrderTypeDropShip) then begin
         TransferItems = 2;
@@ -1444,7 +1464,7 @@ begin
       end;
     end;
   end;
-
+  
   SetupVATBase(VATr,vatcnt);
   if (itempricef) then begin
     if (nonblank(POp.InvoiceToCode)) then begin
@@ -1461,19 +1481,21 @@ begin
     othersupf = true;
   end;
   VEr.Code = lvecode;
-  if (ReadFirstMain(VEr,1,true)==false) then begin
+  if (ReadFirstMain(VEr,1,true)==false) then begin 
     res = 1434;
-    goto LPastePOInVI;
+    fieldgoto = "VECode";
+    goto LPastePOInVI2; 
   end;
   if (IsStandardProduct==false) then begin
-    if (TransferItems!=2) then begin
-      if (blank(VEr.AccCost)) then begin
-        res = 1434;
-        goto LPastePOInVI;
+    if (TransferItems!=2) then begin 
+      if (blank(VEr.AccCost)) then begin 
+        res = 1434;  
+        fieldgoto = "VECode";
+        goto LPastePOInVI2; 
       end;
     end;
   end;
-//  if (POp.Closed!=0) then goto LPastePOInVI;// the same as OR
+//  if (POp.Closed!=0) then goto LPastePOInVI2;// the same as OR
   res = 0;
   VIp.OrderType = POp.OrderType;
   VIp.ExportFlag = POp.ExportFlag;
@@ -1533,21 +1555,21 @@ begin
       case kVIRateOnPurchaseInvoiceDate:
         GetFullCurncyRate(VIp.CurncyCode,VIp.TransDate,from,to1,to2,base1,base2);
         VIp.FrRate = from;
-        VIp.ToRateB1 = to1;
+        VIp.ToRateB1 = to1; 
         VIp.ToRateB2 = to2;
         VIp.BaseRate1 = base1;
         VIp.BaseRate2 = base2;
 
         VIp.VATFrRate = from;
-        VIp.VATToRateB1 = to1;
+        VIp.VATToRateB1 = to1; 
         VIp.VATToRateB2 = to2;
         VIp.VATBaseRate1 = base1;
         VIp.VATBaseRate2 = base2;
       case kVIRateFromPrepaymentandPurchaseInvoice:
-/*
+/*      
         if (GetOPPrepaymentRate(VIp.CurncyCode,POp.SerNr,from,to1,to2,base1,base2)) then begin
           VIp.FrRate = from;
-          VIp.ToRateB1 = to1;
+          VIp.ToRateB1 = to1; 
           VIp.ToRateB2 = to2;
           VIp.BaseRate1 = base1;
           VIp.BaseRate2 = base2;
@@ -1558,7 +1580,7 @@ begin
           VIp.BaseRate1 = POp.BaseRate1;
           VIp.BaseRate2 = POp.BaseRate2;
         end;
-*/
+*/        
         GetFullCurncyRate(VIp.CurncyCode,VIp.InvDate,VIp.FrRate,VIp.ToRateB1,VIp.ToRateB2,VIp.BaseRate1,VIp.BaseRate2);
         GetFullCurncyRate(VIp.CurncyCode,VIp.InvDate,VIp.VATFrRate,VIp.VATToRateB1,VIp.VATToRateB2,VIp.VATBaseRate1,VIp.VATBaseRate2);
     end;
@@ -1600,32 +1622,32 @@ begin
   VICalcEReb(VIp);
   if (VITb.VIBasedOnPU!=0) and (POp.OrderType!=kOrderTypeDropShip) then begin //any po order rowtype is dropship
     res = PastePURowsToVI(CYb,POp,VIp,VITb,TransferItems,CAb,ARb,BCb,APb,MSb,ExportFlag,itempricef,customsf,freightf,cost1f,cost2f,cost3f,cost4f,cost5f);
-    goto LPastePOInVI;
+    goto LPastePOInVI2;
   end;
 
   nrwcnt = 0;
-  if (VITb.FullQtyTrans==0) then begin
+  if (VITb.FullQtyTrans==0) then begin 
     VIp.PayVal = blankval;
   end;
-  for (i=0;i<rwcnt;i=i+1) begin
+  for (i=0;i<rwcnt;i=i+1) begin  
     MatRowGet(POp,i,POrw);
     totveqty = totveqty + POrw.VEQuant;
     totqty = totqty + POrw.Quant;
-  end;
+  end;  
   CalcExtra(POp.Sum1,POp.CostPerUnit,costperunit);
-  costperunit = costperunit/totqty;
+  costperunit = costperunit/totqty;      
   if (itempricef) then begin
     for (i=0;i<rwcnt;i=i+1) begin
       MatRowGet(POp,i,POrw);
-      if (blank(POrw.ArtCode)) then begin goto L44PastePOInVI; end;
+      if (blank(POrw.ArtCode)) then begin goto L44PastePOInVI2; end;
       if (POrw.StockType==kStockTypeConsigment) then begin
         res = 20579;
-        goto LPastePOInVI;
+        goto LPastePOInVI2; 
       end;
       if (VITb.FullQtyTrans==0) then begin
         if (POp.InvBeforePU==0) then begin
-          if ((POrw.Shipd2==0) and (POrw.Invd==0)) then begin goto L44PastePOInVI; end;
-        end;
+          if ((POrw.Shipd2==0) and (POrw.Invd==0)) then begin goto L44PastePOInVI2; end;
+        end;  
       end;
       virwcnt = MatRowCnt(VIp);
       line = -1;
@@ -1645,29 +1667,29 @@ begin
             end;
             if (testf) then begin
               line = j;
-              goto L33PastePOInVI;
-            end;
+              goto L33PastePOInVI2;
+            end;        
           case 1:
             if (CYb.UseTaxTemplatesforTaxCalc==0) then begin
               if ((POrw.VATCode==VIrw.VATCode) and (POrw.ArtCode==VIrw.Item)) then begin
-                if (blank(POrw.PRCode)) then begin
-                  if (POp.PRCode==VIrw.PRCode) then begin
+                if (blank(POrw.PRCode)) then begin 
+                  if (POp.PRCode==VIrw.PRCode) then begin 
                     testf = true;
                   end;
                 end else begin
-                  if (POrw.PRCode==VIrw.PRCode) then begin
+                  if (POrw.PRCode==VIrw.PRCode) then begin 
                     testf = true;
                   end;
                 end;
               end;
             end else begin
               if ((POrw.TaxTemplateCode==VIrw.TaxTemplateCode) and (POrw.ArtCode==VIrw.Item)) then begin
-                if (blank(POrw.PRCode)) then begin
-                  if (POp.PRCode==VIrw.PRCode) then begin
+                if (blank(POrw.PRCode)) then begin 
+                  if (POp.PRCode==VIrw.PRCode) then begin 
                     testf = true;
                   end;
                 end else begin
-                  if (POrw.PRCode==VIrw.PRCode) then begin
+                  if (POrw.PRCode==VIrw.PRCode) then begin 
                     testf = true;
                   end;
                 end;
@@ -1675,12 +1697,12 @@ begin
             end;
             if (testf) then begin
               line = j;
-              goto L33PastePOInVI;
+              goto L33PastePOInVI2;
             end;
           case 2:
         end;
       end;
-L33PastePOInVI:;
+L33PastePOInVI2:;
       INr.Code = POrw.ArtCode;
       itemfoundf = ReadFirstMain(INr,1,true);
       if ((itemfoundf==true) and blank(viitgroup)) then begin
@@ -1700,7 +1722,7 @@ L33PastePOInVI:;
         UnpackRowFieldMatrix(POrw,"TaxMatrix",TMr);
         PackRowFieldMatrix(VIrw,"TaxMatrix",TMr);
         VIrw.Sum = blankval;
-        VIrw.OrdRow = -2; // Row comes from Order, but is not connected to a specific row
+        VIrw.OrdRow = -2; // Row comes from Order, but is not connected to a specific row 
         if (TransferItems!=0) then begin
           VIrw.OrdRow = i;
           VIrw.Item = POrw.ArtCode;
@@ -1723,8 +1745,8 @@ L33PastePOInVI:;
             if (GetAccName(VIrw.AccNumber,tstr,60)) then begin end;
             VIrw.Comment = tstr;
             VIrw.SerialNr = POSerialNrFromPU(POp.SerNr,i);
-          end;
-        end;
+          end;  
+        end;              
       end;
       if (VITb.FullQtyTrans==0) then begin
         shp = POrw.Shipd2;
@@ -1734,8 +1756,8 @@ L33PastePOInVI:;
         if ((POp.InvBeforePU!=0) and (POp.PUFlag==0)) then begin
           p = POrw.Quant;
           if (POrw.Invd!=0) then begin
-            p = p - POrw.Invd;
-          end;
+            p = p - POrw.Invd;            
+          end;  
         end else begin
           if (shp!=0 or POrw.Invd!=0) then begin
             p = shp - POrw.Invd;
@@ -1743,17 +1765,17 @@ L33PastePOInVI:;
         end;
         if (p==0) then begin
           virwcnt = virwcnt - 1;
-          goto L44PastePOInVI;
+          goto L44PastePOInVI2;
         end;
-
+        
         if (shp!=0 or POrw.Invd!=0) then begin
-          if (POp.InvBeforePU!=0) then begin
+          if (POp.InvBeforePU!=0) then begin          
           end else begin
             p = shp - POrw.Invd;
           end;
           if (p==0) then begin
             virwcnt = virwcnt - 1;
-            goto L44PastePOInVI;
+            goto L44PastePOInVI2;
           end;
         end;
         VIrw.qty = VIrw.qty + p;
@@ -1763,16 +1785,16 @@ L33PastePOInVI:;
           t1 = POrw.VEQuant/POrw.Quant;
           p = p*t1;
         end;
-/*
-      if (POp.InclVAT!=0) then begin
-        pr = FindVAT(VIrw.VATCode,POrw.Price,POp.InclVAT);
+/*       
+      if (POp.InclVAT!=0) then begin    
+        pr = FindVAT(VIrw.VATCode,POrw.Price,POp.InclVAT);       
         totvatv = totvatv + pr;
-        pr = POrw.Price - pr;
+        pr = POrw.Price - pr;     
       end else begin
         pr = POrw.Price;
       end;
-      CalcSum(p,pr,POrw.PriceFactor,POrw.vRebate,t1,0);
-done in the end, round off
+      CalcSum(p,pr,POrw.PriceFactor,POrw.vRebate,t1,0);      
+done in the end, round off      
 */
 //        t1 = (VIrw.qty * POrw.Sum / POrw.Quant);// VIrw.qty is summuing up qtys from diffrent rows if consolidate items to account
         if (POp.InvBeforePU==0) then begin
@@ -1797,13 +1819,13 @@ done in the end, round off
       VIrw.Sum = VIrw.Sum + totqty;
       GetPIPurchseCost(POrw.ArtCode,lvecode,POrw.VEArtCode,totqty);
       totqty = totqty*VIrw.qty;
-      VIrw.Sum = VIrw.Sum + totqty;
+      VIrw.Sum = VIrw.Sum + totqty;       
       if (VITb.FullQtyTrans!=0) then begin
         VIp.PayVal = VIp.PayVal + totqty;
         if (CYb.UseTaxTemplatesforTaxCalc==0) then begin
           AddVATBase(VATr,VIrw.VATCode,totqty,blankval,vatcnt,POp.InclVAT,VIp.NoTAXonVAT);
         end;
-      end;
+      end;    
       if (CYb.UseTaxTemplatesforTaxCalc==0) then begin
         if (POp.InclVAT!=0) then begin
           if (VITb.FullQtyTrans==2) then begin
@@ -1826,14 +1848,14 @@ done in the end, round off
         end;
       end;
       MatRowPut(VIp,line,VIrw);
-L44PastePOInVI:;
+L44PastePOInVI2:;
     end;
   end;
   addedaccf = MatRowCnt(VIp)!=0;
   if (customsf) then begin
     AddExtraCostRow(ARB,BCb,VIp,"customs",POp.CustomsCost,POp.InclVAT,ExportFlag,POp.ExportFlag,POp.CurncyCode,VATr,vatcnt);
   end;
-  if (freightf) then begin
+  if (freightf) then begin  
     AddExtraCostRow(ARB,BCb,VIp,"freight",POp.ShipCost,POp.InclVAT,ExportFlag,POp.ExportFlag,POp.CurncyCode,VATr,vatcnt);
   end;
   if (cost1f) then begin
@@ -1869,7 +1891,7 @@ L44PastePOInVI:;
     MatRowGet(VIp,0,VIrw);
     vt = VATType(VIrw.VATCode);
   end;
-
+  
   if (POp.InclVAT==0) then begin
     if (CYb.UseTaxTemplatesforTaxCalc==0) then begin
       CalcVATBaseVAT(VATr,POp.InclVAT,VIp.NoTAXonVAT,vatcnt,totvatv,t1);
@@ -1884,14 +1906,14 @@ L44PastePOInVI:;
       VIp.TAX1Sum = t1;
       if ((VIp.ExportFlag==0) or (VIp.ExportFlag==3) or (VIp.ExportFlag==4)) then begin
         VIp.PayVal = VIp.PayVal + totvatv + VIp.TAX1Sum;
-      end;
+      end;  
     end;
   end;
   if (POp.InclVAT!=0) then begin
-    p = VIp.VATVal;
+    p = VIp.VATVal;    
     if (blank(p)) then begin
       p = VIp.CalcVATVal;
-    end;
+    end;    
     if (p!=POp.Sum3) then begin
 //        VIp.VATVal = POp.Sum3;//this cannot be corect
 //        VIp.PayVal = POp.Sum4;//this cannot be corect
@@ -1919,7 +1941,7 @@ L44PastePOInVI:;
     VIrw.VATCode = "";
     MatRowPut(VIp,line,VIrw);
   end;
-LPastePOInVI:;
+LPastePOInVI2:;
   if (res==0) then begin
     if (MatRowCnt(VIp)==0) then begin
       for (i=0;i<rwcnt;i=i+1) begin
@@ -1941,45 +1963,68 @@ LPastePOInVI:;
       end;
     end;
   end;
-  AddDownpaymentRows(POp,VIp);
-  PastePOInVI = res;
+  VIAddDownpaymentRows(POp,VIp);
+  VIDDefault(-1,"PayVal",VIp);
+  PastePOInVI2 = res;
+  return;
+end;
+
+global
+updating function Integer PastePOInVI(var record POVc POp,var record VIVc VIp,string vecode,
+                                      Boolean itempricef,Boolean customsf,Boolean freightf,
+                                      Boolean cost1f,Boolean cost2f,Boolean cost3f,Boolean cost4f,Boolean cost5f)
+begin
+  string 255 fieldgoto;
+  LongInt rowgoto;
+  
+  PastePOInVI = PastePOInVI2(POp,VIp,vecode,itempricef,customsf,freightf,cost1f,cost2f,cost3f,cost4f,cost5f,fieldgoto,rowgoto);
+  return;
+end;
+
+global
+updating function Integer CreateVIFromPO2(LongInt PONr,record RcVc RepSpec,var record VIVc VIp,var string fieldgoto,var LongInt rowgoto)
+begin
+  Integer res;
+  record POVc POr;
+  record SRBlock SRRec;
+  LongInt newnr;
+  
+  POr.SerNr = PONr;
+  if (ReadFirstMain(POr,0,true)) then begin end;  
+  RecordNew(VIp);
+  res = PastePOInVI2(POr,VIp,RepSpec.f1,RepSpec.flags[0]!=0,RepSpec.flags[6]!=0,RepSpec.flags[7]!=0,RepSpec.flags[1]!=0,RepSpec.flags[2]!=0,RepSpec.flags[3]!=0,RepSpec.flags[4]!=0,RepSpec.flags[5]!=0,fieldgoto,rowgoto);
+  if (res!=0) then begin
+    goto LCreateVIFromPO2;
+  end;
+  if (VIp.SerNr==-1) then begin
+    BlockLoad(SRRec);
+    newnr = GetCurUserLastNr("VIVc");
+    if (newnr==-1) then begin
+      newnr = SRRec.LastVINr;      
+    end;    
+    VIp.SerNr = NextSerNr("VIVc",VIp.TransDate,newnr,false,"");
+    if (VIp.SerNr==-1) then begin goto LCreateVIFromPO2; end;
+  end;
+  if ((MatRowCnt(VIp)>0) and (VIp.SerNr!=-1)) then begin
+    if (RecordStore(VIp,false)) then begin 
+      CreateRecordLink(VIp,CurrentCompany,POr,CurrentCompany);  
+      CreateRecordLink(POr,CurrentCompany,VIp,CurrentCompany);  
+    end;
+  end else begin
+    res = -1;
+  end;
+LCreateVIFromPO2:;
+  CreateVIFromPO2 = res;
   return;
 end;
 
 global
 updating function Integer CreateVIFromPO(LongInt PONr,record RcVc RepSpec,var record VIVc VIp)
 begin
-  Integer res;
-  record POVc POr;
-  record SRBlock SRRec;
-  LongInt newnr;
-
-  POr.SerNr = PONr;
-  if (ReadFirstMain(POr,0,true)) then begin end;
-  RecordNew(VIp);
-  res = PastePOInVI(POr,VIp,RepSpec.f1,RepSpec.flags[0]!=0,RepSpec.flags[6]!=0,RepSpec.flags[7]!=0,RepSpec.flags[1]!=0,RepSpec.flags[2]!=0,RepSpec.flags[3]!=0,RepSpec.flags[4]!=0,RepSpec.flags[5]!=0);
-  if (res!=0) then begin
-    goto LCreateVIFromPO;
-  end;
-  if (VIp.SerNr==-1) then begin
-    BlockLoad(SRRec);
-    newnr = GetCurUserLastNr("VIVc");
-    if (newnr==-1) then begin
-      newnr = SRRec.LastVINr;
-    end;
-    VIp.SerNr = NextSerNr("VIVc",VIp.TransDate,newnr,false,"");
-    if (VIp.SerNr==-1) then begin goto LCreateVIFromPO; end;
-  end;
-  if ((MatRowCnt(VIp)>0) and (VIp.SerNr!=-1)) then begin
-    if (RecordStore(VIp,false)) then begin
-      CreateRecordLink(VIp,CurrentCompany,POr,CurrentCompany);
-      CreateRecordLink(POr,CurrentCompany,VIp,CurrentCompany);
-    end;
-  end else begin
-    res = -1;
-  end;
-LCreateVIFromPO:;
-  CreateVIFromPO = res;
+  string 255 fieldgoto;
+  LongInt rowgoto;
+  
+  CreateVIFromPO = CreateVIFromPO2(PONr,RepSpec,VIp,fieldgoto,rowgoto);
   return;
 end;
 
@@ -1996,8 +2041,8 @@ begin
     BlockLoad(SRb);
     newnr = GetCurUserLastNr("DropSHVc");
     if (newnr==-1) then begin
-      newnr = SRb.LastDropSHNr;
-    end;
+      newnr = SRb.LastDropSHNr;      
+    end;    
     DropSHp.SerNr = NextSerNr("DropSHVc",DropSHp.ShipDate,newnr,false,"");
   end;
   DropSHp.CustCode = ORr.CustCode;
@@ -2027,7 +2072,7 @@ procedure FindDropShipCosAcc(record AccBlock Accb,record INVc INr,string custcod
 begin
   record CostAccBlock CAb;
   string 255 tstr;
-
+  
   BlockLoad(CAb);
   if (CAb.NoNLCostOnShip!=0) then begin
     cosacc = Accb.DropShipCOSAccrualAcc;
@@ -2048,7 +2093,7 @@ procedure PastePORowinDropSH(record AccBlock Accb,record CostAccBlock CAb,var re
 begin
   row DropSHVc DropSHrw;
   string 255 cosacc,purchacc;
-
+  
   ClearRow(DropSHp,DropSHrw,1);
   DropSHrw.StockType = POrw.StockType;
   DropSHrw.VATCode = POrw.VATCode;
@@ -2060,11 +2105,11 @@ begin
   DropSHrw.Ordered = remn;
   DropSHrw.Ship = remn;
   DropSHrw.Spec = POrw.Spec;
-  DropSHrw.SerialNr = "";
+  DropSHrw.SerialNr = "";      
   DropSHrw.POOrdRow = porow;
   DropSHrw.OrdRow = POrw.OrdRow;
   DropSHrw.PurAccrualsAcc = POrw.CostAcc;
-/*
+/*    
     if (nonblank(POp.CurncyCode)) then begin
       if (((POp.BaseRate1!=0) and (POp.BaseRate2!=0)) or
          ((POp.ToRateB1!=0) or (POp.ToRateB2!=0))) then begin
@@ -2086,12 +2131,12 @@ begin
 
     if (nonblank(POrw.CustomsCost)) then begin
       PUrw.CustomsCost = POrw.CustomsCost;
-    end else begin
+    end else begin  
       PUrw.CustomsCost = v1;
     end;
     if (POrw.ShipCost<>blankval and POrw.ShipCost<>0) then begin
       PUrw.ShipCost = POrw.ShipCost;
-    end else begin
+    end else begin  
       PUrw.ShipCost = v2;
     end;
     PUrw.RowCost1 = POrw.RowCost1;
@@ -2099,16 +2144,16 @@ begin
     PUrw.RowCost3 = POrw.RowCost3;
     PUrw.RowCost4 = POrw.RowCost4;
     PUrw.RowCost5 = POrw.RowCost5;
-
+    
     PUrw.Extra = INr.ExtraCost;
     PUrw.CostPrice = blankval;
     PUCalcCostPrice(PUrw.ArtCode,PUrw.UPrice,PUp.InclVAT,PUp.NoTAXonVAT,PUrw.Extra,PUp.CurncyCode,
                     PUp.FrRate,PUp.ToRateB1,PUp.ToRateB2,PUp.BaseRate1,PUp.BaseRate2,
                     PUrw.ShipCost,PUrw.RowCost1,PUrw.RowCost2,PUrw.RowCost3,PUrw.RowCost4,PUrw.RowCost5,
                     PUrw.CustomsCost,pv,PUrw.Quant,sv,PUrw.VATCode,PUp.ExportFlag);
-  PUrw.CostPrice = pv;
+  PUrw.CostPrice = pv;                                        
   PUrw.Sum = sv;
-*/
+*/  
 
   DropSHrw.Objects = POrw.Objects;
   DropSHrw.SuppSerialNr = INr.SuppSerialNr;
@@ -2152,29 +2197,29 @@ begin
   Integer i,rwcnt,nrwcnt;
   val t1,remn,p,totqty,v2,t,v1;
   val pv,sv;
-  string 60 sz,msk,mskrep;
+  string 60 sz,msk,mskrep;  
   string 200 varsubset;
   string 255 tstr;
   string 20 costkacc,purchaccracc;
   record ORVc ORr;
-
+  
   res = -1;
-  if (POp.Closed!=0) then begin goto LPastePOInDropSH; end;
+  if (POp.Closed!=0) then begin goto LPastePOInDropSH; end; 
   res = 22075;
-/*JJDS
-  if (POp.OrderType!=kOrderTypeDropShip) then begin
+/*JJDS   
+  if (POp.OrderType!=kOrderTypeDropShip) then begin 
     res = 22075;
     goto LPastePOInDropSH;
   end;
-*/
+*/  
   BlockLoad(CAb);
   BlockLoad(Accb);
-
+  
   DropSHp.OrderNr = POp.OrdNr;
   DropSHp.POOrderNr = POp.SerNr;
   ORr.SerNr = DropSHp.OrderNr;
   ReadFirstMain(ORr,1,true);
-
+  
   DropSHp.CustCode = ORr.CustCode;
   DropSHp.Addr0 = ORr.Addr0;
   DropSHp.Addr1 = ORr.ShipAddr1;
@@ -2203,7 +2248,7 @@ begin
   DropSHp.Objects = POp.Objects;
   DropSHp.LangCode = POp.LangCode;
   DropSHp.Comment = POp.Comment;
-
+  
   DropSHp.CurncyCode = POp.CurncyCode;
   DropSHp.FrRate = POp.FrRate;
   DropSHp.ToRateB1 = POp.ToRateB1;
@@ -2211,7 +2256,7 @@ begin
   DropSHp.BaseRate1 = POp.BaseRate1;
   DropSHp.BaseRate2 = POp.BaseRate2;
 
-  rwcnt = MatRowCnt(POp);
+  rwcnt = MatRowCnt(POp);  
 //  DropSHp.InclVAT = POp.InclVAT;
   nrwcnt = 0;
   totqty = blankval;
@@ -2228,12 +2273,12 @@ begin
     MatRowGet(POp,i,POrw);
     if (blank(POrw.ArtCode)) then begin goto LSKIPROWPastePOInDropSH; end;
     if (POrw.Quant==0) then begin goto LSKIPROWPastePOInDropSH; end;
-    if (POrw.OrderType!=kOrderTypeDropShip) then begin
+    if (POrw.OrderType!=kOrderTypeDropShip) then begin 
       if (POrw.OrderType!=kOrderTypeDefault) then begin
-        goto LSKIPROWPastePOInDropSH;
+        goto LSKIPROWPastePOInDropSH; 
       end else begin
         if (POp.OrderType!=kOrderTypeDropShip) then begin
-          goto LSKIPROWPastePOInDropSH;
+          goto LSKIPROWPastePOInDropSH; 
         end;
       end;
     end;
@@ -2257,11 +2302,11 @@ begin
           nrwcnt = 0;
           DropSHSumUp(DropSHp);
           if (RecordStore(DropSHp,false)) then begin end;
-          CreateRecordLink(DropSHp,CurrentCompany,POp,CurrentCompany);
-          CreateRecordLink(POp,CurrentCompany,DropSHp,CurrentCompany);
+          CreateRecordLink(DropSHp,CurrentCompany,POp,CurrentCompany);  
+          CreateRecordLink(POp,CurrentCompany,DropSHp,CurrentCompany);  
           CreateNewDropSHFromPO(DropSHp,POp,ORr);
         end;
-        PastePORowinDropSH(Accb,CAb,DropSHp,POp,POrw,i,INr,1);
+        PastePORowinDropSH(Accb,CAb,DropSHp,POp,POrw,i,INr,1);      
         remn = remn - 1;
         nrwcnt = MatRowCnt(DropSHp);
       end;
@@ -2273,25 +2318,25 @@ LSKIPROWPastePOInDropSH:;
   end;
   DropSHSumUp(DropSHp);
   res = 0;
-  if (MatRowCnt(DropSHp)==0) then begin
+  if (MatRowCnt(DropSHp)==0) then begin 
     res = -1;
   end;
 LPastePOInDropSH:;
-  PastePOInDropSH = res;
+  PastePOInDropSH = res; 
   return;
 end;
 
 procedure POCalcOneRow(record SysFormatBlock SysFormatRec,record POVc POr,Integer rownr,roundmode roundoff,val totvalp,val calcvalp,var val rowcalcvalp,var val restp)
-BEGIN
+BEGIN    
   row POVc POrw;
   val temp,rv,q;
   string 255 tstr;
   record INVc INr;
-
+  
   MatRowGet(POr,rownr,POrw);
-//  DivPIFactor(POrw.Quant,POrw.PIFactor,q); //why extra cost should be per supplier unit not ours ?
+//  DivPIFactor(POrw.Quant,POrw.PIFactor,q); //why extra cost should be per supplier unit not ours ? 
   q = POrw.Quant;
-  switch (POr.ExtraCostsCalculation) begin
+  switch (POr.ExtraCostsCalculation) begin 
     case 1:
       if (ReadFirstItem(POrw.ArtCode,INr,false,false)) then begin
         temp = q*INr.Weight;
@@ -2324,7 +2369,7 @@ BEGIN
   row POVc PO2rw;
   LongInt rownt;
   Integer i,rwcnt;
-
+  
   rwcnt = MatRowCnt(PO2r);
   if (rwcnt<1) then begin goto LPOUnsortByVal; end;
   for (i=0;i<rwcnt;i=i+1) begin
@@ -2338,13 +2383,13 @@ BEGIN
     end;
     POrw.Quant = PO2rw.Quant;
     switch (column) begin
-      case 6: POrw.ShipCost = PO2rw.ShipCost;
-      case 7: POrw.CustomsCost = PO2rw.CustomsCost;
-      case 1: POrw.RowCost1 = PO2rw.RowCost1;
-      case 2: POrw.RowCost2 = PO2rw.RowCost2;
-      case 3: POrw.RowCost3 = PO2rw.RowCost3;
-      case 4: POrw.RowCost4 = PO2rw.RowCost4;
-      case 5: POrw.RowCost5 = PO2rw.RowCost5;
+      case 6: POrw.ShipCost = PO2rw.ShipCost; 
+      case 7: POrw.CustomsCost = PO2rw.CustomsCost; 
+      case 1: POrw.RowCost1 = PO2rw.RowCost1; 
+      case 2: POrw.RowCost2 = PO2rw.RowCost2; 
+      case 3: POrw.RowCost3 = PO2rw.RowCost3; 
+      case 4: POrw.RowCost4 = PO2rw.RowCost4; 
+      case 5: POrw.RowCost5 = PO2rw.RowCost5; 
     end;
     MatRowPut(POr,roworder[i],POrw);
 LSKIPPOROW3:
@@ -2361,7 +2406,7 @@ BEGIN
   LongInt temp;
   Integer cnt;
   Integer rwcnt,i;
-
+  
   rwcnt = MatRowCnt(POr);
   if (rwcnt<1) then begin goto LPOSortByVal; end;
 L22POSortByVal:;
@@ -2372,31 +2417,31 @@ L22POSortByVal:;
       goto LSKIPPOROW4;
     end;
     if (POrw.Quant!=blankval) then begin
-//      DivPIFactor(POrw.Quant,POrw.PIFactor,q); //why extra cost should be per supplier unit not ours ?
+//      DivPIFactor(POrw.Quant,POrw.PIFactor,q); //why extra cost should be per supplier unit not ours ? 
       q = POrw.Quant;
       switch(column) begin
         case 6: /* Calculate Shipment Cost */
-          rv = q*POrw.ShipCost;
+          rv = q*POrw.ShipCost; 
         case 7: /* Calculate Customs Cost */
           rv = StringToVal(POrw.CustomsCost,M45Val);
           rv = q*rv;
         case 1: /* Calculate Extra Costs */
-          rv = q*POrw.RowCost1;
+          rv = q*POrw.RowCost1; 
         case 2: /* Calculate Extra Costs */
-          rv = q*POrw.RowCost2;
+          rv = q*POrw.RowCost2; 
         case 3: /* Calculate Extra Costs */
-          rv = q*POrw.RowCost3;
+          rv = q*POrw.RowCost3; 
         case 4: /* Calculate Extra Costs */
-          rv = q*POrw.RowCost4;
+          rv = q*POrw.RowCost4; 
         case 5: /* Calculate Extra Costs */
-          rv = q*POrw.RowCost5;
+          rv = q*POrw.RowCost5; 
       end;
       if ((rv>highest) or (highest==blankval)) then begin
         rownr = i;
         highest = rv;
       end;
     end;
-LSKIPPOROW4:;
+LSKIPPOROW4:;    
   end;
   if (rownr==-1) then begin goto LPOSortByVal; end;
   if (cnt>=rwcnt) then begin goto LPOSortByVal; end;
@@ -2430,40 +2475,40 @@ BEGIN
   if (realtotp>calctotp) then begin
     diff = realtotp - calctotp;
     switch (column) begin
-      case 6: add = 0.001;
+      case 6: add = 0.001; 
       case 7: add = 0.00001;
-      case 1: add = 0.001;
-      case 2: add = 0.001;
-      case 3: add = 0.001;
-      case 4: add = 0.001;
+      case 1: add = 0.001; 
+      case 2: add = 0.001; 
+      case 3: add = 0.001; 
+      case 4: add = 0.001; 
       case 5: add = 0.001;
-    end;
+    end;    
     inc = true;
   end else begin
     diff = calctotp - realtotp;
     switch (column) begin
-      case 6: add = -0.001;
-      case 7: add = -0.00001;
-      case 1: add = -0.001;
-      case 2: add = -0.001;
-      case 3: add = -0.001;
-      case 4: add = -0.001;
-      case 5: add = -0.001;
-    end;
+      case 6: add = -0.001; 
+      case 7: add = -0.00001; 
+      case 1: add = -0.001; 
+      case 2: add = -0.001; 
+      case 3: add = -0.001; 
+      case 4: add = -0.001; 
+      case 5: add = -0.001; 
+    end;    
     inc = false;
   end;
   switch (column) begin
-    case 6: cost = POrw.ShipCost;
-    case 7: cost = StringToVal(POrw.CustomsCost,M45Val);
-    case 1: cost = POrw.RowCost1;
-    case 2: cost = POrw.RowCost2;
-    case 3: cost = POrw.RowCost3;
-    case 4: cost = POrw.RowCost4;
-    case 5: cost = POrw.RowCost5;
+    case 6: cost = POrw.ShipCost; 
+    case 7: cost = StringToVal(POrw.CustomsCost,M45Val); 
+    case 1: cost = POrw.RowCost1; 
+    case 2: cost = POrw.RowCost2; 
+    case 3: cost = POrw.RowCost3; 
+    case 4: cost = POrw.RowCost4; 
+    case 5: cost = POrw.RowCost5; 
   end;
   comp = blankval;
   while (realtotp==comp) begin
-//    DivPIFactor(POrw.Quant,POrw.PIFactor,q); //why extra cost should be per supplier unit not ours ?
+//    DivPIFactor(POrw.Quant,POrw.PIFactor,q); //why extra cost should be per supplier unit not ours ? 
     q = POrw.Quant;
     rowtot = q*cost;
     rowtot = Round(rowtot,SetRoundModeD(roundoff));
@@ -2474,7 +2519,7 @@ BEGIN
     comp = comp + totnotthisrow;
     if (inc==true) then begin
       rowdiff = comp - realtotp;
-      if (comp>realtotp) then begin
+      if (comp>realtotp) then begin 
           goto L88POCalcOneRow2;
       end;
     end else begin
@@ -2488,13 +2533,13 @@ BEGIN
   end;
 L88POCalcOneRow2:;
   switch (column) begin
-    case 6: POrw.ShipCost = cost;
+    case 6: POrw.ShipCost = cost; 
     case 7: POrw.CustomsCost = ValToString(cost,M45Val,SysFormatRec.thousSep,SysFormatRec.decimalPt,0);
-    case 1: POrw.RowCost1 = cost;
-    case 2: POrw.RowCost2 = cost;
-    case 3: POrw.RowCost3 = cost;
-    case 4: POrw.RowCost4 = cost;
-    case 5: POrw.RowCost5 = cost;
+    case 1: POrw.RowCost1 = cost; 
+    case 2: POrw.RowCost2 = cost; 
+    case 3: POrw.RowCost3 = cost; 
+    case 4: POrw.RowCost4 = cost; 
+    case 5: POrw.RowCost5 = cost; 
   end;
 LPOCalcOneRow2:;
   return;
@@ -2511,26 +2556,26 @@ BEGIN
   record SysFormatBlock SFb;
   array integer roworder;
   record INVc INr;
-
+  
   BlockLoad(SFb);
   switch( column) begin
-    case 1: calcval = POr.Cost1; // Calculate Extra Costs
-    case 2: calcval = POr.Cost2; // Calculate Extra Costs
-    case 3: calcval = POr.Cost3; // Calculate Extra Costs
-    case 4: calcval = POr.Cost4; // Calculate Extra Costs
-    case 5: calcval = POr.Cost5; // Calculate Extra Costs
-    case 6: calcval = POr.ShipCost;    // Calculate Shipment Cost
-    case 7: calcval = POr.CustomsCost; // Calculate Customs Cost
+    case 1: calcval = POr.Cost1; // Calculate Extra Costs 
+    case 2: calcval = POr.Cost2; // Calculate Extra Costs 
+    case 3: calcval = POr.Cost3; // Calculate Extra Costs 
+    case 4: calcval = POr.Cost4; // Calculate Extra Costs 
+    case 5: calcval = POr.Cost5; // Calculate Extra Costs 
+    case 6: calcval = POr.ShipCost;    // Calculate Shipment Cost 
+    case 7: calcval = POr.CustomsCost; // Calculate Customs Cost 
     otherwise goto LPOSetShipCost;
   end;
   rwcnt = MatRowCnt(POr);
   for (i=0;i<rwcnt;i=i+1) begin
     MatRowGet(POr,i,POrw);
     if ((POrw.stp!=3) and (POrw.ovst==0) and (nonblank(POrw.ArtCode)) and !(column==7 and POrw.TREO==kTREO)) then begin
-//      DivPIFactor(POrw.Quant,POrw.PIFactor,q); //why extra cost should be per supplier unit not ours ?
+//      DivPIFactor(POrw.Quant,POrw.PIFactor,q); //why extra cost should be per supplier unit not ours ? 
       q = POrw.Quant;
       rv = blankval;
-      switch (POr.ExtraCostsCalculation) begin
+      switch (POr.ExtraCostsCalculation) begin 
         case 1:
           if (ReadFirstItem(POrw.ArtCode,INr,false,false)) then begin
             rv = q*INr.Weight;
@@ -2548,12 +2593,12 @@ BEGIN
     end;
     POCalcOneRow(SFb,POr,i,DefaultCurRoundOff,totval,calcval,rowcalcval,rest);
     switch (column) begin
-      case 1: POrw.RowCost1 = rowcalcval;
-      case 2: POrw.RowCost2 = rowcalcval;
-      case 3: POrw.RowCost3 = rowcalcval;
-      case 4: POrw.RowCost4 = rowcalcval;
-      case 5: POrw.RowCost5 = rowcalcval;
-      case 6: POrw.ShipCost = rowcalcval;
+      case 1: POrw.RowCost1 = rowcalcval; 
+      case 2: POrw.RowCost2 = rowcalcval; 
+      case 3: POrw.RowCost3 = rowcalcval; 
+      case 4: POrw.RowCost4 = rowcalcval; 
+      case 5: POrw.RowCost5 = rowcalcval; 
+      case 6: POrw.ShipCost = rowcalcval; 
       case 7: POrw.CustomsCost = ValToString(rowcalcval,M45Val,SFb.thousSep,SFb.decimalPt,0);
     end;
     MatRowPut(POr,i,POrw);
@@ -2584,7 +2629,7 @@ procedure PODClassOnOpenWindowRemote(var record POVc POr,var Integer AcceptanceS
 begin
   record AcceptanceRulesVc Acptr;
   record ActVc Actr;
-
+  
   if (HasApprovals) then begin
     AcceptanceStatusFlag = POApprovalStatus(POr,Acptr);
   end;
