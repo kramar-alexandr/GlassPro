@@ -33,6 +33,42 @@
 //   return;
 // end;
 
+procedure ReadImportTagEBS_HazLevVc2Record(record HazLevVc HazLevr)
+begin
+  string 255 tstr;
+  row HazLevVc HazLevrw;
+  integer rwcnt;
+  
+  RecordNew(HazLevr);
+  HazLevr.Code = ImportField;
+  HazLevr.Comment = ImportField;
+  HazLevr.WeightCoefficient = StringToVal(ImportField,M45Val);
+  
+  rwcnt = 0;
+  
+  while (NextImportLine(false)) begin
+    ClearRow(HazLevr,HazLevrw,1);
+    HazLevrw.LangCode = ImportField;
+    HazLevrw.Text = ImportField;
+    MatRowPut(HazLevr,rwcnt,HazLevrw);
+    rwcnt = rwcnt + 1;
+  end;
+  
+  return;
+end;
+
+
+global
+function string 120 ReadRecordIdStrEBS_HazLevVc2(Integer compnr,string thetag)
+begin
+  record HazLevVc HazLevr;
+  
+  HazLevr.Code = ImportField;
+  ReadRecordIdStrEBS_HazLevVc2 = BuildRecordIdStr(HazLevr,compnr);
+  return;
+end;
+
+
 global
 procedure PrintHazardLevel(string hazcode,string langcode) begin
   string 255 tstr;

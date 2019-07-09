@@ -52,18 +52,13 @@ SOURCEFILE("halcust\\Windows",3);
 
 begin
   
-  RecordBegin(HazLevVc,-,"");
-		RecordField(Code,M4Code,5,0);
-		RecordField(Comment,M4Str,60,0);
-		RecordField(WeightCoefficient,M45Val,0,0);
+  RecordAddBegin(HazLevVc,"EBS_HazLevVc3");
 		RecordField(Math,M4Matrix,0,0); //EBS
 		ArrayBegin(Math,-,1); //EBS
 		ArrayField(LangCode,M4Code,5,0); //EBS
 		ArrayField(Text,M4Str,255,0); //EBS
 		EndArray;
-		MainKeyBegin(Code,0);
-		KeySegment(Code);
-  EndRecord;
+  EndRecordAdd;
   
   /*RecordAddBegin(HazLevVc,"EBS_HazLevVc2");
   RecordField(Math,M4Matrix,0,0); //EBS
