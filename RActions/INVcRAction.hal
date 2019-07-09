@@ -1,0 +1,39 @@
+
+
+global
+updating function LongInt INVcRecordSaveAfter(var record INVc INr,record INVc IN2r,LongInt stat,LongInt long4)
+begin
+  LongInt res;
+  string 255 autmsgfunciontags;
+	record ItemResourceVc IRr;
+	row ItemResourceVc IRrw;
+	
+	logtext(0,"INVcRecordSaveAfter");
+	
+	res = inner.INVcRecordSaveAfter(INr,IN2r,stat,long4);
+	IRr.Code = INr.Code;
+	if(readfirstmain(IRr,1,true)==false)then begin
+		recordnew(IRr);
+		IRr.Code = INr.Code;
+		IRr.ArtCode = INr.Code;
+		IRr.Comment = INr.Name;
+		IRr.Name = INr.Name;
+		
+		IRrw.ResourceType = "MED";
+		IRrw.PackagingCategory = 1;
+		Matrowput(IRr,matrowcnt(IRr),IRrw);
+		IRrw.ResourceType = "METAL";
+		IRrw.PackagingCategory = 1;
+		Matrowput(IRr,matrowcnt(IRr),IRrw);
+		IRrw.ResourceType = "PLAST";
+		IRrw.PackagingCategory = 1;
+		Matrowput(IRr,matrowcnt(IRr),IRrw);
+		IRrw.ResourceType = "POP";
+		IRrw.PackagingCategory = 1;
+		Matrowput(IRr,matrowcnt(IRr),IRrw);
+		recordstore(IRr,true);
+	end;
+	
+  INVcRecordSaveAfter = res; 
+  return;
+end;
