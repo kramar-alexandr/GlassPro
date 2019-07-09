@@ -7,9 +7,7 @@ begin
   string 255 autmsgfunciontags;
 	record ItemResourceVc IRr;
 	row ItemResourceVc IRrw;
-	
-	logtext(0,"INVcRecordSaveAfter");
-	
+		
 	res = inner.INVcRecordSaveAfter(INr,IN2r,stat,long4);
 	IRr.Code = INr.Code;
 	if(readfirstmain(IRr,1,true)==false)then begin
