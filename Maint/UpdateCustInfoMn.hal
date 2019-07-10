@@ -43,7 +43,7 @@ external  inner procedure CUVc_PasteCountryCode(var record CUVc,string);
 event startup
 begin
 SetLangMode(LangLithuanian,"LIT",0);
-  Maintenance("Update customer info",UpdateCustinfoVClass,UpdateCustInfoMn,modSL);
+  Maintenance("Update Contacts",UpdateCustinfoVClass,UpdateCustInfoMn,modSY);
   return;
 end;
 
