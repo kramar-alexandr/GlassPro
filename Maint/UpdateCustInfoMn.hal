@@ -1,0 +1,204 @@
+external  inner function LongInt CUExternalTaxUpdateAddress(string,var record CUVc,Integer,var string);
+external  inner function LongInt DelAddrExternalTaxUpdateAddress(string,var record DelAddrVc,var string);
+external  inner function LongInt ValidCUDataForVATLaw(Integer,string,record CUVc,var string,var string);
+external inner procedure LogAreaToFile(string,area);
+external inner function boolean ValidateIBAN(string);
+external inner procedure AutomatedSalesOrderly(string);
+external  inner updating procedure CreateCUObject(var record CUVc,Boolean);
+external  inner procedure CUDClassOnOpenWindowexternal (record CUVc,var Integer,var string,var string);
+external  inner procedure CUVc_PasteDelCountryCode(var record CUVc,string);
+external  inner function Boolean TransactionForCustomerExists(string);
+external  inner procedure CUDCLass_BIChart_Tool(record CUVc,var val,var Array val,var Array Integer);
+external  inner procedure FindCurMailboxName(var string);
+external inner procedure CUVc_PasteInvAddr(var record CUVc,Integer);
+external inner procedure ActVcRecordDefClient(var record ActVc);
+external inner procedure ReadTXServiceReply(var record TXServiceReplyVc,var Area,Boolean);
+external inner procedure ReverseString(string,var string);
+external inner function LongInt NumberOfJunkLeadingCharactersInArea(Area);
+external inner function Boolean IsDigit(string);
+external inner procedure PasteFromTRObjS(Integer,Integer);
+external inner procedure SendTextParameter(string,var Area);
+external inner procedure SendFunctionVersion(string,string,var Area);
+external inner updating procedure RecordActionProfile_Print(var record CUVc,string,Boolean);
+external  inner updating function Boolean NewContactCUDsmexternal (record CUVc,var record CUVc); // Must be external 
+external inner function Boolean FindCustomerRelation(string,string,var record CUVc);
+external inner function Integer CountObjects(string);
+external inner procedure StripEndingSpaces(var string);
+external inner updating function Boolean SendServiceRequest(string,Boolean,area,var Area);
+external inner function Integer XmlGetInt(var xml,string);
+external  inner updating procedure UpdContactAddrCUDsmexternal (record CUVc);
+external  inner function Boolean MakeMailFromCU(record CUVc,var record MailVc,Boolean);
+external inner function Boolean InterNetAddrTest(string);
+external  inner function Boolean CurUserHasMailbox(var string);
+external  inner function Boolean CUVc_PasteRegNr2(var record CUVc);
+external  inner function Boolean CUVc_PasteSalesMan(var record CUVc);
+external  inner function Boolean CUVc_PasteName(var record CUVc);
+external  inner updating function Boolean MakeActFromCU(record CUVc,var record ActVc,Boolean);
+external  inner procedure SetupCustPS2Rn(string,var record RcVc);
+external  inner function Boolean PasteCustInQT(var record QTVc,string,string,var string,Boolean);
+external inner procedure FindUserMailboxName(string,var string,var string);
+external inner function Integer GetCodeFromCompanyCode(Integer);
+external  inner procedure CUVc_PasteCountryCode(var record CUVc,string);
+
+event startup
+begin
+SetLangMode(LangLithuanian,"LIT",0);
+  Maintenance("Update customer info",UpdateCustinfoVClass,UpdateCustInfoMn,modSL);
+  return;
+end;
+
+event DefineWindows
+begin
+  Real h,h1,h2,h3,h4,hs,v,vm,vs,f,t;
+ SetLangMode(LangLithuanian,"LIT",0);
+  WindowBegin("UpdateCustomerInfo",UpdateCustinfoVClass,CGMnt,RcType);
+  SetWRect(64,80,549,248);
+  v= 6; vs = 20; h=120;
+ EndWindow;
+ return;
+end;
+
+
+procedure Lithuanian_UpdateCustomerAddress(Area a_reply,var record CUVc CUr,integer type)
+begin
+  string 255 tstr,addr1,post,root,name,city,fulladdr,vatcode;
+
+  LogAreaToFile("_Lithuanian_UpdateCustomerAddress.txt",a_reply);
+
+    tstr  = GetTabTextFromArea(0,1,a_reply);
+    if (nonblank(tstr)) then begin
+      CUr.Name = tstr; 
+    end;
+    
+    tstr  = GetTabTextFromArea(0,4,a_reply);
+    if (nonblank(tstr)) then begin
+      CUr.InvAddr0 = tstr;
+    end;
+    
+    tstr  = GetTabTextFromArea(0,5,a_reply);
+    if (nonblank(tstr)) then begin
+      if (nonblank(CUr.InvAddr0)) then begin
+        CUr.InvAddr0 = CUr.InvAddr0 & " ";
+      end;
+      CUr.InvAddr0 = CUr.InvAddr0 & tstr;
+    end;
+    tstr  = GetTabTextFromArea(0,6,a_reply);
+    if (nonblank(tstr)) then begin
+      if (nonblank(CUr.InvAddr0)) then begin
+        CUr.InvAddr0 = CUr.InvAddr0 & " ";
+      end;
+      CUr.InvAddr0 = CUr.InvAddr0 & tstr;
+    end;
+    tstr  = GetTabTextFromArea(0,7,a_reply);
+    if (nonblank(tstr)) then begin
+      CUr.InvAddr2 = tstr;
+    end;
+    
+    tstr  = GetTabTextFromArea(0,3,a_reply);
+    if (nonblank(tstr)) then begin
+      CUr.InvAddr3 = tstr;
+    end;
+
+    tstr  = GetTabTextFromArea(0,9,a_reply);
+    if (nonblank(tstr)) then begin
+      CUr.Phone = tstr;
+    end;
+
+    tstr  = GetTabTextFromArea(0,10,a_reply);
+    if (nonblank(tstr)) then begin
+      CUr.Mobile = tstr;
+    end;
+
+    tstr  = GetTabTextFromArea(0,11,a_reply);
+    if (nonblank(tstr)) then begin
+      CUr.Fax = tstr;
+    end;
+
+    tstr  = GetTabTextFromArea(0,12,a_reply);
+    if (nonblank(tstr)) then begin
+      CUr.wwwAddr = tstr;
+    end;
+
+    tstr  = GetTabTextFromArea(0,13,a_reply);
+    if (nonblank(tstr)) then begin
+      CUr.eMail = tstr;
+    end;
+    tstr  = GetTabTextFromArea(0,14,a_reply);
+    if (nonblank(tstr)) then begin
+      CUr.VATNr = tstr;
+    end;
+
+
+  return;
+end; 
+
+global
+updating procedure UpdateCustInfoMn(record RcVc RepSpec)
+BEGIN
+  record CUVc CUr,oldCUr;
+  string 100 regno;
+  record DelAddrVc DelAddrr;
+  Area a_req,a_reply;
+  Boolean res;
+  string 255 compid;
+  record InternetEnablerBlock IEb;
+  LongInt rerror;  
+  string 255 rerrordesc;
+  integer regcountry;
+  record TXServiceReplyVc TXSrvReplyr;
+  record LocalMachineBlock LMb;
+  record CYBlock CYb;
+  Integer calcregincountry;
+  string 100 postcode;
+  integer type,custtype;
+  
+  type = 1;
+  
+  BlockLoad(IEb);
+  BlockLoad(CYb);
+  
+  CUr.Code = "";
+  while(loopmain(CUr,1,true))begin
+  	recordcopy(oldCUr,CUr);
+  	regno = CUr.RegNr2;
+    if (blank(regno)) then begin
+      regno = CUr.RegNr1;
+    end;  
+    if (blank(regno)) then begin      
+      regno = CUr.VATNr;
+    end;
+    postcode = CUr.InvAddr4;
+    logtext(0,CUr.Code & " regno " & regno);
+    compid = regno;
+    //UpdateCUAddr(wn,CUr.InvAddr4,regno,1,CUr.CustType);
+    if (nonblank(compid) and nonblank(regno)) then begin 
+			SendFunctionVersion("54.0","",a_req);
+			SendTextParameter(CurrentUser,a_req);
+			SendTextParameter(compid,a_req);
+			SendTextParameter(CUr.CustType,a_req);
+		
+			res = SendServiceRequest("UPDATECOMPANYDATA",false,a_req,a_reply);        
+
+			if (res) then begin
+				ReadTXServiceReply(TXSrvReplyr,a_reply,true);
+				rerror = TXSrvReplyr.ErrorCode;
+				rerrordesc = TXSrvReplyr.ErrorDescription;
+				if (rerror==0) then begin
+					
+					Lithuanian_UpdateCustomerAddress(a_reply,CUr,type); 
+					CUr.RegNr1 = regno;
+					logtext(0,"Customer updated " & CUr.Code);
+					recordupdate(oldCUr,CUr,true);
+				end else begin
+					logtext(rerror,rerrordesc);
+				end;
+			end else begin
+				logtext(20241,"");
+			end;
+		end;
+    
+  end;
+  
+  
+ RETURN;
+END;
