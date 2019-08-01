@@ -139,7 +139,7 @@ BEGIN
   string 100 regno;
   record DelAddrVc DelAddrr;
   Area a_req,a_reply;
-  Boolean res;
+  Boolean res,testf;
   string 255 compid;
   record InternetEnablerBlock IEb;
   LongInt rerror;  
@@ -159,41 +159,48 @@ BEGIN
   
   CUr.Code = "";
   while(loopmain(CUr,1,true))begin
-  	recordcopy(oldCUr,CUr);
-  	regno = CUr.RegNr2;
-    if (blank(regno)) then begin
-      regno = CUr.RegNr1;
-    end;  
-    if (blank(regno)) then begin      
-      regno = CUr.VATNr;
-    end;
-    postcode = CUr.InvAddr4;
-    logtext(0,CUr.Code & " regno " & regno);
-    compid = regno;
-    //UpdateCUAddr(wn,CUr.InvAddr4,regno,1,CUr.CustType);
-    if (nonblank(compid) and nonblank(regno)) then begin 
-			SendFunctionVersion("54.0","",a_req);
-			SendTextParameter(CurrentUser,a_req);
-			SendTextParameter(compid,a_req);
-			SendTextParameter(CUr.CustType,a_req);
+  	testf = true;
+  	if(CUr.ExportFlag!=0)then begin testf = false; end;
+  	if(CUr.CustType!=0)then begin testf = false; end;
+  	if(blank(CUr.RegNr1))then begin testf = false; end;
+  	
+  	if(testf)then begin
+			recordcopy(oldCUr,CUr);
+			regno = CUr.RegNr2;
+			if (blank(regno)) then begin
+				regno = CUr.RegNr1;
+			end;  
+			if (blank(regno)) then begin      
+				regno = CUr.VATNr;
+			end;
+			postcode = CUr.InvAddr4;
+			logtext(0,CUr.Code & " regno " & regno);
+			compid = regno;
+			//UpdateCUAddr(wn,CUr.InvAddr4,regno,1,CUr.CustType);
+			if (nonblank(compid) and nonblank(regno)) then begin 
+				SendFunctionVersion("54.0","",a_req);
+				SendTextParameter(CurrentUser,a_req);
+				SendTextParameter(compid,a_req);
+				SendTextParameter(CUr.CustType,a_req);
 		
-			res = SendServiceRequest("UPDATECOMPANYDATA",false,a_req,a_reply);        
+				res = SendServiceRequest("UPDATECOMPANYDATA",false,a_req,a_reply);        
 
-			if (res) then begin
-				ReadTXServiceReply(TXSrvReplyr,a_reply,true);
-				rerror = TXSrvReplyr.ErrorCode;
-				rerrordesc = TXSrvReplyr.ErrorDescription;
-				if (rerror==0) then begin
+				if (res) then begin
+					ReadTXServiceReply(TXSrvReplyr,a_reply,true);
+					rerror = TXSrvReplyr.ErrorCode;
+					rerrordesc = TXSrvReplyr.ErrorDescription;
+					if (rerror==0) then begin
 					
-					Lithuanian_UpdateCustomerAddress(a_reply,CUr,type); 
-					CUr.RegNr1 = regno;
-					logtext(0,"Customer updated " & CUr.Code);
-					recordupdate(oldCUr,CUr,true);
+						Lithuanian_UpdateCustomerAddress(a_reply,CUr,type); 
+						CUr.RegNr1 = regno;
+						logtext(0,"Customer updated " & CUr.Code);
+						recordupdate(oldCUr,CUr,true);
+					end else begin
+						logtext(rerror,rerrordesc);
+					end;
 				end else begin
-					logtext(rerror,rerrordesc);
+					logtext(20241,"");
 				end;
-			end else begin
-				logtext(20241,"");
 			end;
 		end;
     
