@@ -165,7 +165,15 @@ BEGIN
   	if(blank(CUr.RegNr1))then begin testf = false; end;
   	
   	if(testf)then begin
+  		compid = "";
+  		regno = "";
+  		setareazerosize(a_req);
+  		setareazerosize(a_reply);
 			recordcopy(oldCUr,CUr);
+			recordnew(TXSrvReplyr);
+			rerror = -1;
+			rerrordesc = "";
+			
 			regno = CUr.RegNr2;
 			if (blank(regno)) then begin
 				regno = CUr.RegNr1;
@@ -178,6 +186,8 @@ BEGIN
 			compid = regno;
 			//UpdateCUAddr(wn,CUr.InvAddr4,regno,1,CUr.CustType);
 			if (nonblank(compid) and nonblank(regno)) then begin 
+				res = false;
+				
 				SendFunctionVersion("54.0","",a_req);
 				SendTextParameter(CurrentUser,a_req);
 				SendTextParameter(compid,a_req);
