@@ -3555,6 +3555,7 @@ begin
   CheckBox(h2,v+=16,0,"Įtraukti ser. nr. informaciją",AccSpec);
   end;
   CheckBox(h2,v+=16,0,"Prekės su intr.",flags[29]); //EBS
+  CheckBox(h2,v+=16,0,"Only items with transactions",flags[28]); //EBS
   if (HasLocalization("ARG,MEX,USA") and IsStandardProduct==false) then begin
     CheckBox(h2,v+=16,0,"Include Dispatch Number",flags[22]);
   end;

@@ -1544,15 +1544,19 @@ EndFormat;
         PrintItemHistoryRecord(RepSpec,sumIHr,INr,MSb,CAb,itemheaderf,fwdqty,fwdtotcp,fwdqty2,itemqin,itemcpin,itemq2in,itemqout,itemcpout,itemq2out,bal);
       end;
       SumTotals(fwdqty,fwdtotcp,itemqin,itemqout,itemcpin,itemcpout,itemq2in+itemq2out,SumQFwd,SumCPFwd,SumQIn,SumQOut,SumCPIn,SumCPOut,SumQ2);
-      if (RepSpec.flags[15]==0) then begin
-        switch (RepSpec.flags[9]) begin
-          case 0: PrintItemTotals_Overview(RepSpec,INr,fwdqty,fwdcp,fwdtotcp,itemqin,itemqout,itemcpin,itemcpout);
-          case 1: PrintItemTotals_Detailed(RepSpec,INr,itemheaderf,fwdqty,fwdcp,fwdtotcp,itemqin,itemqout,itemcpin,itemcpout,itemq2in+itemq2out,bal);
-          case 2: PrintItemTotals_Overview2(RepSpec,INr,fwdqty,fwdcp,fwdtotcp,itemqin,itemqout,itemcpin,itemcpout);
+//CUST-BEGIN      
+      if (sumIHr.Qty!=0 or RepSpec.flags[28]==0) then begin
+        if (RepSpec.flags[15]==0) then begin
+          switch (RepSpec.flags[9]) begin
+            case 0: PrintItemTotals_Overview(RepSpec,INr,fwdqty,fwdcp,fwdtotcp,itemqin,itemqout,itemcpin,itemcpout);
+            case 1: PrintItemTotals_Detailed(RepSpec,INr,itemheaderf,fwdqty,fwdcp,fwdtotcp,itemqin,itemqout,itemcpin,itemcpout,itemq2in+itemq2out,bal);
+            case 2: PrintItemTotals_Overview2(RepSpec,INr,fwdqty,fwdcp,fwdtotcp,itemqin,itemqout,itemcpin,itemcpout);
+          end;
+        end else begin
+          PrintItemTotals_Overview_PerLocation(RepSpec,INr,fwdqty,fwdcp,fwdtotcp,itemqin,itemqout,itemcpin,itemcpout);
         end;
-      end else begin
-        PrintItemTotals_Overview_PerLocation(RepSpec,INr,fwdqty,fwdcp,fwdtotcp,itemqin,itemqout,itemcpin,itemcpout);
       end;
+//CUST-END
     end;    
 LINwhileend:;  
   end;
