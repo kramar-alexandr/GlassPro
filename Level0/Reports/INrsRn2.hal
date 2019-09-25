@@ -171,10 +171,10 @@ LLPrintItemHistHeaderExcel:;
           StartFormat(15);
           OutString(0,0,USetStr(5052),false);
           OutString(100,0,USetStr(2763),false);
-          OutStringAdjust(260,0,USetStr(3244),true,M4Val);
-          OutStringAdjustBiDi(320,0,USetStr(5027),true,M4Val,360);
-          OutStringAdjustBiDi(400,0,USetStr(5028),true,M4Val,440);
-          OutStringAdjustBiDi(480,0,USetStr(5015),true,M4Val,520);
+          OutStringAdjust(330,0,USetStr(3244),true,M4Val);
+          OutStringAdjustBiDi(380,0,USetStr(5027),true,M4Val,360);
+          OutStringAdjustBiDi(430,0,USetStr(5028),true,M4Val,440);
+          OutStringAdjustBiDi(1,0,USetStr(5015),true,M4Val,520);
           EndFormat;
         end; //EBS
       end;

@@ -192,20 +192,20 @@ LPrintItemTotals_OverviewExcel:;
         OutString(70,0,INr.Name,false);
         switch (RepSpec.ArtMode) begin
           case 0:
-            OutValBiDi(240,0,fwdqty,M4Qty,true,280);
-            OutValBiDi(320,0,itemqin,M4Qty,true,360);
-            OutValBiDi(400,0,itemqout,M4Qty,true,440);
-            OutValBiDi(480,0,fwdqty+itemqin+itemqout,M4Qty,true,520);
+            OutValBiDi(330,0,fwdqty,M4Qty,true,280);
+            OutValBiDi(380,0,itemqin,M4Qty,true,360);
+            OutValBiDi(430,0,itemqout,M4Qty,true,440);
+            OutValBiDi(1,0,fwdqty+itemqin+itemqout,M4Qty,true,520);
           case 1:
-            OutValBiDi(240,0,fwdtotcp,M45Val,true,280); // fwdqty (shows same as fwdtotcp)? fwdcp (is blank)?
-            OutValBiDi(320,0,itemcpin,M45Val,true,350);
-            OutValBiDi(400,0,itemcpout,M45Val,true,440);
-            OutValBiDi(480,0,fwdtotcp+itemcpin-itemcpout,M45Val,true,500);
+            OutValBiDi(330,0,fwdtotcp,M45Val,true,280); // fwdqty (shows same as fwdtotcp)? fwdcp (is blank)?
+            OutValBiDi(380,0,itemcpin,M45Val,true,350);
+            OutValBiDi(430,0,itemcpout,M45Val,true,440);
+            OutValBiDi(1,0,fwdtotcp+itemcpin-itemcpout,M45Val,true,500);
           case 3:
-            OutValBiDi(240,0,fwdqty,M4Qty,true,280);
-            OutValBiDi(320,0,itemqin,M4Qty,true,360);
-            OutValBiDi(400,0,itemqout,M4Qty,true,440);
-            OutValBiDi(480,0,fwdqty+itemqin+itemqout,M4Qty,true,520);
+            OutValBiDi(330,0,fwdqty,M4Qty,true,280);
+            OutValBiDi(380,0,itemqin,M4Qty,true,360);
+            OutValBiDi(430,0,itemqout,M4Qty,true,440);
+            OutValBiDi(1,0,fwdqty+itemqin+itemqout,M4Qty,true,520);
         end;
         EndFormat;
     end;
@@ -726,15 +726,15 @@ LPrintReportTotalsExcel:;
           StartFormat(15);
           switch (RepSpec.ArtMode) begin
             case 0:
-              OutValBiDi(240,0,SumQFwd,M4Qty,true,280);
-              OutValBiDi(320,0,SumQIn,M4Qty,true,360);
-              OutValBiDi(400,0,SumQOut,M4Qty,true,440);
-              OutValBiDi(480,0,SumQIn+SumQOut+SumQFwd,M4Qty,true,520);
+              OutValBiDi(330,0,SumQFwd,M4Qty,true,280);
+              OutValBiDi(380,0,SumQIn,M4Qty,true,360);
+              OutValBiDi(430,0,SumQOut,M4Qty,true,440);
+              OutValBiDi(1,0,SumQIn+SumQOut+SumQFwd,M4Qty,true,520);
             case 1:
-              OutValBiDi(240,0,SumCPFwd,M45Val,true,280);
-              OutValBiDi(320,0,SumCPIn,M45Val,true,360);
-              OutValBiDi(400,0,SumCPOut,M45Val,true,440);
-              OutValBiDi(480,0,SumCPIn-SumCPOut+SumCPFwd,M4Qty,true,500);
+              OutValBiDi(330,0,SumCPFwd,M45Val,true,280);
+              OutValBiDi(380,0,SumCPIn,M45Val,true,360);
+              OutValBiDi(430,0,SumCPOut,M45Val,true,440);
+              OutValBiDi(1,0,SumCPIn-SumCPOut+SumCPFwd,M4Qty,true,500);
             case 3:
               OutValBiDi(240,0,SumQFwd,M4Qty,true,280);
               OutValBiDi(320,0,SumQIn,M4Qty,true,360);
